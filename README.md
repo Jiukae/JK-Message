@@ -23,6 +23,10 @@
 5. **스마트 알림 & 접속 상태**
    - Web Audio API 기반 오디오 효과음 알림 (메시지 수신, 전송음)
    - 브라우저 푸시 알림 (Web Notification API)
+   - **앱을 꺼도 오는 백그라운드 푸시 알림 (Web Push / VAPID)**: 앱이 닫혀 있거나 화면이 꺼져 있으면 서버가 Service Worker(`public/sw.js`)로 푸시를 보내고, 앱을 보고 있을 때는 보내지 않습니다.
+     - Android(Chrome 등): 알림 권한만 허용하면 동작
+     - iPhone/iPad(iOS 16.4+): Safari **공유 → 홈 화면에 추가** 후, 홈 화면 앱에서 알림을 허용해야 동작
+     - VAPID 키는 `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` 환경변수로 지정하거나, 미지정 시 최초 실행 때 생성되어 Firestore(`config/vapid`)에 저장됩니다.
    - 온라인 / 방해 금지(DND 30분/1시간/직접 해제까지) / 오프라인 상태 관리
 6. **클라우드 데이터베이스 & 영속성 (Firebase Firestore & Local Persistence)**
    - **Firebase Firestore** 연동을 통해 서버가 재부팅되거나 새 버전으로 재배포되어도 계정 정보, 친구 관계, 단체 채팅방, 메시지 내역이 절대 초기화되지 않고 안전하게 영구 보존됩니다.

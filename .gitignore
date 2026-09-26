@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Web Push keys & device subscriptions (VAPID private key must never be committed)
+data/vapid.json
+data/push-subscriptions.json

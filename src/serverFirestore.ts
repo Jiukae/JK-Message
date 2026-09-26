@@ -6,8 +6,10 @@ import {
   Firestore,
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
+  deleteDoc,
   writeBatch
 } from "firebase/firestore";
 
@@ -84,4 +86,4 @@ export function sanitizeForFirestore<T>(obj: T): T {
   return obj;
 }
 
-export { collection, doc, getDocs, setDoc, writeBatch };
+export { collection, doc, getDoc, getDocs, setDoc, deleteDoc, writeBatch };
