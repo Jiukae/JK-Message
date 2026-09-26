@@ -13,6 +13,14 @@ import {
   writeBatch,
   sanitizeForFirestore
 } from "./src/serverFirestore";
+import {
+  initPush,
+  getVapidPublicKey,
+  addSubscription,
+  removeSubscription,
+  getSubscriptionUserId,
+  sendPushToUser,
+} from "./src/serverPush";
 
 export type UserStatusMode = 'online' | 'dnd' | 'offline';
 export type AdminLevel = 1 | 2 | 3 | 4 | 5;
@@ -457,6 +465,7 @@ function getOtherUserIdFromConv(conversationId: string, currentUserId: string): 
 
 async function startServer() {
   await initFirestoreSync();
+  await initPush();
 
   const app = express();
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -484,6 +493,57 @@ async function startServer() {
 
   // Connected sockets mapped by userId -> Set<WebSocket>
   const userSockets = new Map<string, Set<WebSocket>>();
+
+  // Per-socket foreground state reported by the client (document.visibilityState)
+  // and the time of the last frame received (pings arrive every 20s while the page is alive).
+  const socketActivity = new WeakMap<WebSocket, { visible: boolean; lastActive: number }>();
+  const SOCKET_STALE_MS = 45000;
+
+  // True if the user currently has the app open on screen somewhere.
+  // Phones freeze backgrounded pages and may keep a dead socket around for minutes,
+  // so a hidden or silent socket does not count as "viewing".
+  function isUserActivelyViewing(userId: string): boolean {
+    const sockets = userSockets.get(userId);
+    if (!sockets) return false;
+    const now = Date.now();
+    for (const ws of sockets) {
+      const state = socketActivity.get(ws);
+      if (
+        ws.readyState === WebSocket.OPEN &&
+        state?.visible &&
+        now - state.lastActive < SOCKET_STALE_MS
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Send a Web Push notification for a new message to a recipient who is not looking at the app
+  function pushMessageNotification(recipientId: string, message: MessageRecord, sender?: UserRecord, group?: GroupRoomRecord) {
+    if (recipientId === message.senderId || isUserActivelyViewing(recipientId)) return;
+    const recipient = db.users.find((u) => u.id === recipientId);
+    if (!recipient) return;
+
+    const isDnd = recipient.status === "dnd" && (!recipient.dndUntil || recipient.dndUntil > Date.now());
+    const senderName = sender?.name || "새 메시지";
+    const preview = message.text
+      ? message.text.slice(0, 140)
+      : message.attachment
+      ? "📎 파일이 전송되었습니다."
+      : "새 메시지가 도착했습니다.";
+
+    sendPushToUser(recipientId, {
+      title: group ? group.name : senderName,
+      body: group ? `${senderName}: ${preview}` : preview,
+      tag: `conv-${message.conversationId}`,
+      mode: isDnd ? "silent" : recipient.notificationMode || "sound",
+      data: {
+        url: `/?conv=${encodeURIComponent(message.conversationId)}`,
+        conversationId: message.conversationId,
+      },
+    }).catch((e) => console.warn("Push notification error:", e));
+  }
 
   function broadcastToUser(userId: string, data: any) {
     const sockets = userSockets.get(userId);
@@ -1322,9 +1382,19 @@ async function startServer() {
   wss.on("connection", (ws: WebSocket) => {
     let currentUserId: string | null = null;
 
+    socketActivity.set(ws, { visible: true, lastActive: Date.now() });
+
     ws.on("message", (raw) => {
       try {
         const msg = JSON.parse(raw.toString());
+        const activity = socketActivity.get(ws);
+        if (activity) activity.lastActive = Date.now();
+
+        if (msg.type === "visibility") {
+          if (activity) activity.visible = Boolean(msg.payload?.visible);
+          return;
+        }
+
         if (msg.type === "ping") {
           ws.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
           return;
@@ -1332,6 +1402,9 @@ async function startServer() {
 
         if (msg.type === "auth") {
           const newUserId = msg.payload?.userId;
+          if (activity && typeof msg.payload?.visible === "boolean") {
+            activity.visible = msg.payload.visible;
+          }
           if (newUserId) {
             for (const [uid, sockets] of userSockets.entries()) {
               sockets.delete(ws);
@@ -1416,6 +1489,65 @@ async function startServer() {
   // Health check
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", time: Date.now() });
+  });
+
+  // Web Push: VAPID public key for PushManager.subscribe()
+  app.get("/api/push/public-key", (_req, res) => {
+    const publicKey = getVapidPublicKey();
+    if (!publicKey) {
+      return res.status(503).json({ error: "푸시 알림 서버가 준비되지 않았습니다." });
+    }
+    return res.json({ publicKey });
+  });
+
+  // Web Push: register this device's subscription for a user
+  function parsePushSubscription(subscription: any): { endpoint: string; keys: { p256dh: string; auth: string } } | null {
+    const endpoint = subscription?.endpoint;
+    const keys = subscription?.keys;
+    if (
+      typeof endpoint !== "string" ||
+      !/^https:\/\//.test(endpoint) ||
+      typeof keys?.p256dh !== "string" ||
+      typeof keys?.auth !== "string"
+    ) {
+      return null;
+    }
+    return { endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth } };
+  }
+
+  app.post("/api/push/subscribe", (req, res) => {
+    const { userId, subscription } = req.body || {};
+    if (!userId || !db.users.some((u) => u.id === userId)) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const parsed = parsePushSubscription(subscription);
+    if (!parsed) {
+      return res.status(400).json({ error: "잘못된 푸시 구독 정보입니다." });
+    }
+    addSubscription(userId, parsed, req.headers["user-agent"]);
+    return res.json({ ok: true });
+  });
+
+  // Web Push: the browser rotated a subscription (sent from the Service Worker)
+  app.post("/api/push/resubscribe", (req, res) => {
+    const { oldEndpoint, subscription } = req.body || {};
+    const userId = typeof oldEndpoint === "string" ? getSubscriptionUserId(oldEndpoint) : undefined;
+    const parsed = parsePushSubscription(subscription);
+    if (!userId || !parsed) {
+      return res.status(400).json({ error: "잘못된 푸시 구독 정보입니다." });
+    }
+    removeSubscription(oldEndpoint);
+    addSubscription(userId, parsed, req.headers["user-agent"]);
+    return res.json({ ok: true });
+  });
+
+  // Web Push: forget this device (logout / notifications turned off)
+  app.post("/api/push/unsubscribe", (req, res) => {
+    const endpoint = req.body?.endpoint;
+    if (typeof endpoint === "string") {
+      removeSubscription(endpoint);
+    }
+    return res.json({ ok: true });
   });
 
   // Upload file or image
@@ -2764,6 +2896,7 @@ async function startServer() {
       // Broadcast to ALL members in this group
       for (const pid of group.participantIds) {
         broadcastToUser(pid, wsPayload);
+        pushMessageNotification(pid, newMsg, senderUser, group);
       }
 
       return res.json({ message: populatedMsg });
@@ -2812,6 +2945,7 @@ async function startServer() {
     // Broadcast to receiver & sender
     broadcastToUser(effectiveReceiverId, wsPayload);
     broadcastToUser(senderId, wsPayload);
+    pushMessageNotification(effectiveReceiverId, newMsg, senderUser);
 
     return res.json({ message: populatedMsg });
   });

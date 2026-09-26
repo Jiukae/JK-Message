@@ -3,6 +3,13 @@ import { sounds } from './audio';
 import { NotificationMode } from '../types';
 
 let swRegistration: ServiceWorkerRegistration | null = null;
+let pushUserId: string | null = null;
+let pushActive = false;
+
+// True once this device is registered for background Web Push
+export function isPushActive(): boolean {
+  return pushActive;
+}
 
 export function isNotificationSupported(): boolean {
   return typeof window !== 'undefined' && ('Notification' in window || 'serviceWorker' in navigator);
@@ -28,6 +35,106 @@ export async function initServiceWorker(): Promise<ServiceWorkerRegistration | n
   }
 }
 
+export function isIOS(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+export function isStandalonePWA(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia?.('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+}
+
+export function isPushSupported(): boolean {
+  return typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window;
+}
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  const output = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) output[i] = raw.charCodeAt(i);
+  return output;
+}
+
+/**
+ * Register this device for Web Push so the server can deliver notifications
+ * while the app is closed or the phone is locked.
+ * Safe to call repeatedly (e.g. on every login / app start).
+ */
+export async function syncPushSubscription(userId?: string | null): Promise<boolean> {
+  if (userId !== undefined) pushUserId = userId;
+  if (!pushUserId || !isPushSupported()) return false;
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return false;
+
+  try {
+    const reg = swRegistration || (await initServiceWorker());
+    if (!reg) return false;
+
+    const keyRes = await fetch('/api/push/public-key');
+    if (!keyRes.ok) return false;
+    const { publicKey } = await keyRes.json();
+    const applicationServerKey = urlBase64ToUint8Array(publicKey);
+
+    let subscription = await reg.pushManager.getSubscription();
+
+    // Server VAPID key changed -> the old subscription can no longer be used
+    if (subscription) {
+      const currentKey = subscription.options?.applicationServerKey;
+      if (currentKey) {
+        const a = new Uint8Array(currentKey);
+        const same = a.length === applicationServerKey.length && a.every((v, i) => v === applicationServerKey[i]);
+        if (!same) {
+          await subscription.unsubscribe().catch(() => {});
+          subscription = null;
+        }
+      }
+    }
+
+    if (!subscription) {
+      subscription = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey as BufferSource,
+      });
+    }
+
+    const res = await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: pushUserId, subscription: subscription.toJSON() }),
+    });
+    pushActive = res.ok;
+    return res.ok;
+  } catch (error) {
+    console.warn('Push subscription failed:', error);
+    return false;
+  }
+}
+
+/**
+ * Stop background notifications for this device (called on logout).
+ */
+export async function removePushSubscription(): Promise<void> {
+  pushUserId = null;
+  pushActive = false;
+  if (!isPushSupported()) return;
+  try {
+    const reg = swRegistration || (await navigator.serviceWorker.getRegistration('/'));
+    const subscription = await reg?.pushManager.getSubscription();
+    if (!subscription) return;
+    await fetch('/api/push/unsubscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: subscription.endpoint }),
+    }).catch(() => {});
+    await subscription.unsubscribe().catch(() => {});
+  } catch (error) {
+    console.warn('Push unsubscribe failed:', error);
+  }
+}
+
 export async function requestNotificationPermission(): Promise<NotificationPermission | 'unsupported'> {
   if (!isNotificationSupported()) {
     console.warn('Browser does not support notifications');
@@ -48,6 +155,8 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 
     if (permission === 'granted') {
       sounds.playIncomingMessage();
+      // Register for background (app closed) push notifications
+      syncPushSubscription();
     }
 
     return permission;

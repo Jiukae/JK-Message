@@ -21,6 +21,11 @@ import {
   getNotificationPermission,
   initServiceWorker,
   requestNotificationPermission,
+  syncPushSubscription,
+  removePushSubscription,
+  isPushActive,
+  isIOS,
+  isStandalonePWA,
 } from './utils/notifications';
 import { sounds } from './utils/audio';
 import { UserAvatar } from './components/UserAvatar';
@@ -78,7 +83,10 @@ export default function App() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  // Opened from a push notification: /?conv=<conversationId>
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(() => {
+    return new URLSearchParams(window.location.search).get('conv');
+  });
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [userStatuses, setUserStatuses] = useState<Record<string, { status: UserStatusMode; dndUntil?: number | null }>>({});
@@ -115,7 +123,9 @@ export default function App() {
   const [selectedExploreUser, setSelectedExploreUser] = useState<User | null>(null);
 
   // Mobile navigation state
-  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>('sidebar');
+  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>(() =>
+    new URLSearchParams(window.location.search).get('conv') ? 'chat' : 'sidebar'
+  );
 
   const wsRef = useRef<WebSocket | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -140,6 +150,11 @@ export default function App() {
   // Initialize Service Worker & listen for notification click messages
   useEffect(() => {
     initServiceWorker();
+
+    // Drop ?conv= from the address bar after it was consumed on startup
+    if (window.location.search.includes('conv=')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
 
     const handleSwMessage = (event: MessageEvent) => {
       if (event.data?.type === 'NAVIGATE_CONVERSATION' && event.data.conversationId) {
@@ -247,14 +262,23 @@ export default function App() {
     setMobileView('sidebar');
     setAppView('messenger');
 
-    if (isNewRegistration || getNotificationPermission() === 'default') {
+    if (isNewRegistration || getNotificationPermission() === 'default' || (isIOS() && !isStandalonePWA())) {
       setTimeout(() => {
         setShowNotificationPrompt(true);
       }, 400);
     }
   };
 
+  // Register this device for background push (app closed / phone locked) whenever a user is logged in.
+  // Also remembers the user id so a later permission grant (e.g. from the profile settings) subscribes too.
+  useEffect(() => {
+    if (currentUser?.id) {
+      syncPushSubscription(currentUser.id);
+    }
+  }, [currentUser?.id, notificationPermission]);
+
   const handleLogout = () => {
+    removePushSubscription();
     localStorage.removeItem('id_messenger_user');
     localStorage.removeItem('id_messenger_token');
     if (wsRef.current) {
@@ -420,7 +444,10 @@ export default function App() {
             reconnectTimeout = null;
           }
 
-          ws?.send(JSON.stringify({ type: 'auth', payload: { userId: currentUserId } }));
+          ws?.send(JSON.stringify({
+            type: 'auth',
+            payload: { userId: currentUserId, visible: document.visibilityState === 'visible' },
+          }));
 
           if (pingInterval) clearInterval(pingInterval);
           pingInterval = setInterval(() => {
@@ -587,11 +614,14 @@ export default function App() {
                 const senderName = senderUser?.name || '새 메시지';
 
                 // Real mobile Push Notification via ServiceWorker/Notification
-                sendBrowserNotification(senderName, {
-                  body: newMsg.text || (newMsg.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지가 도착했습니다.'),
-                  conversationId: newMsg.conversationId,
-                  forceMode: currentMode,
-                });
+                // (while in background with Web Push active, the server push already shows it)
+                if (!(document.hidden && isPushActive())) {
+                  sendBrowserNotification(senderName, {
+                    body: newMsg.text || (newMsg.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지가 도착했습니다.'),
+                    conversationId: newMsg.conversationId,
+                    forceMode: currentMode,
+                  });
+                }
 
                 // Show top Heads-Up notification banner ("여기에 뜰 수 있게")
                 if (!isCurrentChat || document.hidden) {
@@ -687,10 +717,31 @@ export default function App() {
       }
     };
 
+    // Tell the server whether the app is on screen, so it knows when to send push notifications instead
+    const handleVisibilityChange = () => {
+      const visible = document.visibilityState === 'visible';
+      if (visible && 'clearAppBadge' in navigator) {
+        (navigator as any).clearAppBadge().catch(() => {});
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'visibility', payload: { visible } }));
+      } else if (visible) {
+        // Phone was unlocked with a dead socket: reconnect right away
+        if (reconnectTimeout) {
+          clearTimeout(reconnectTimeout);
+          reconnectTimeout = null;
+        }
+        retryAttempts = 0;
+        if (!ws || ws.readyState === WebSocket.CLOSED) connect();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     connect();
 
     return () => {
       isUnmounted = true;
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (pingInterval) clearInterval(pingInterval);
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);

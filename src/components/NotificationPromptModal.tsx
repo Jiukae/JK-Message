@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BellRing, Bell, X, Check, ShieldCheck } from 'lucide-react';
-import { requestNotificationPermission } from '../utils/notifications';
+import { requestNotificationPermission, isIOS, isStandalonePWA } from '../utils/notifications';
 
 interface NotificationPromptModalProps {
   isOpen: boolean;
@@ -16,6 +16,9 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
+
+  // iPhone/iPad only allow push notifications for web apps added to the Home Screen (iOS 16.4+)
+  const needsHomeScreenInstall = isIOS() && !isStandalonePWA();
 
   const handleEnable = async () => {
     setLoading(true);
@@ -60,8 +63,17 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
           </p>
         </div>
 
+        {needsHomeScreenInstall && (
+          <div className="mx-6 mt-5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/30 text-[12px] leading-relaxed text-amber-100/90">
+            📱 <b>아이폰/아이패드</b>는 앱을 꺼도 알림을 받으려면 먼저 홈 화면에 추가해야 해요.
+            <br />
+            Safari 하단 <b>공유 버튼</b> → <b>'홈 화면에 추가'</b> → 홈 화면의 JK Message 앱을 열고 알림을 켜주세요.
+          </div>
+        )}
+
         {/* Action buttons */}
         <div className="p-6 space-y-2.5">
+          {!needsHomeScreenInstall && (
           <button
             id="enable-notification-btn"
             type="button"
@@ -72,6 +84,7 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
             <Bell className="w-4 h-4" />
             <span>{loading ? '설정 중...' : '네, 알림 켜기'}</span>
           </button>
+          )}
 
           <button
             id="skip-notification-btn"
