@@ -24,6 +24,8 @@ import {
   syncPushSubscription,
   removePushSubscription,
   isPushActive,
+  getPushEndpoint,
+  onPushEndpointChange,
   isIOS,
   isStandalonePWA,
 } from './utils/notifications';
@@ -446,7 +448,11 @@ export default function App() {
 
           ws?.send(JSON.stringify({
             type: 'auth',
-            payload: { userId: currentUserId, visible: document.visibilityState === 'visible' },
+            payload: {
+              userId: currentUserId,
+              visible: document.visibilityState === 'visible',
+              pushEndpoint: getPushEndpoint(),
+            },
           }));
 
           if (pingInterval) clearInterval(pingInterval);
@@ -737,11 +743,20 @@ export default function App() {
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Tell the server which push subscription belongs to this socket, so it skips pushing to
+    // a device where the app is open, while other devices (e.g. the phone) still get notified
+    const unsubscribePushEndpoint = onPushEndpointChange((endpoint) => {
+      if (endpoint && ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'push:endpoint', payload: { endpoint } }));
+      }
+    });
+
     connect();
 
     return () => {
       isUnmounted = true;
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      unsubscribePushEndpoint();
       if (pingInterval) clearInterval(pingInterval);
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);

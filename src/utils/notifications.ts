@@ -5,10 +5,32 @@ import { NotificationMode } from '../types';
 let swRegistration: ServiceWorkerRegistration | null = null;
 let pushUserId: string | null = null;
 let pushActive = false;
+let pushEndpoint: string | null = null;
+let lastPushError: string | null = null;
+const pushEndpointListeners = new Set<(endpoint: string | null) => void>();
 
 // True once this device is registered for background Web Push
 export function isPushActive(): boolean {
   return pushActive;
+}
+
+// Web Push endpoint of this device (sent to the server over the WebSocket)
+export function getPushEndpoint(): string | null {
+  return pushEndpoint;
+}
+
+export function onPushEndpointChange(listener: (endpoint: string | null) => void): () => void {
+  pushEndpointListeners.add(listener);
+  return () => pushEndpointListeners.delete(listener);
+}
+
+function setPushState(active: boolean, endpoint: string | null, error: string | null) {
+  pushActive = active;
+  lastPushError = error;
+  if (endpoint !== pushEndpoint) {
+    pushEndpoint = endpoint;
+    pushEndpointListeners.forEach((l) => l(endpoint));
+  }
 }
 
 export function isNotificationSupported(): boolean {
@@ -66,15 +88,32 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
  */
 export async function syncPushSubscription(userId?: string | null): Promise<boolean> {
   if (userId !== undefined) pushUserId = userId;
-  if (!pushUserId || !isPushSupported()) return false;
-  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return false;
+  if (!pushUserId) return false;
+  if (!isPushSupported()) {
+    setPushState(false, null, isIOS() && !isStandalonePWA()
+      ? '아이폰은 홈 화면에 추가한 앱에서만 푸시를 받을 수 있어요.'
+      : '이 브라우저는 푸시 알림(Push API)을 지원하지 않아요.');
+    return false;
+  }
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
+    setPushState(false, null, typeof Notification !== 'undefined' && Notification.permission === 'denied'
+      ? '알림 권한이 차단되어 있어요. 브라우저/휴대폰 설정에서 이 사이트의 알림을 허용해주세요.'
+      : '알림 권한이 아직 허용되지 않았어요.');
+    return false;
+  }
 
   try {
     const reg = swRegistration || (await initServiceWorker());
-    if (!reg) return false;
+    if (!reg) {
+      setPushState(false, null, '서비스 워커 등록에 실패했어요.');
+      return false;
+    }
 
     const keyRes = await fetch('/api/push/public-key');
-    if (!keyRes.ok) return false;
+    if (!keyRes.ok) {
+      setPushState(false, null, `서버가 푸시 키를 주지 않았어요 (HTTP ${keyRes.status}). 서버가 최신 버전으로 배포됐는지 확인해주세요.`);
+      return false;
+    }
     const { publicKey } = await keyRes.json();
     const applicationServerKey = urlBase64ToUint8Array(publicKey);
 
@@ -105,11 +144,55 @@ export async function syncPushSubscription(userId?: string | null): Promise<bool
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: pushUserId, subscription: subscription.toJSON() }),
     });
-    pushActive = res.ok;
-    return res.ok;
-  } catch (error) {
+    if (!res.ok) {
+      setPushState(false, null, `서버에 기기 등록 실패 (HTTP ${res.status}).`);
+      return false;
+    }
+    setPushState(true, subscription.endpoint, null);
+    return true;
+  } catch (error: any) {
     console.warn('Push subscription failed:', error);
+    setPushState(false, null, `푸시 구독 실패: ${error?.name || ''} ${error?.message || error}`.trim());
     return false;
+  }
+}
+
+export interface PushDiagnostics {
+  active: boolean;
+  error: string | null;
+}
+
+export function getPushDiagnostics(): PushDiagnostics {
+  return { active: pushActive, error: lastPushError };
+}
+
+/**
+ * Ask the server to send a real Web Push to this device after `delaySeconds`,
+ * so the user can close the app / lock the screen and check it arrives.
+ */
+export async function sendPushTest(delaySeconds: number): Promise<{ ok: boolean; message: string }> {
+  const ok = await syncPushSubscription();
+  if (!ok || !pushEndpoint || !pushUserId) {
+    return { ok: false, message: lastPushError || '이 기기가 푸시 수신 기기로 등록되지 않았어요.' };
+  }
+  try {
+    const res = await fetch('/api/push/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: pushUserId, endpoint: pushEndpoint, delaySeconds }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { ok: false, message: data.error || `서버 오류 (HTTP ${res.status})` };
+    }
+    return {
+      ok: true,
+      message: delaySeconds > 0
+        ? `${delaySeconds}초 뒤에 푸시가 옵니다. 지금 앱을 완전히 끄거나 화면을 꺼보세요!`
+        : '푸시를 보냈어요. 알림이 떴는지 확인해보세요.',
+    };
+  } catch (error: any) {
+    return { ok: false, message: `서버 연결 실패: ${error?.message || error}` };
   }
 }
 
@@ -118,7 +201,7 @@ export async function syncPushSubscription(userId?: string | null): Promise<bool
  */
 export async function removePushSubscription(): Promise<void> {
   pushUserId = null;
-  pushActive = false;
+  setPushState(false, null, null);
   if (!isPushSupported()) return;
   try {
     const reg = swRegistration || (await navigator.serviceWorker.getRegistration('/'));

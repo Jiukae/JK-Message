@@ -19,6 +19,7 @@ import {
   addSubscription,
   removeSubscription,
   getSubscriptionUserId,
+  getUserSubscriptionCount,
   sendPushToUser,
 } from "./src/serverPush";
 
@@ -494,34 +495,39 @@ async function startServer() {
   // Connected sockets mapped by userId -> Set<WebSocket>
   const userSockets = new Map<string, Set<WebSocket>>();
 
-  // Per-socket foreground state reported by the client (document.visibilityState)
-  // and the time of the last frame received (pings arrive every 20s while the page is alive).
-  const socketActivity = new WeakMap<WebSocket, { visible: boolean; lastActive: number }>();
+  // Per-socket foreground state reported by the client (document.visibilityState),
+  // the time of the last frame received (pings arrive every 20s while the page is alive)
+  // and the Web Push endpoint of the device the socket belongs to.
+  const socketActivity = new WeakMap<WebSocket, { visible: boolean; lastActive: number; pushEndpoint?: string }>();
   const SOCKET_STALE_MS = 45000;
 
-  // True if the user currently has the app open on screen somewhere.
+  // Push endpoints of the user's devices that currently have the app open on screen.
   // Phones freeze backgrounded pages and may keep a dead socket around for minutes,
   // so a hidden or silent socket does not count as "viewing".
-  function isUserActivelyViewing(userId: string): boolean {
+  function getViewingPushEndpoints(userId: string): Set<string> {
+    const endpoints = new Set<string>();
     const sockets = userSockets.get(userId);
-    if (!sockets) return false;
+    if (!sockets) return endpoints;
     const now = Date.now();
     for (const ws of sockets) {
       const state = socketActivity.get(ws);
       if (
+        state?.pushEndpoint &&
         ws.readyState === WebSocket.OPEN &&
-        state?.visible &&
+        state.visible &&
         now - state.lastActive < SOCKET_STALE_MS
       ) {
-        return true;
+        endpoints.add(state.pushEndpoint);
       }
     }
-    return false;
+    return endpoints;
   }
 
-  // Send a Web Push notification for a new message to a recipient who is not looking at the app
+  // Send a Web Push notification for a new message to every device of the recipient
+  // except the ones where the app is open on screen (those show it in-page).
+  // e.g. the phone still gets notified while the same account is open on a PC.
   function pushMessageNotification(recipientId: string, message: MessageRecord, sender?: UserRecord, group?: GroupRoomRecord) {
-    if (recipientId === message.senderId || isUserActivelyViewing(recipientId)) return;
+    if (recipientId === message.senderId) return;
     const recipient = db.users.find((u) => u.id === recipientId);
     if (!recipient) return;
 
@@ -532,17 +538,22 @@ async function startServer() {
       : message.attachment
       ? "📎 파일이 전송되었습니다."
       : "새 메시지가 도착했습니다.";
+    const viewing = getViewingPushEndpoints(recipientId);
 
-    sendPushToUser(recipientId, {
-      title: group ? group.name : senderName,
-      body: group ? `${senderName}: ${preview}` : preview,
-      tag: `conv-${message.conversationId}`,
-      mode: isDnd ? "silent" : recipient.notificationMode || "sound",
-      data: {
-        url: `/?conv=${encodeURIComponent(message.conversationId)}`,
-        conversationId: message.conversationId,
+    sendPushToUser(
+      recipientId,
+      {
+        title: group ? group.name : senderName,
+        body: group ? `${senderName}: ${preview}` : preview,
+        tag: `conv-${message.conversationId}`,
+        mode: isDnd ? "silent" : recipient.notificationMode || "sound",
+        data: {
+          url: `/?conv=${encodeURIComponent(message.conversationId)}`,
+          conversationId: message.conversationId,
+        },
       },
-    }).catch((e) => console.warn("Push notification error:", e));
+      { skipEndpoint: (endpoint) => viewing.has(endpoint) }
+    ).catch((e) => console.warn("Push notification error:", e));
   }
 
   function broadcastToUser(userId: string, data: any) {
@@ -1395,6 +1406,13 @@ async function startServer() {
           return;
         }
 
+        if (msg.type === "push:endpoint") {
+          if (activity && typeof msg.payload?.endpoint === "string") {
+            activity.pushEndpoint = msg.payload.endpoint;
+          }
+          return;
+        }
+
         if (msg.type === "ping") {
           ws.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
           return;
@@ -1404,6 +1422,9 @@ async function startServer() {
           const newUserId = msg.payload?.userId;
           if (activity && typeof msg.payload?.visible === "boolean") {
             activity.visible = msg.payload.visible;
+          }
+          if (activity && typeof msg.payload?.pushEndpoint === "string") {
+            activity.pushEndpoint = msg.payload.pushEndpoint;
           }
           if (newUserId) {
             for (const [uid, sockets] of userSockets.entries()) {
@@ -1539,6 +1560,55 @@ async function startServer() {
     removeSubscription(oldEndpoint);
     addSubscription(userId, parsed, req.headers["user-agent"]);
     return res.json({ ok: true });
+  });
+
+  // Web Push: diagnostics — send a test push to this device after a delay,
+  // so the user can close the app / lock the phone and check it arrives.
+  app.post("/api/push/test", (req, res) => {
+    const { userId, endpoint } = req.body || {};
+    const delaySeconds = Math.min(Math.max(Number(req.body?.delaySeconds) || 0, 0), 60);
+    const user = db.users.find((u) => u.id === userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (!getVapidPublicKey()) {
+      return res.status(503).json({ error: "서버의 푸시 기능이 초기화되지 않았습니다. (VAPID 키 오류, 서버 로그 확인)" });
+    }
+    if (typeof endpoint !== "string" || getSubscriptionUserId(endpoint) !== user.id) {
+      return res.status(404).json({
+        error: "이 기기가 서버에 푸시 수신 기기로 등록되어 있지 않습니다.",
+        registeredDevices: getUserSubscriptionCount(user.id),
+      });
+    }
+
+    const send = () =>
+      sendPushToUser(
+        user.id,
+        {
+          title: "🔔 JK Message 푸시 테스트",
+          body: "앱을 꺼도 알림이 정상적으로 도착합니다!",
+          tag: `push-test-${Date.now()}`,
+          mode: user.notificationMode || "sound",
+          data: { url: "/" },
+        },
+        { onlyEndpoint: endpoint }
+      );
+
+    if (delaySeconds > 0) {
+      setTimeout(() => {
+        send().then((r) => {
+          if (r.failed) console.warn("Push test failed:", r.errors);
+        });
+      }, delaySeconds * 1000);
+      return res.json({ ok: true, scheduledInSeconds: delaySeconds, registeredDevices: getUserSubscriptionCount(user.id) });
+    }
+
+    send()
+      .then((r) => {
+        if (r.sent > 0) return res.json({ ok: true, ...r });
+        return res.status(502).json({ error: `푸시 서비스 전송 실패: ${r.errors.join(" / ") || "unknown"}`, ...r });
+      })
+      .catch((e) => res.status(500).json({ error: String(e?.message || e) }));
   });
 
   // Web Push: forget this device (logout / notifications turned off)

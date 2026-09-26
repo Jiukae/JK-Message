@@ -187,10 +187,35 @@ export function removeSubscription(endpoint: string) {
   }
 }
 
-export async function sendPushToUser(userId: string, payload: PushPayload) {
-  if (!vapidPublicKey) return;
-  const targets = Array.from(subscriptions.values()).filter((s) => s.userId === userId);
-  if (targets.length === 0) return;
+export function getUserSubscriptionCount(userId: string): number {
+  let count = 0;
+  for (const s of subscriptions.values()) if (s.userId === userId) count++;
+  return count;
+}
+
+export interface PushSendResult {
+  sent: number;
+  failed: number;
+  errors: string[];
+}
+
+export async function sendPushToUser(
+  userId: string,
+  payload: PushPayload,
+  options: { skipEndpoint?: (endpoint: string) => boolean; onlyEndpoint?: string } = {}
+): Promise<PushSendResult> {
+  const result: PushSendResult = { sent: 0, failed: 0, errors: [] };
+  if (!vapidPublicKey) {
+    result.errors.push("VAPID keys not initialized");
+    return result;
+  }
+  const targets = Array.from(subscriptions.values()).filter(
+    (s) =>
+      s.userId === userId &&
+      (!options.onlyEndpoint || s.endpoint === options.onlyEndpoint) &&
+      !options.skipEndpoint?.(s.endpoint)
+  );
+  if (targets.length === 0) return result;
 
   const body = JSON.stringify(payload);
   await Promise.all(
@@ -201,14 +226,19 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
           body,
           { TTL: 60 * 60 * 24, urgency: "high" }
         );
+        result.sent++;
       } catch (err: any) {
+        result.failed++;
+        const status = err?.statusCode || "?";
+        result.errors.push(`${status} ${String(err?.body || err?.message || err).slice(0, 200)}`);
         // 404/410: subscription expired or the user revoked permission -> forget it
         if (err?.statusCode === 404 || err?.statusCode === 410) {
           removeSubscription(s.endpoint);
         } else {
-          console.warn(`Web Push send failed (${err?.statusCode || "?"}):`, err?.body || err?.message || err);
+          console.warn(`Web Push send failed (${status}):`, err?.body || err?.message || err);
         }
       }
     })
   );
+  return result;
 }

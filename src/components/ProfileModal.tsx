@@ -28,6 +28,9 @@ import {
   sendTestNotification,
   requestNotificationPermission,
   getNotificationPermission,
+  getPushDiagnostics,
+  sendPushTest,
+  syncPushSubscription,
 } from '../utils/notifications';
 
 interface ProfileModalProps {
@@ -157,6 +160,25 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [testStatus, setTestStatus] = useState<string | null>(null);
+  const [pushDiag, setPushDiag] = useState(() => getPushDiagnostics());
+  const [pushTestResult, setPushTestResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [pushTesting, setPushTesting] = useState(false);
+
+  const handlePushTest = async () => {
+    setPushTesting(true);
+    setPushTestResult(null);
+    try {
+      if (getNotificationPermission() !== 'granted') {
+        await requestNotificationPermission();
+      }
+      await syncPushSubscription(user.id);
+      const result = await sendPushTest(10);
+      setPushTestResult(result);
+    } finally {
+      setPushDiag(getPushDiagnostics());
+      setPushTesting(false);
+    }
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -906,33 +928,50 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 )}
               </div>
 
-              {/* Browser Push Permission Status (optional helper) */}
-              <div className="p-3 bg-black/30 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                <div className="min-w-0 pr-2">
-                  <span className="text-white/80 font-medium block truncate">
-                    기기 브라우저 백그라운드 푸시
-                  </span>
-                  <span className="text-[10px] text-white/40 block">
-                    화면이 꺼져있거나 다른 탭에서도 알림 받기
-                  </span>
+              {/* Background Web Push (app closed / screen off) */}
+              <div className="p-3 bg-black/30 rounded-xl border border-white/10 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 pr-2">
+                    <span className="text-white/80 font-medium block truncate">
+                      앱을 꺼도 오는 백그라운드 푸시
+                    </span>
+                    <span className="text-[10px] text-white/40 block">
+                      앱이 닫혀 있거나 화면이 꺼져 있어도 알림 받기
+                    </span>
+                  </div>
+                  {pushDiag.active ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold shrink-0">
+                      이 기기 등록됨
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-400/30 text-[10px] font-bold shrink-0">
+                      미등록
+                    </span>
+                  )}
                 </div>
-                {getNotificationPermission() === 'granted' ? (
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold shrink-0">
-                    연결됨
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const res = await requestNotificationPermission();
-                      if (res === 'granted') {
-                        setTestStatus('기기 푸시 권한이 활성화되었습니다!');
-                      }
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold border border-white/15 shrink-0 transition-colors"
+
+                {!pushDiag.active && pushDiag.error && (
+                  <p className="text-[11px] text-rose-300/90 leading-relaxed">⚠️ {pushDiag.error}</p>
+                )}
+
+                <button
+                  type="button"
+                  disabled={pushTesting}
+                  onClick={handlePushTest}
+                  className="w-full py-2.5 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold border border-white/15 transition-colors disabled:opacity-50"
+                >
+                  {pushTesting ? '확인 중...' : '📲 10초 뒤 푸시 보내기 (보낸 뒤 앱을 꺼보세요)'}
+                </button>
+
+                {pushTestResult && (
+                  <p
+                    className={`text-[11px] leading-relaxed ${
+                      pushTestResult.ok ? 'text-emerald-300' : 'text-rose-300'
+                    }`}
                   >
-                    권한 허용
-                  </button>
+                    {pushTestResult.ok ? '✅ ' : '❌ '}
+                    {pushTestResult.message}
+                  </p>
                 )}
               </div>
             </div>
