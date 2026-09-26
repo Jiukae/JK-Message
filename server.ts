@@ -32,6 +32,7 @@ interface UserRecord {
     gradientTo?: string;
     gradientAngle?: number;
   };
+  notificationMode?: 'sound' | 'vibrate' | 'silent';
   customStatus?: string;
   status: UserStatusMode;
   role?: 'superadmin' | 'admin' | 'user';
@@ -1586,7 +1587,7 @@ async function startServer() {
 
   // Update profile
   const handleProfileUpdate = (req: express.Request, res: express.Response) => {
-    const { userId, name, customStatus, avatarBg, avatarEmoji, avatarImage, chatTheme } = req.body;
+    const { userId, name, customStatus, avatarBg, avatarEmoji, avatarImage, chatTheme, notificationMode } = req.body;
     const user = db.users.find((u) => u.id === userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -1598,6 +1599,9 @@ async function startServer() {
     if (avatarEmoji) user.avatarEmoji = avatarEmoji;
     if (avatarImage !== undefined) user.avatarImage = avatarImage;
     if (chatTheme !== undefined) user.chatTheme = chatTheme;
+    if (notificationMode && ['sound', 'vibrate', 'silent'].includes(notificationMode)) {
+      user.notificationMode = notificationMode;
+    }
 
     saveDB(db, { type: 'user', item: user });
 

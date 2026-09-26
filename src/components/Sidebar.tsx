@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Conversation, UserStatusMode } from '../types';
+import { User, Conversation, UserStatusMode, NotificationMode } from '../types';
 import {
   MessageSquare,
   Users,
@@ -29,6 +29,8 @@ interface SidebarProps {
   pendingFriendRequestsCount?: number;
   soundEnabled?: boolean;
   onToggleSound?: () => void;
+  notificationMode?: NotificationMode;
+  onNotificationModeChange?: (mode: NotificationMode) => void;
   onOpenProfileSettings?: () => void;
   onOpenStatusPicker?: () => void;
   onLogout?: () => void;
@@ -56,6 +58,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   pendingFriendRequestsCount = 0,
   soundEnabled = true,
   onToggleSound = () => {},
+  notificationMode,
+  onNotificationModeChange,
   onOpenProfileSettings = () => {},
   onOpenStatusPicker = () => {},
   onLogout = () => {},
@@ -728,6 +732,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         currentUser={currentUser}
         soundEnabled={soundEnabled}
         onToggleSound={onToggleSound}
+        notificationMode={notificationMode}
+        onNotificationModeChange={onNotificationModeChange}
         onOpenProfileSettings={onOpenProfileSettings}
         onOpenStatusPicker={onOpenStatusPicker}
         onLogout={onLogout}

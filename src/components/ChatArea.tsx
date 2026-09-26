@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { User, Message, MessageReply, GroupRoom, MessageAttachment } from '../types';
+import { User, Message, MessageReply, GroupRoom, MessageAttachment, NotificationMode } from '../types';
 import {
   Send,
   Smile,
@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { getAdminLevel, getAdminRoleInfo, RoleBadge } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { NotificationModeToggle } from './NotificationModeToggle';
 
 interface ChatAreaProps {
   currentUser: User;
@@ -52,6 +53,8 @@ interface ChatAreaProps {
   onOpenGroupInfo?: () => void;
   onOpenThemeCustomizer?: () => void;
   onOpenAdminDashboard?: () => void;
+  notificationMode?: NotificationMode;
+  onNotificationModeChange?: (mode: NotificationMode) => void;
   onBack?: () => void;
 }
 
@@ -83,6 +86,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   onOpenGroupInfo,
   onOpenThemeCustomizer,
   onOpenAdminDashboard,
+  notificationMode,
+  onNotificationModeChange,
   onBack,
 }) => {
   const [inputText, setInputText] = useState('');
@@ -541,6 +546,14 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
             >
               <Palette className="w-4 h-4" />
             </button>
+          )}
+
+          {/* Quick Notification Mode Selector (소리 / 진동 / 무음) */}
+          {notificationMode && onNotificationModeChange && (
+            <NotificationModeToggle
+              currentMode={notificationMode}
+              onModeChange={onNotificationModeChange}
+            />
           )}
 
           {isGroup ? (

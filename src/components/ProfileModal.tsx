@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, ChatTheme } from '../types';
+import { User, ChatTheme, NotificationMode } from '../types';
 import {
   X,
   Copy,
@@ -12,6 +12,8 @@ import {
   Palette,
   Bell,
   Volume2,
+  Smartphone,
+  VolumeX,
   Sliders,
   CheckCircle2,
   RefreshCw,
@@ -34,6 +36,7 @@ interface ProfileModalProps {
   onUpdate: (updated: User) => void;
   onLogout: () => void;
   initialTab?: 'profile' | 'background' | 'sound';
+  onTriggerTestNotification?: (mode: NotificationMode) => void;
 }
 
 const AVATAR_GRADIENTS = [
@@ -117,6 +120,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onUpdate,
   onLogout,
   initialTab = 'profile',
+  onTriggerTestNotification,
 }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'background' | 'sound'>(initialTab);
 
@@ -143,6 +147,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   );
   const [gradientAngle, setGradientAngle] = useState<number>(
     user.chatTheme?.gradientAngle !== undefined ? user.chatTheme.gradientAngle : 135
+  );
+
+  // Notification Mode State: 'sound' | 'vibrate' | 'silent'
+  const [notificationMode, setNotificationMode] = useState<NotificationMode>(
+    user.notificationMode || sounds.getNotificationMode()
   );
 
   const [copied, setCopied] = useState(false);
@@ -245,9 +254,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           avatarEmoji,
           avatarImage,
           chatTheme: updatedTheme,
+          notificationMode,
           customStatus: customStatus.trim(),
         }),
       });
+      sounds.setNotificationMode(notificationMode);
       const data = await res.json();
       if (data.user) {
         onUpdate(data.user);
@@ -261,23 +272,34 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
     }
   };
 
-  // Sound Test Action
-  const handleTestSoundAndVibrate = async () => {
+  // Sound & Vibration Mode Testing
+  const handleTestSpecificMode = (modeToTest: NotificationMode) => {
     sounds.unlockAudio();
-    sounds.playIncomingMessage();
-    setTestStatus('수신음("띠링~")과 진동이 재생되었습니다!');
-    setTimeout(() => setTestStatus(null), 3000);
+    sounds.playIncomingMessage(modeToTest);
+    if (modeToTest === 'sound') {
+      setTestStatus('🔊 소리 모드: "띠링~" 수신음과 진동이 발생했습니다.');
+    } else if (modeToTest === 'vibrate') {
+      setTestStatus('📳 진동 모드: 소리 없이 진동만 발생했습니다.');
+    } else {
+      setTestStatus('🔕 무음 모드: 소리와 진동 없이 조용히 처리되었습니다.');
+    }
+    // Trigger the real top Heads-Up notification banner
+    if (onTriggerTestNotification) {
+      onTriggerTestNotification(modeToTest);
+    }
+    setTimeout(() => setTestStatus(null), 3500);
   };
 
-  const handleTestPushNotification = async () => {
-    setTestStatus('알림 요청 중...');
-    const ok = await sendTestNotification();
-    if (ok) {
-      setTestStatus('휴대폰 알림이 성공적으로 전송되었습니다!');
-    } else {
-      setTestStatus('브라우저 권한 팝업에서 "허용"을 선택해주세요.');
+  const handleTestHeadsUpBanner = async () => {
+    sounds.unlockAudio();
+    sounds.playIncomingMessage(notificationMode);
+    if (onTriggerTestNotification) {
+      onTriggerTestNotification(notificationMode);
     }
-    setTimeout(() => setTestStatus(null), 4000);
+    setTestStatus('화면 상단에 실시간 알림 팝업("여기에 뜰 수 있게")이 표시되었습니다!');
+    // Also try browser notification
+    await sendTestNotification(notificationMode);
+    setTimeout(() => setTestStatus(null), 3500);
   };
 
   return (
@@ -719,76 +741,162 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           {/* ================= TAB 3: NOTIFICATIONS & SOUND ================= */}
           {activeTab === 'sound' && (
             <div className="space-y-4">
-              <div className="p-4 bg-black/25 rounded-2xl border border-white/10 space-y-3">
+              {/* Notification Mode Selection */}
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
-                      <Bell className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-white">휴대폰 실시간 알림 상태</h4>
-                      <p className="text-[11px] text-white/50">새 메시지 도착 시 팝업 및 진동</p>
-                    </div>
-                  </div>
-                  <span
-                    className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
-                      getNotificationPermission() === 'granted'
-                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
-                        : 'bg-amber-500/20 text-amber-300 border-amber-400/30'
-                    }`}
-                  >
-                    {getNotificationPermission() === 'granted' ? '활성화됨' : '권한 필요'}
+                  <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <Sliders className="w-3.5 h-3.5 text-blue-400" />
+                    알림 모드 설정 (소리 / 진동 / 무음)
+                  </label>
+                  <span className="text-[11px] text-white/50">
+                    선택 즉시 적용됩니다
                   </span>
                 </div>
 
-                <p className="text-xs text-white/70 leading-relaxed">
-                  스마트폰(Android Chrome, 모바일 브라우저)에서 메시지를 받을 때 실제로 시스템 알림과
-                  수신음("띠링~")이 울리도록 설정합니다.
-                </p>
-
-                {getNotificationPermission() !== 'granted' && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await requestNotificationPermission();
-                      setTestStatus('알림 권한이 요청되었습니다.');
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {/* Mode 1: Sound */}
+                  <div
+                    onClick={() => {
+                      setNotificationMode('sound');
+                      sounds.setNotificationMode('sound');
                     }}
-                    className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-semibold rounded-xl text-xs shadow-md shadow-emerald-600/25 border border-emerald-400/30 flex items-center justify-center gap-2 transition-all"
+                    className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all ${
+                      notificationMode === 'sound'
+                        ? 'bg-blue-600/20 border-blue-500 shadow-lg shadow-blue-600/20 ring-1 ring-blue-400/50'
+                        : 'bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]'
+                    }`}
                   >
-                    <Bell className="w-4 h-4" />
-                    <span>휴대폰 알림 권한 켜기</span>
-                  </button>
-                )}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400">
+                        <Volume2 className="w-4 h-4" />
+                      </div>
+                      {notificationMode === 'sound' && (
+                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                      )}
+                    </div>
+                    <h5 className="text-xs font-bold text-white">소리 모드</h5>
+                    <p className="text-[11px] text-white/60 mt-1 leading-snug">
+                      소리일 땐 "띠링~" 수신음 재생 및 진동
+                    </p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNotificationMode('sound');
+                        sounds.setNotificationMode('sound');
+                        handleTestSpecificMode('sound');
+                      }}
+                      className="mt-3 w-full py-1.5 px-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg text-[10px] font-semibold border border-blue-400/25 flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <Volume2 className="w-3 h-3" />
+                      <span>소리 테스트</span>
+                    </button>
+                  </div>
+
+                  {/* Mode 2: Vibrate */}
+                  <div
+                    onClick={() => {
+                      setNotificationMode('vibrate');
+                      sounds.setNotificationMode('vibrate');
+                    }}
+                    className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all ${
+                      notificationMode === 'vibrate'
+                        ? 'bg-amber-600/20 border-amber-500 shadow-lg shadow-amber-600/20 ring-1 ring-amber-400/50'
+                        : 'bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-400">
+                        <Smartphone className="w-4 h-4" />
+                      </div>
+                      {notificationMode === 'vibrate' && (
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                      )}
+                    </div>
+                    <h5 className="text-xs font-bold text-white">진동 모드</h5>
+                    <p className="text-[11px] text-white/60 mt-1 leading-snug">
+                      진동일 땐 소리 없이 기기 진동만 발생
+                    </p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNotificationMode('vibrate');
+                        sounds.setNotificationMode('vibrate');
+                        handleTestSpecificMode('vibrate');
+                      }}
+                      className="mt-3 w-full py-1.5 px-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg text-[10px] font-semibold border border-amber-400/25 flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <Smartphone className="w-3 h-3" />
+                      <span>진동 테스트</span>
+                    </button>
+                  </div>
+
+                  {/* Mode 3: Silent */}
+                  <div
+                    onClick={() => {
+                      setNotificationMode('silent');
+                      sounds.setNotificationMode('silent');
+                    }}
+                    className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all ${
+                      notificationMode === 'silent'
+                        ? 'bg-purple-600/20 border-purple-500 shadow-lg shadow-purple-600/20 ring-1 ring-purple-400/50'
+                        : 'bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-400">
+                        <VolumeX className="w-4 h-4" />
+                      </div>
+                      {notificationMode === 'silent' && (
+                        <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                      )}
+                    </div>
+                    <h5 className="text-xs font-bold text-white">무음 모드</h5>
+                    <p className="text-[11px] text-white/60 mt-1 leading-snug">
+                      무음일 땐 소리도 진동도 안 남 (화면만)
+                    </p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNotificationMode('silent');
+                        sounds.setNotificationMode('silent');
+                        handleTestSpecificMode('silent');
+                      }}
+                      className="mt-3 w-full py-1.5 px-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-lg text-[10px] font-semibold border border-purple-400/25 flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <VolumeX className="w-3 h-3" />
+                      <span>무음 테스트</span>
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Sound & Vibration Tester */}
-              <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/10 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Volume2 className="w-4 h-4 text-blue-400" />
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                    수신음 & 진동 테스트
-                  </h4>
+              {/* Real Top Heads-Up Notification Tester */}
+              <div className="p-4 bg-white/[0.03] rounded-2xl border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-purple-400" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white">
+                        화면 상단 알림 팝업 ("여기에 뜰 수 있게")
+                      </h4>
+                      <p className="text-[11px] text-white/50">
+                        메시지 도착 시 스마트폰 상단에서 샥 내려오는 알림 카드
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    type="button"
-                    onClick={handleTestSoundAndVibrate}
-                    className="py-2.5 px-3 bg-blue-600/20 hover:bg-blue-600/30 active:scale-[0.98] text-blue-300 font-semibold rounded-xl text-xs border border-blue-400/30 flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    <Volume2 className="w-3.5 h-3.5" />
-                    <span>소리 테스트 (띠링~)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleTestPushNotification}
-                    className="py-2.5 px-3 bg-purple-600/20 hover:bg-purple-600/30 active:scale-[0.98] text-purple-300 font-semibold rounded-xl text-xs border border-purple-400/30 flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    <Bell className="w-3.5 h-3.5" />
-                    <span>팝업 알림 테스트</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleTestHeadsUpBanner}
+                  className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-90 active:scale-[0.99] text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-600/25 border border-white/20 flex items-center justify-center gap-2 transition-all"
+                >
+                  <Bell className="w-4 h-4 animate-bounce" />
+                  <span>지금 상단 알림 팝업 띄워보기 (테스트)</span>
+                </button>
 
                 {testStatus && (
                   <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
@@ -796,11 +904,36 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                     <span>{testStatus}</span>
                   </div>
                 )}
-                
-                <p className="text-[11px] text-white/40 leading-normal">
-                  💡 모바일 브라우저의 정책상 최초 1회 버튼 터치로 오디오 권한이 잠금 해제되어,
-                  이후 다른 사람이 메시지를 보냈을 때 수신음이 정상적으로 재생됩니다.
-                </p>
+              </div>
+
+              {/* Browser Push Permission Status (optional helper) */}
+              <div className="p-3 bg-black/30 rounded-xl border border-white/10 flex items-center justify-between text-xs">
+                <div className="min-w-0 pr-2">
+                  <span className="text-white/80 font-medium block truncate">
+                    기기 브라우저 백그라운드 푸시
+                  </span>
+                  <span className="text-[10px] text-white/40 block">
+                    화면이 꺼져있거나 다른 탭에서도 알림 받기
+                  </span>
+                </div>
+                {getNotificationPermission() === 'granted' ? (
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold shrink-0">
+                    연결됨
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const res = await requestNotificationPermission();
+                      if (res === 'granted') {
+                        setTestStatus('기기 푸시 권한이 활성화되었습니다!');
+                      }
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold border border-white/15 shrink-0 transition-colors"
+                  >
+                    권한 허용
+                  </button>
+                )}
               </div>
             </div>
           )}

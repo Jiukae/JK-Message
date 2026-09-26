@@ -1,4 +1,5 @@
 // Web Audio API & HTML5 Audio Notification sound manager with mobile auto-unlock and haptic vibration
+import { NotificationMode } from '../types';
 
 function createChimeWavUri(): string {
   const sampleRate = 22050;
@@ -67,16 +68,21 @@ function createChimeWavUri(): string {
 
 class SoundEffectManager {
   private ctx: AudioContext | null = null;
-  private soundEnabled: boolean = true;
+  private mode: NotificationMode = 'sound';
   private isUnlocked: boolean = false;
   private fallbackAudio: HTMLAudioElement | null = null;
   private chimeUri: string | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('jk_sound_enabled');
-      if (saved !== null) {
-        this.soundEnabled = saved === 'true';
+      const savedMode = localStorage.getItem('jk_notification_mode') as NotificationMode;
+      if (savedMode && ['sound', 'vibrate', 'silent'].includes(savedMode)) {
+        this.mode = savedMode;
+      } else {
+        const legacySound = localStorage.getItem('jk_sound_enabled');
+        if (legacySound === 'false') {
+          this.mode = 'silent';
+        }
       }
 
       // Initialize global touch/click audio unlocking on mobile
@@ -93,6 +99,18 @@ class SoundEffectManager {
       window.addEventListener('click', unlock, { passive: true });
       window.addEventListener('keydown', unlock, { passive: true });
     }
+  }
+
+  public getNotificationMode(): NotificationMode {
+    return this.mode;
+  }
+
+  public setNotificationMode(newMode: NotificationMode): void {
+    this.mode = newMode;
+    try {
+      localStorage.setItem('jk_notification_mode', newMode);
+      localStorage.setItem('jk_sound_enabled', String(newMode === 'sound'));
+    } catch {}
   }
 
   public unlockAudio() {
@@ -112,7 +130,7 @@ class SoundEffectManager {
       if (!this.fallbackAudio) {
         if (!this.chimeUri) this.chimeUri = createChimeWavUri();
         this.fallbackAudio = new Audio(this.chimeUri);
-        this.fallbackAudio.volume = 0.8;
+        this.fallbackAudio.volume = 0.85;
         this.fallbackAudio.load();
       }
 
@@ -136,19 +154,7 @@ class SoundEffectManager {
     return this.ctx;
   }
 
-  public toggleSound(enabled?: boolean) {
-    this.soundEnabled = enabled !== undefined ? enabled : !this.soundEnabled;
-    try {
-      localStorage.setItem('jk_sound_enabled', String(this.soundEnabled));
-    } catch {}
-    return this.soundEnabled;
-  }
-
-  public isEnabled(): boolean {
-    return this.soundEnabled;
-  }
-
-  public triggerHaptic(pattern: number | number[] = [120, 60, 160]) {
+  public triggerHaptic(pattern: number | number[] = [150, 70, 180]) {
     try {
       if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
         navigator.vibrate(pattern);
@@ -157,12 +163,26 @@ class SoundEffectManager {
   }
 
   /**
-   * Play mobile-friendly, rich incoming message chime ("카톡/메신저 스타일 띠링~")
+   * Play alert according to NotificationMode:
+   * - 'sound'  : 그 소리("띠링~") + 진동
+   * - 'vibrate': 진동일 땐 진동만! (소리 없음)
+   * - 'silent' : 무음일 땐 소리 안 남! (진동 없음)
    */
-  public playIncomingMessage() {
-    if (!this.soundEnabled) return;
+  public playIncomingMessage(forceMode?: NotificationMode) {
+    const currentMode = forceMode || this.mode;
 
-    // Mobile vibration first
+    // 1. 무음 모드: 소리도 진동도 안 남
+    if (currentMode === 'silent') {
+      return;
+    }
+
+    // 2. 진동 모드: 진동만 울리고 소리는 안 남
+    if (currentMode === 'vibrate') {
+      this.triggerHaptic([200, 100, 200, 100, 200]);
+      return;
+    }
+
+    // 3. 소리 모드: 진동과 함께 그 소리("띠링~") 재생
     this.triggerHaptic([150, 70, 180]);
 
     let playedWithWebAudio = false;
@@ -177,7 +197,7 @@ class SoundEffectManager {
         const gain1 = ctx.createGain();
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(659.25, now);
-        osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.1); // subtle rise to G5
+        osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.1);
 
         gain1.gain.setValueAtTime(0.001, now);
         gain1.gain.exponentialRampToValueAtTime(0.3, now + 0.02);
@@ -209,7 +229,7 @@ class SoundEffectManager {
       console.warn('Web Audio playback failed, trying HTML5 Audio fallback:', e);
     }
 
-    // If Web Audio was suspended or failed, play HTML5 Audio element fallback!
+    // If Web Audio was suspended or blocked on mobile, play HTML5 Audio fallback element
     if (!playedWithWebAudio) {
       try {
         if (!this.fallbackAudio) {
@@ -231,7 +251,7 @@ class SoundEffectManager {
   }
 
   public playSentMessage() {
-    if (!this.soundEnabled) return;
+    if (this.mode === 'silent') return;
     try {
       const ctx = this.getContext();
       if (!ctx || ctx.state === 'suspended') return;
@@ -241,8 +261,8 @@ class SoundEffectManager {
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(440, now); // A4
-      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.09); // E5
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.09);
 
       gain.gain.setValueAtTime(0.001, now);
       gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
@@ -256,12 +276,33 @@ class SoundEffectManager {
   }
 
   /**
-   * Explicit test trigger called from user click (always unlocks audio)
+   * Test alert with specified mode
    */
-  public testSound() {
+  public testAlert(mode?: NotificationMode) {
     this.unlockAudio();
-    this.playIncomingMessage();
-    return true;
+    this.playIncomingMessage(mode);
+  }
+
+  // Legacy compatibility helpers
+  public isEnabled(): boolean {
+    return this.mode !== 'silent';
+  }
+
+  public toggleSound(enabled?: boolean) {
+    const nextMode: NotificationMode =
+      enabled !== undefined
+        ? enabled
+          ? 'sound'
+          : 'silent'
+        : this.mode === 'silent'
+        ? 'sound'
+        : 'silent';
+    this.setNotificationMode(nextMode);
+    return this.mode === 'sound';
+  }
+
+  public testSound() {
+    this.testAlert('sound');
   }
 }
 

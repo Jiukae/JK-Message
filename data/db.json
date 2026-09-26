@@ -1,19 +1,3696 @@
 {
   "users": [
     {
-      "id": "user_jiuk",
-      "username": "jiuk",
-      "name": "지욱 (Jiuk)",
-      "password": "password123",
-      "avatarBg": "from-blue-500 to-indigo-600",
-      "avatarEmoji": "⚡",
-      "customStatus": "새로운 프로젝트 구상 중 ✨",
+      "id": "user_1786795459130_m6hr",
+      "name": "JK Message",
+      "createdAt": 1786795459130,
       "status": "online",
-      "lastSeen": 1786715234572,
-      "createdAt": 1786269424508,
-      "dndUntil": null
+      "password": "Hello^^2116!!",
+      "dndUntil": null,
+      "avatarBg": "from-amber-400 to-orange-500",
+      "customStatus": "Welcome to My profile! You can chat in here, and play. Have a good time!",
+      "lastSeen": 1790418657209,
+      "username": "jiukhan0215",
+      "avatarEmoji": "🔥"
+    },
+    {
+      "id": "user_1786795496050_tdg6",
+      "name": "지영엄마",
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "dndUntil": null,
+      "createdAt": 1786795496050,
+      "status": "offline",
+      "username": "hongdaeng",
+      "role": "user",
+      "lastSeen": 1787908882587,
+      "customStatus": "반가워요! 메시지 남겨주세요 👋",
+      "avatarEmoji": "🐱",
+      "password": "password123"
+    },
+    {
+      "username": "why_who",
+      "lastSeen": 1788499977574,
+      "id": "user_1787620899712_fybv",
+      "status": "offline",
+      "dndUntil": null,
+      "createdAt": 1787620899712,
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "avatarEmoji": "🚀",
+      "adminLevel": 1,
+      "role": "user",
+      "customStatus": "ㅎㅇㅎㅇ",
+      "name": "siwon",
+      "password": "why_who"
+    },
+    {
+      "lastSeen": 1787800058926,
+      "username": "kangmin",
+      "customStatus": "반가워요! 메시지 남겨주세요 👋",
+      "dndUntil": null,
+      "status": "offline",
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "id": "user_1787621193952_qppo",
+      "role": "admin",
+      "avatarEmoji": "💬",
+      "adminLevel": 4,
+      "name": "kangmin",
+      "password": "123123",
+      "createdAt": 1787621193952
+    },
+    {
+      "customStatus": "안녕하세요! JK Message에 오신 것을 환영합니다.",
+      "id": "user_1787840472655_dcnz",
+      "password": "0820",
+      "avatarEmoji": "💡",
+      "avatarBg": "from-amber-500 to-orange-600",
+      "name": "이글이글",
+      "createdAt": 1787840472655,
+      "dndUntil": null,
+      "status": "offline",
+      "lastSeen": 1788063671625,
+      "role": "user",
+      "username": "eagles"
+    },
+    {
+      "id": "user_1787911840480_5zeg",
+      "createdAt": 1787911840480,
+      "role": "user",
+      "password": "test1",
+      "name": "test1",
+      "avatarEmoji": "⚡",
+      "customStatus": "test account No.1",
+      "chatTheme": {
+        "gradientAngle": 145,
+        "gradientTo": "#2f0c3d",
+        "type": "gradient",
+        "gradientFrom": "#1b124a"
+      },
+      "adminLevel": 1,
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "dndUntil": null,
+      "avatarImage": "/uploads/1790420334337_6k5in9.png",
+      "lastSeen": 1790422708005,
+      "username": "test1",
+      "status": "online"
+    },
+    {
+      "username": "hongdaeng1",
+      "lastSeen": 1789120063133,
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "createdAt": 1787984091537,
+      "dndUntil": null,
+      "status": "offline",
+      "customStatus": "반가워요! 메시지 남겨주세요 👋",
+      "avatarEmoji": "⚡",
+      "id": "user_1787984091537_zvxb",
+      "password": "ghdeod00!!",
+      "role": "admin",
+      "name": "엄마",
+      "adminLevel": 4
     }
   ],
-  "friendRequests": [],
-  "messages": []
+  "friendRequests": [
+    {
+      "status": "accepted",
+      "id": "freq_1786795478486_eb98",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "user_jiuk",
+      "createdAt": 1786795478486
+    },
+    {
+      "status": "accepted",
+      "receiverId": "user_jiuk",
+      "createdAt": 1786795502520,
+      "id": "freq_1786795502520_5mmi",
+      "senderId": "user_1786795496050_tdg6"
+    },
+    {
+      "status": "accepted",
+      "id": "freq_1786795504621_7tkm",
+      "createdAt": 1786795504621,
+      "receiverId": "user_1786795496050_tdg6",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "status": "accepted",
+      "createdAt": 1787620936346,
+      "id": "freq_1787620936346_em8c",
+      "receiverId": "user_1787620899712_fybv",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "user_1787620899712_fybv",
+      "id": "freq_1787621209657_esch",
+      "createdAt": 1787621209657,
+      "receiverId": "user_1787621193952_qppo",
+      "status": "accepted"
+    },
+    {
+      "createdAt": 1787621215095,
+      "receiverId": "user_jiuk",
+      "id": "freq_1787621215094_so6c",
+      "senderId": "user_1787620899712_fybv",
+      "status": "accepted"
+    },
+    {
+      "createdAt": 1787621217656,
+      "id": "freq_1787621217656_4zms",
+      "senderId": "user_1787620899712_fybv",
+      "status": "pending",
+      "receiverId": "user_1786795496050_tdg6"
+    },
+    {
+      "status": "pending",
+      "createdAt": 1787621230086,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "freq_1787621230086_fcbp",
+      "receiverId": "user_1787621193952_qppo"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "user_1787840472655_dcnz",
+      "id": "freq_1787840518562_1dqm",
+      "createdAt": 1787840518562,
+      "status": "accepted"
+    },
+    {
+      "id": "freq_1787911920855_5ih2",
+      "createdAt": 1787911920855,
+      "status": "accepted",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "user_1787911840480_5zeg"
+    },
+    {
+      "createdAt": 1787984114735,
+      "status": "accepted",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "user_1787984091537_zvxb",
+      "id": "freq_1787984114735_id58"
+    },
+    {
+      "id": "freq_1787988227936_h68j",
+      "createdAt": 1787988227936,
+      "senderId": "user_1787840472655_dcnz",
+      "status": "accepted",
+      "receiverId": "user_1787984091537_zvxb"
+    }
+  ],
+  "messages": [
+    {
+      "read": true,
+      "text": "ds",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787382040322,
+      "conversationId": "conv_user_1786795459130_m6hr__user_jiuk",
+      "id": "msg_1787382040322_utl4c",
+      "senderId": "user_jiuk"
+    },
+    {
+      "senderId": "user_jiuk",
+      "createdAt": 1787382112507,
+      "id": "msg_1787382112507_4cnic",
+      "conversationId": "conv_user_1786795459130_m6hr__user_jiuk",
+      "read": true,
+      "text": "d",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_jiuk",
+      "read": true,
+      "text": "ㄱㅇ",
+      "senderId": "user_jiuk",
+      "id": "msg_1787382327073_j2k8n",
+      "createdAt": 1787382327073
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787648654396,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787648654396_1h9wd",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/ban"
+    },
+    {
+      "id": "msg_1787648659498_zyuky",
+      "receiverId": "bot_command",
+      "createdAt": 1787648659498,
+      "text": "/help",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/status dnd",
+      "id": "msg_1787648667163_i5kzr",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "createdAt": 1787648667163
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787648677848_5m83l",
+      "receiverId": "bot_command",
+      "createdAt": 1787648677848,
+      "text": "/status online",
+      "read": true
+    },
+    {
+      "id": "msg_1787648687598_9l94h",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "createdAt": 1787648687598,
+      "text": "/db",
+      "read": true,
+      "receiverId": "bot_command"
+    },
+    {
+      "id": "msg_1787648698614_ww8hy",
+      "receiverId": "bot_command",
+      "createdAt": 1787648698614,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/users"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_1787672719761_9zusz",
+      "text": "/info why_who",
+      "read": true,
+      "createdAt": 1787672719761,
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "text": "/users",
+      "createdAt": 1787672726382,
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_1787672726382_1xwg2"
+    },
+    {
+      "read": true,
+      "text": "'",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1787672783602_9j3pp",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787672783602
+    },
+    {
+      "read": true,
+      "text": "gd",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791028163,
+      "id": "msg_1787791028163_b52yu",
+      "senderId": "user_1787620899712_fybv",
+      "receiverId": "group",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "receiverId": "group",
+      "read": true,
+      "text": "ㅎㅇ",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791031675,
+      "senderId": "user_1787620899712_fybv",
+      "id": "msg_1787791031675_7jmuk",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/stats",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791032905,
+      "id": "msg_1787791032905_4j9di"
+    },
+    {
+      "read": true,
+      "text": "ㅎㅇㅎㅇ",
+      "createdAt": 1787791159331,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "id": "msg_1787791159331_ufsv2",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group"
+    },
+    {
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "read": true,
+      "text": "ez",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1787791161582_idgcb",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791161582
+    },
+    {
+      "read": true,
+      "text": "ez",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791187696,
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "id": "msg_1787791187696_e7qnh",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "id": "msg_1787791193122_jps2k",
+      "createdAt": 1787791193122,
+      "senderId": "user_1787620899712_fybv",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": ".....",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group"
+    },
+    {
+      "receiverId": "group",
+      "createdAt": 1787791209448,
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": "똑똑 ㄲ",
+      "senderId": "user_1787620899712_fybv",
+      "conversationId": "group_1787620981584_p8kbe",
+      "id": "msg_1787791209448_04d0q"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787791619297,
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/broadcast 안녕",
+      "id": "msg_1787791619297_9qbvn",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1787791728814_mvg28",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "createdAt": 1787791728814,
+      "read": true,
+      "text": "/status dnd",
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1787791760620_zstnx",
+      "read": true,
+      "text": "1분 안에 답장 시 어드민 지급",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791760620,
+      "receiverId": "group"
+    },
+    {
+      "read": true,
+      "text": "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "id": "msg_1787791773045_d33pu",
+      "receiverId": "group",
+      "createdAt": 1787791773045,
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1787620899712_fybv"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791791053,
+      "id": "msg_1787791791053_afgqf",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "?",
+      "receiverId": "group"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "id": "msg_1787791877996_axiw3",
+      "receiverId": "group",
+      "read": true,
+      "text": "https://build-ai-helper.lovable.app/auth",
+      "createdAt": 1787791877996,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787791881588_dd7mh",
+      "createdAt": 1787791881588,
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group",
+      "text": "앞메",
+      "read": true,
+      "conversationId": "group_1787620981584_p8kbe"
+    },
+    {
+      "receiverId": "group",
+      "id": "msg_1787791883676_zfgel",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "read": true,
+      "text": "멘튀",
+      "createdAt": 1787791883676,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "createdAt": 1787791905246,
+      "read": true,
+      "text": "1분 안에 답장 시 어드민 지급",
+      "id": "msg_1787791905246_my9ls",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "group"
+    },
+    {
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "text": "안하면",
+      "read": true,
+      "id": "msg_1787791923350_xo9pu",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791923350
+    },
+    {
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "createdAt": 1787791924286,
+      "id": "msg_1787791924286_qfaxu",
+      "conversationId": "group_1787620981584_p8kbe",
+      "text": "밴",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1787791926112_rn97s",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791926112,
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group",
+      "text": "(?)",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791927200,
+      "senderId": "user_1786795459130_m6hr",
+      "text": "아님",
+      "read": true,
+      "id": "msg_1787791927200_oha3q",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "createdAt": 1787791935034,
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787791935034_7550b",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "read": true,
+      "text": "나 사실 김지호랑 사귐",
+      "receiverId": "group"
+    },
+    {
+      "receiverId": "group",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "라고 최시원이 말한 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ",
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "createdAt": 1787791953621,
+      "id": "msg_1787791953621_y0r35"
+    },
+    {
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "read": true,
+      "text": ",ㅎㅇㄹ₩ㅇㅌ",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791958809,
+      "id": "msg_1787791958809_lv42b"
+    },
+    {
+      "read": true,
+      "text": "ㅎㅇ료ㅕ2",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "id": "msg_1787791959034_wqldm",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "createdAt": 1787791959034
+    },
+    {
+      "id": "msg_1787791959204_bk66y",
+      "receiverId": "group",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787791959204,
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "read": true,
+      "text": "허 .3"
+    },
+    {
+      "createdAt": 1787791959296,
+      "receiverId": "group",
+      "id": "msg_1787791959296_s6y8u",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "read": true,
+      "text": "로혀"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "ㅛㅗㅑㅔㅗ효셔76ㅈ624ㄷㅋㅌㅎㅅ",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787791972516,
+      "id": "msg_1787791972516_t1uud",
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "replyTo": {
+        "senderName": "지욱이",
+        "text": "라고 최시원이 말한 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ",
+        "id": "msg_1787791953621_y0r35"
+      },
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "text": "ㄹㅇ",
+      "read": true,
+      "createdAt": 1787791996034,
+      "receiverId": "group",
+      "id": "msg_1787791996034_ilut8",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "receiverId": "group",
+      "senderId": "user_1787620899712_fybv",
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "text": "축하해]",
+      "read": true,
+      "createdAt": 1787792035802,
+      "id": "msg_1787792035802_1t5mr"
+    },
+    {
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/status online",
+      "createdAt": 1787878030433,
+      "id": "msg_1787878030433_e7a7i"
+    },
+    {
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/status dnd",
+      "conversationId": "conv_command",
+      "createdAt": 1787878032971,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787878032971_fa2fr"
+    },
+    {
+      "createdAt": 1787878035936,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787878035936_c7up9",
+      "read": true,
+      "text": "/status online",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1787878163277,
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "ez",
+      "id": "msg_1787878163277_er75u",
+      "receiverId": "group"
+    },
+    {
+      "read": true,
+      "text": "니가 그런거지",
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787878167596,
+      "id": "msg_1787878167596_umuh8",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "receiverId": "group",
+      "read": true,
+      "text": "지금 온라인?",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787909277016_2gjm1",
+      "createdAt": 1787909277016
+    },
+    {
+      "createdAt": 1787909317499,
+      "id": "msg_1787909317499_eveje",
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": "ㄹㄴ",
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1787909691657,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787909691657_mhoda",
+      "read": true,
+      "text": "나 관리자야 밴때릴 수 있어",
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "receiverId": "bot_command",
+      "id": "msg_1787911164638_jhc7m",
+      "text": "/banlist",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787911164638,
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787911333380,
+      "text": "/help",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787911333380_cmrh5",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "id": "msg_1787911376321_arnwe",
+      "read": true,
+      "text": "/status dnd",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787911376321
+    },
+    {
+      "receiverId": "bot_command",
+      "id": "msg_1787911415132_nug1z",
+      "read": true,
+      "text": "/stats",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787911415132
+    },
+    {
+      "createdAt": 1787911529746,
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787911529746_oyr4t",
+      "read": true,
+      "text": "/setname jiukhan0215 jkmessage",
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "text": "/setname jkmessage JK Message",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787911550374_e7z06",
+      "receiverId": "bot_command",
+      "createdAt": 1787911550374
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "text": "/status dnd",
+      "read": true,
+      "id": "msg_1787911569294_ytgot",
+      "createdAt": 1787911569294,
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1787911589195,
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/setname jiukhan0215 JK Message",
+      "id": "msg_1787911589195_hr9pe"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787911601634,
+      "text": "/kick jiukhan0215",
+      "id": "msg_1787911601634_3z1an",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command"
+    },
+    {
+      "receiverId": "group",
+      "read": true,
+      "text": "엄",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787911614503_30ox2",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787911614503,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "read": true,
+      "text": "/timeban jiukhan0215 1|0|0 테스트용",
+      "createdAt": 1787911697360,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_1787911697360_mfflm"
+    },
+    {
+      "id": "msg_1787911872350_r85jm",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/kick test1",
+      "createdAt": 1787911872350,
+      "receiverId": "bot_command"
+    },
+    {
+      "read": true,
+      "text": "/ban test1 테스트용",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787911903272,
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_1787911903272_fa67j"
+    },
+    {
+      "id": "msg_1787911951560_f5mk8",
+      "senderId": "user_1787911840480_5zeg",
+      "createdAt": 1787911951560,
+      "read": true,
+      "text": "da",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787911840480_5zeg",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "read": true,
+      "text": "ㄴ",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "createdAt": 1787912134741,
+      "receiverId": "group",
+      "id": "msg_1787912134741_fovfn",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/broadcast 히히",
+      "createdAt": 1787912206516,
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787912206516_9r48d"
+    },
+    {
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/ban test1",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787914685941,
+      "id": "msg_1787914685941_kyjcq"
+    },
+    {
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/unban test1",
+      "id": "msg_1787914695751_41n2u",
+      "createdAt": 1787914695751
+    },
+    {
+      "read": true,
+      "text": "/op test1",
+      "createdAt": 1787917539566,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787917539566_zwl5z",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1787917593695_qb0os",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "senderId": "user_1787911840480_5zeg",
+      "createdAt": 1787917593695,
+      "read": true,
+      "text": "/broadcast 히히"
+    },
+    {
+      "readBy": [
+        "user_1787911840480_5zeg",
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": "히",
+      "conversationId": "group_1787917786183_lybsp",
+      "createdAt": 1787917794997,
+      "senderId": "user_1787911840480_5zeg",
+      "id": "msg_1787917794997_unu3j",
+      "receiverId": "group"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_1787918955753_nu9ls",
+      "receiverId": "bot_command",
+      "createdAt": 1787918955753,
+      "read": true,
+      "text": "/deop test1",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1787919014879_bvv0b",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787919014879,
+      "receiverId": "group",
+      "text": "/ban why_who",
+      "read": true,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "read": true,
+      "text": "장난 ㅎㅎ)",
+      "createdAt": 1787919023174,
+      "senderId": "user_1786795459130_m6hr",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1787919023174_8aq5k"
+    },
+    {
+      "id": "msg_1787919059094_66rfo",
+      "createdAt": 1787919059094,
+      "read": true,
+      "text": "/ban test1",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "bot_command",
+      "createdAt": 1787919090014,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787919090014_xk6rn",
+      "conversationId": "conv_command",
+      "text": "/unban test1",
+      "read": true
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1787919102016,
+      "id": "msg_1787919102016_xvili",
+      "text": "/adminlist",
+      "read": true
+    },
+    {
+      "text": "/banlist",
+      "read": true,
+      "receiverId": "bot_command",
+      "createdAt": 1787919109284,
+      "id": "msg_1787919109284_udkm6",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787919121080,
+      "id": "msg_1787919121080_59n4s",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "/kick test1",
+      "read": true
+    },
+    {
+      "createdAt": 1787919180731,
+      "text": "아빠!",
+      "read": true,
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "id": "msg_1787919180731_vtd9j"
+    },
+    {
+      "id": "msg_1787919189716_rvnb8",
+      "receiverId": "user_1786795496050_tdg6",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1786795496050_tdg6",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787919189716,
+      "read": false,
+      "text": "ㅎ"
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "id": "msg_1787919763672_9y50t",
+      "createdAt": 1787919763672,
+      "read": true,
+      "text": "/help"
+    },
+    {
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/status offline",
+      "id": "msg_1787920666308_1flqu",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787920666308
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787920676394,
+      "text": "/status online",
+      "read": true,
+      "conversationId": "conv_command",
+      "id": "msg_1787920676394_jixc4",
+      "receiverId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/deop test1",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787922142297,
+      "id": "msg_1787922142297_0asap"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_1787922152222_zdove",
+      "text": "/op hongdaeng",
+      "read": true,
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787922152222
+    },
+    {
+      "createdAt": 1787922158987,
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "text": "/op eagles",
+      "read": true,
+      "id": "msg_1787922158987_y2o8l",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "bot_command",
+      "text": "/deop eagles",
+      "read": true,
+      "createdAt": 1787922246244,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_1787922246244_dbz3v"
+    },
+    {
+      "id": "msg_1787922251748_1ue9d",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/deop hongdaeng",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "createdAt": 1787922251748
+    },
+    {
+      "createdAt": 1787922734039,
+      "senderId": "user_1787840472655_dcnz",
+      "read": true,
+      "text": "Why",
+      "id": "msg_1787922734039_sumgn",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1787922736728_ouob3",
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "createdAt": 1787922736728,
+      "text": "ez",
+      "read": true
+    },
+    {
+      "senderId": "user_1787840472655_dcnz",
+      "createdAt": 1787922744799,
+      "id": "msg_1787922744799_8dp60",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "text": "Baby",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "user_1787840472655_dcnz",
+      "text": "I love you",
+      "read": true,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "createdAt": 1787922756266,
+      "id": "msg_1787922756266_a435q"
+    },
+    {
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "id": "msg_1787922767488_2pa5e",
+      "createdAt": 1787922767488,
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "user_1787840472655_dcnz",
+      "text": "😮",
+      "read": true
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787922773388,
+      "text": "/op eagles",
+      "read": true,
+      "id": "msg_1787922773388_6k6rd",
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1787922806411,
+      "conversationId": "conv_command",
+      "senderId": "user_1787840472655_dcnz",
+      "receiverId": "bot_command",
+      "text": "/broadcast 히히",
+      "read": true,
+      "id": "msg_1787922806411_3omou"
+    },
+    {
+      "receiverId": "bot_command",
+      "id": "msg_1787922817731_p0fxh",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787922817731,
+      "read": true,
+      "text": "ez"
+    },
+    {
+      "read": true,
+      "text": "/adminlist",
+      "createdAt": 1787922828785,
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787922828785_fuysr",
+      "receiverId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_1787922833487_hqnkh",
+      "receiverId": "bot_command",
+      "text": "아라써",
+      "read": true,
+      "createdAt": 1787922833487,
+      "senderId": "user_1787840472655_dcnz"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787922842076,
+      "id": "msg_1787922842076_re8gj",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/deop eagles"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "user_1787840472655_dcnz",
+      "text": "응",
+      "read": true,
+      "id": "msg_1787922884960_jd98q",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "createdAt": 1787922884960
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "새로운 거...",
+      "createdAt": 1787922890854,
+      "senderId": "user_1787840472655_dcnz",
+      "id": "msg_1787922890854_x4jnl",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz"
+    },
+    {
+      "createdAt": 1787922909489,
+      "id": "msg_1787922909489_kab8m",
+      "senderId": "user_1787840472655_dcnz",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "자리어때"
+    },
+    {
+      "createdAt": 1787924118930,
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787924118930_ni477",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/op test1 2"
+    },
+    {
+      "read": true,
+      "text": "/op test1 3",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "createdAt": 1787924139984,
+      "id": "msg_1787924139984_4w9zl"
+    },
+    {
+      "conversationId": "conv_command",
+      "text": "/op test1 4",
+      "read": true,
+      "createdAt": 1787924175411,
+      "id": "msg_1787924175411_8hkud",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787924190419_l2icm",
+      "createdAt": 1787924190419,
+      "text": "/deop test1",
+      "read": true
+    },
+    {
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "text": "/op test1 1",
+      "read": true,
+      "id": "msg_1787924196317_9kkfi",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787924196317
+    },
+    {
+      "read": true,
+      "text": "/notice 1m Admin (Level 3) 모집공고",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787924248732,
+      "conversationId": "conv_command",
+      "id": "msg_1787924248732_csg23"
+    },
+    {
+      "id": "msg_1787979781557_jfjvq",
+      "receiverId": "bot_recruit",
+      "senderId": "user_1787911840480_5zeg",
+      "createdAt": 1787979781557,
+      "read": true,
+      "text": "/참여",
+      "conversationId": "conv_recruit_user_1787911840480_5zeg"
+    },
+    {
+      "conversationId": "conv_recruit_user_1787911840480_5zeg",
+      "createdAt": 1787979790660,
+      "receiverId": "bot_recruit",
+      "senderId": "user_1787911840480_5zeg",
+      "text": "/참여 열정적으로 활동하겠습니다!",
+      "read": true,
+      "id": "msg_1787979790660_4o5jh"
+    },
+    {
+      "read": true,
+      "text": "/vadmin",
+      "receiverId": "bot_command",
+      "createdAt": 1787979826522,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_1787979826522_57m46"
+    },
+    {
+      "receiverId": "bot_recruit",
+      "id": "msg_1787979837843_bfluh",
+      "createdAt": 1787979837843,
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/참여"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "createdAt": 1787979981586,
+      "text": "/nadmin",
+      "read": true,
+      "conversationId": "conv_command",
+      "id": "msg_1787979981586_aocea"
+    },
+    {
+      "id": "msg_1787980078138_b85xl",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/op test1 1",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "createdAt": 1787980078138
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787980085453,
+      "id": "msg_1787980085453_uzqei",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/adminlist"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "createdAt": 1787980116044,
+      "read": true,
+      "text": "/op why_who 4",
+      "id": "msg_1787980116044_rllqd",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "read": true,
+      "text": "/참여 ㅎㅇ",
+      "createdAt": 1787980282447,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1787980282447_yjqrf",
+      "receiverId": "bot_recruit"
+    },
+    {
+      "createdAt": 1787980326190,
+      "id": "msg_1787980326190_uwnk7",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/banlist"
+    },
+    {
+      "id": "msg_1787980336893_j2toz",
+      "createdAt": 1787980336893,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/ban why_who ez"
+    },
+    {
+      "id": "msg_1787980349383_dz77k",
+      "createdAt": 1787980349383,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/op why_who 1"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/ban why_who",
+      "id": "msg_1787980357942_bx7m5",
+      "createdAt": 1787980357942,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/banlist",
+      "id": "msg_1787980366862_nl7o0",
+      "createdAt": 1787980366862,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1787980374889_bqtca",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "text": "/unban why_who",
+      "read": true,
+      "createdAt": 1787980374889
+    },
+    {
+      "receiverId": "group",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": ". . .",
+      "id": "msg_1787983600872_11eqh",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1787983600872
+    },
+    {
+      "read": true,
+      "text": "H",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787983622535,
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1787983622535_4ylvi",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "id": "msg_1787983944651_i9lbl",
+      "createdAt": 1787983944652,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1786795496050_tdg6",
+      "receiverId": "user_1786795496050_tdg6",
+      "text": "안뇽",
+      "read": false
+    },
+    {
+      "receiverId": "bot_command",
+      "createdAt": 1787984080118,
+      "conversationId": "conv_command",
+      "id": "msg_1787984080118_o67lu",
+      "read": true,
+      "text": "/help",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "id": "msg_1787984127953_t1tw9",
+      "read": true,
+      "text": "안녕",
+      "senderId": "user_1787984091537_zvxb",
+      "createdAt": 1787984127953,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "text": "안뇽",
+      "read": true,
+      "createdAt": 1787984138282,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "id": "msg_1787984138281_ecej2",
+      "receiverId": "user_1787984091537_zvxb"
+    },
+    {
+      "id": "msg_1787984142217_9o09q",
+      "read": true,
+      "text": "잠깐만",
+      "receiverId": "user_1787984091537_zvxb",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "createdAt": 1787984142217
+    },
+    {
+      "id": "msg_1787984153235_m4xi8",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/vadmin",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787984153235,
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1787984170422_48g3e",
+      "conversationId": "conv_recruit_user_1787984091537_zvxb",
+      "receiverId": "bot_recruit",
+      "read": true,
+      "text": "/참여",
+      "senderId": "user_1787984091537_zvxb",
+      "createdAt": 1787984170422
+    },
+    {
+      "read": true,
+      "text": "/참여 열정적으로 활동하겠습니다!",
+      "createdAt": 1787984174708,
+      "conversationId": "conv_recruit_user_1787984091537_zvxb",
+      "senderId": "user_1787984091537_zvxb",
+      "receiverId": "bot_recruit",
+      "id": "msg_1787984174708_s2szz"
+    },
+    {
+      "id": "msg_1787984175796_e8g5u",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/nadmin",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787984175796
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/op hongdaeng1 4",
+      "id": "msg_1787984201859_z2vo3",
+      "createdAt": 1787984201859
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "text": "/op hongdaeng1 4",
+      "read": true,
+      "createdAt": 1787984232543,
+      "id": "msg_1787984232543_yl52l",
+      "receiverId": "bot_command"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "id": "msg_1787984250406_53afv",
+      "read": true,
+      "text": "히",
+      "createdAt": 1787984250406,
+      "receiverId": "user_1787984091537_zvxb"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/setname eagles 트윈트윈",
+      "conversationId": "conv_command",
+      "id": "msg_1787984315317_d41xc",
+      "createdAt": 1787984315317,
+      "receiverId": "bot_command"
+    },
+    {
+      "receiverId": "bot_command",
+      "id": "msg_1787984353089_o2sl3",
+      "conversationId": "conv_command",
+      "createdAt": 1787984353089,
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/setname eagles 이글이글"
+    },
+    {
+      "conversationId": "group_1787984429739_8irta",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787840472655_dcnz",
+        "user_1787984091537_zvxb"
+      ],
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1787984433816,
+      "text": "안녕",
+      "read": true,
+      "receiverId": "group",
+      "id": "msg_1787984433816_x7b04"
+    },
+    {
+      "read": true,
+      "text": "여기는",
+      "conversationId": "group_1787984429739_8irta",
+      "receiverId": "group",
+      "createdAt": 1787984442017,
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787840472655_dcnz",
+        "user_1787984091537_zvxb"
+      ],
+      "id": "msg_1787984442017_srmgz",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "receiverId": "user_1787984091537_zvxb",
+      "id": "msg_1787988277594_as63z",
+      "senderId": "user_1787840472655_dcnz",
+      "createdAt": 1787988277594,
+      "read": true,
+      "text": "안뇽"
+    },
+    {
+      "text": "?",
+      "read": true,
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "user_1787984091537_zvxb",
+      "createdAt": 1787988290701,
+      "id": "msg_1787988290701_osaxd"
+    },
+    {
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "id": "msg_1787988318457_3xdqe",
+      "createdAt": 1787988318457,
+      "receiverId": "user_1787984091537_zvxb",
+      "senderId": "user_1787840472655_dcnz",
+      "text": "ㅎ로ㅗ로로로롤",
+      "read": true
+    },
+    {
+      "conversationId": "conv_recruit_user_1787840472655_dcnz",
+      "text": "/참여 제발",
+      "read": true,
+      "receiverId": "bot_recruit",
+      "senderId": "user_1787840472655_dcnz",
+      "createdAt": 1787988358901,
+      "id": "msg_1787988358901_sgyjh"
+    },
+    {
+      "createdAt": 1787989800425,
+      "senderId": "user_1787984091537_zvxb",
+      "id": "msg_1787989800425_68rjx",
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "receiverId": "user_1787840472655_dcnz",
+      "text": "ez",
+      "read": true
+    },
+    {
+      "id": "msg_1787992107619_jiext",
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "senderId": "user_1787984091537_zvxb",
+      "receiverId": "user_1787840472655_dcnz",
+      "createdAt": 1787992107619,
+      "text": "sj",
+      "read": true
+    },
+    {
+      "id": "msg_1787992173749_r0pn8",
+      "receiverId": "user_1787840472655_dcnz",
+      "createdAt": 1787992173749,
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "senderId": "user_1787984091537_zvxb",
+      "text": "dj",
+      "read": true
+    },
+    {
+      "createdAt": 1787992190479,
+      "receiverId": "user_1787840472655_dcnz",
+      "text": "d",
+      "read": true,
+      "senderId": "user_1787984091537_zvxb",
+      "id": "msg_1787992190479_q2i5j",
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb"
+    },
+    {
+      "read": true,
+      "text": "s",
+      "createdAt": 1787992327001,
+      "receiverId": "user_1787840472655_dcnz",
+      "id": "msg_1787992327001_a1lsl",
+      "senderId": "user_1787984091537_zvxb",
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb"
+    },
+    {
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "id": "msg_1787992355878_qa8tl",
+      "text": "g",
+      "read": true,
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "user_1787984091537_zvxb",
+      "createdAt": 1787992355878
+    },
+    {
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "user_1787984091537_zvxb",
+      "text": "b",
+      "read": true,
+      "id": "msg_1787992365212_uj8pi",
+      "createdAt": 1787992365212,
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb"
+    },
+    {
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "id": "msg_1787992368597_97c0q",
+      "receiverId": "user_1787840472655_dcnz",
+      "createdAt": 1787992368597,
+      "senderId": "user_1787984091537_zvxb",
+      "text": "jBcl",
+      "read": true
+    },
+    {
+      "senderId": "user_1787984091537_zvxb",
+      "receiverId": "user_1787840472655_dcnz",
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "createdAt": 1787992393496,
+      "read": true,
+      "text": "paoefj",
+      "id": "msg_1787992393496_4k40f"
+    },
+    {
+      "read": true,
+      "text": "EZ",
+      "id": "msg_1788063059538_g8h1x",
+      "createdAt": 1788063059538,
+      "conversationId": "conv_user_1787840472655_dcnz__user_1787984091537_zvxb",
+      "senderId": "user_1787840472655_dcnz",
+      "receiverId": "user_1787984091537_zvxb"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788063564071_o4eic",
+      "conversationId": "conv_command",
+      "createdAt": 1788063564071,
+      "read": true,
+      "text": "**어쩔**",
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1788063568588,
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788063568588_e23wj",
+      "read": true,
+      "text": "/help",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "id": "msg_1788063609483_3djje",
+      "createdAt": 1788063609483,
+      "text": "/maintenance on 테스트",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_1788063639583_lk5b1",
+      "createdAt": 1788063639583,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787840472655_dcnz",
+      "senderId": "user_1787840472655_dcnz",
+      "text": "S",
+      "read": true
+    },
+    {
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "/maintenance off ez",
+      "id": "msg_1788063687569_r99xu",
+      "conversationId": "conv_command",
+      "createdAt": 1788063687569
+    },
+    {
+      "id": "msg_1788063705724_h22y2",
+      "conversationId": "group_1787620981584_p8kbe",
+      "text": "Ydduf",
+      "read": true,
+      "createdAt": 1788063705724,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "createdAt": 1788154867048,
+      "senderId": "user_1787620899712_fybv",
+      "id": "msg_1788154867048_qa64h",
+      "receiverId": "bot_recruit",
+      "read": true,
+      "text": "/참여",
+      "conversationId": "conv_recruit_user_1787620899712_fybv"
+    },
+    {
+      "id": "msg_1788167927859_f2y97",
+      "receiverId": "user_1787984091537_zvxb",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "ㅎㅇ",
+      "read": true,
+      "createdAt": 1788167927859
+    },
+    {
+      "receiverId": "user_1787984091537_zvxb",
+      "createdAt": 1788167934611,
+      "id": "msg_1788167934611_d2h4y",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "야ㅑㄴ",
+      "read": true,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb"
+    },
+    {
+      "text": "8ㄴ8",
+      "read": true,
+      "id": "msg_1788167943115_aqf6v",
+      "senderId": "user_1787984091537_zvxb",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "createdAt": 1788167943115,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "text": "sjdmlm sl  ducls dbstjwjd",
+      "read": true,
+      "senderId": "user_1787620899712_fybv",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1788237243571_51ei8",
+      "createdAt": 1788237243571
+    },
+    {
+      "read": true,
+      "text": "d]",
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "id": "msg_1788237508077_fqgpg",
+      "createdAt": 1788237508077
+    },
+    {
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "read": true,
+      "text": "ds",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1788237581110_e4p1a",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788237581110
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788237581177_gl73m",
+      "read": true,
+      "text": "f",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1788237581177,
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ]
+    },
+    {
+      "id": "msg_1788237581290_lqdmj",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group",
+      "conversationId": "group_1787620981584_p8kbe",
+      "read": true,
+      "text": "dsafsd",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788237581290
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "createdAt": 1788237608945,
+      "id": "msg_1788237608945_4r4vj",
+      "read": true,
+      "text": "/op why_who 4",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "receiverId": "group",
+      "senderId": "user_1787620899712_fybv",
+      "id": "msg_1788237609281_g76q2",
+      "read": true,
+      "text": "/ban JK Message",
+      "createdAt": 1788237609282,
+      "conversationId": "group_1787620981584_p8kbe"
+    },
+    {
+      "senderId": "user_1787620899712_fybv",
+      "conversationId": "conv_command",
+      "text": "/ban JK Message",
+      "read": true,
+      "receiverId": "bot_command",
+      "createdAt": 1788237632551,
+      "id": "msg_1788237632551_zomyy"
+    },
+    {
+      "id": "msg_1788237678841_r2v83",
+      "conversationId": "conv_command",
+      "senderId": "user_1787620899712_fybv",
+      "createdAt": 1788237678841,
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/ban jiukhan0215"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "text": "/op why_who 1",
+      "read": true,
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "createdAt": 1788264473490,
+      "id": "msg_1788264473490_ow8pm"
+    },
+    {
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "createdAt": 1788269173648,
+      "read": true,
+      "text": "https://green-talk.base44.app/ 만들어봄",
+      "senderId": "user_1787620899712_fybv",
+      "receiverId": "group",
+      "id": "msg_1788269173648_fn4wn",
+      "conversationId": "group_1787620981584_p8kbe"
+    },
+    {
+      "id": "msg_1788327042561_zsn0a",
+      "conversationId": "group_1787620981584_p8kbe",
+      "text": "ㅇㅋ",
+      "read": true,
+      "createdAt": 1788327042561,
+      "senderId": "user_1786795459130_m6hr",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787620899712_fybv"
+      ],
+      "receiverId": "group"
+    },
+    {
+      "id": "msg_1788327119516_v50lg",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327119516,
+      "senderId": "user_1786795459130_m6hr",
+      "text": "/op kangmin 5",
+      "read": true
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788327128883_9jkzu",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/op kangmin 4",
+      "createdAt": 1788327128883,
+      "receiverId": "bot_command"
+    },
+    {
+      "read": true,
+      "text": "/bamn why_who",
+      "createdAt": 1788327133057,
+      "id": "msg_1788327133057_4aous",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "id": "msg_1788327137683_ae3ca",
+      "read": true,
+      "text": "/ban why_who",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788327137683
+    },
+    {
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327147687,
+      "text": "/unban why_who",
+      "read": true,
+      "id": "msg_1788327147687_sjqke",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1788327152371,
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "ez",
+      "read": true,
+      "id": "msg_1788327152371_vl7kg",
+      "receiverId": "bot_command"
+    },
+    {
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "ez",
+      "conversationId": "conv_command",
+      "id": "msg_1788327152781_mmpdb",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788327152781
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "ez",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788327153028_lcpn3",
+      "createdAt": 1788327153029
+    },
+    {
+      "text": "ez",
+      "read": true,
+      "id": "msg_1788327153310_dmwhe",
+      "receiverId": "bot_command",
+      "createdAt": 1788327153310,
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1788327153553,
+      "id": "msg_1788327153553_tatwq",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "e"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "text": "z",
+      "read": true,
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327153740,
+      "id": "msg_1788327153740_prqnf"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788327153911_lc4yf",
+      "text": "e",
+      "read": true,
+      "conversationId": "conv_command",
+      "createdAt": 1788327153911,
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1788327154067,
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "z",
+      "read": true,
+      "id": "msg_1788327154067_uxvr3",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1788327154213,
+      "read": true,
+      "text": "e",
+      "id": "msg_1788327154213_g8n7x",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1788327154366,
+      "id": "msg_1788327154366_qtztc",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "d",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "receiverId": "bot_command",
+      "id": "msg_1788327154681_83ppf",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "createdAt": 1788327154681,
+      "text": "f",
+      "read": true
+    },
+    {
+      "id": "msg_1788327154791_4e5dj",
+      "createdAt": 1788327154791,
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "xsa",
+      "conversationId": "conv_command",
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1788327154827,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "df",
+      "id": "msg_1788327154827_8nbzq",
+      "receiverId": "bot_command"
+    },
+    {
+      "read": true,
+      "text": "ds",
+      "id": "msg_1788327154984_ck4gy",
+      "receiverId": "bot_command",
+      "createdAt": 1788327154984,
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "read": true,
+      "text": "gdsfg",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327155232,
+      "id": "msg_1788327155232_e9pfq"
+    },
+    {
+      "read": true,
+      "text": "hrtsf",
+      "receiverId": "bot_command",
+      "id": "msg_1788327155527_avr82",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788327155527,
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1788327155644,
+      "read": true,
+      "text": "rg",
+      "id": "msg_1788327155644_dc3nl",
+      "receiverId": "bot_command",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1788327155873_e8m5f",
+      "text": "df",
+      "read": true,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "createdAt": 1788327155873,
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1788327156022_h73da",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788327156022,
+      "read": true,
+      "text": "fd'g",
+      "receiverId": "bot_command",
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_1788327156167_hv191",
+      "createdAt": 1788327156167,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "text": "tgjf",
+      "read": true
+    },
+    {
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "createdAt": 1788407292661,
+      "senderId": "user_1787620899712_fybv",
+      "text": "dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000dbsjfhsdhfsdhfshfekhdjdsfsekdjgkertglfrkjewlrkwerjkwjrkjkejtkjrelkjterljtj3k4jrjtklterjltjggsjlgk0000000000000000000000000000000000000000000000000000000000000000000000",
+      "read": true,
+      "id": "msg_1788407292661_zop5b",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group"
+    },
+    {
+      "senderId": "user_1787620899712_fybv",
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "receiverId": "group",
+      "text": "/ban kangmin",
+      "read": true,
+      "id": "msg_1788439711453_dhcx8",
+      "createdAt": 1788439711453,
+      "conversationId": "group_1787620981584_p8kbe"
+    },
+    {
+      "id": "msg_1788500055491_0j2o2",
+      "createdAt": 1788500055491,
+      "receiverId": "user_1787984091537_zvxb",
+      "text": "엄마",
+      "read": true,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "text": "안뇽",
+      "read": true,
+      "receiverId": "user_1787984091537_zvxb",
+      "createdAt": 1788500060643,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788500060643_yilc5"
+    },
+    {
+      "id": "msg_1788500064215_ofhvm",
+      "senderId": "user_1786795459130_m6hr",
+      "createdAt": 1788500064215,
+      "receiverId": "user_1787984091537_zvxb",
+      "text": "ㅠ",
+      "read": true,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb"
+    },
+    {
+      "createdAt": 1788501324407,
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/ban jiukhan0215",
+      "conversationId": "conv_command",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788501324407_1ui5r"
+    },
+    {
+      "createdAt": 1788502572919,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "read": true,
+      "text": "dkdkd",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "id": "msg_1788502572919_krzt6"
+    },
+    {
+      "conversationId": "group_1787620981584_p8kbe",
+      "read": true,
+      "text": "dllldlld",
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788502575254_f8sjv",
+      "createdAt": 1788502575254,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "receiverId": "group"
+    },
+    {
+      "id": "msg_1788502577674_zvjah",
+      "receiverId": "group",
+      "createdAt": 1788502577674,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": "d,d,d,,d\ndldkdkd",
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1788502578776,
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "id": "msg_1788502578776_h22ce",
+      "senderId": "user_1786795459130_m6hr",
+      "text": "dmjmd'",
+      "read": true,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "read": true,
+      "text": "dkj",
+      "id": "msg_1788502579372_hxsrs",
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "group",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "createdAt": 1788502579372
+    },
+    {
+      "id": "msg_1788502579892_5tj18",
+      "conversationId": "group_1787620981584_p8kbe",
+      "createdAt": 1788502579892,
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "receiverId": "group",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "dmkj"
+    },
+    {
+      "receiverId": "group",
+      "createdAt": 1788502580255,
+      "conversationId": "group_1787620981584_p8kbe",
+      "senderId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "dmkj",
+      "id": "msg_1788502580255_3hlb9",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "createdAt": 1788502580611,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "group_1787620981584_p8kbe",
+      "readBy": [
+        "user_1786795459130_m6hr"
+      ],
+      "read": true,
+      "text": "kd",
+      "id": "msg_1788502580611_x9kew",
+      "receiverId": "group"
+    },
+    {
+      "createdAt": 1788502588909,
+      "read": true,
+      "text": "/help",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "id": "msg_1788502588909_l08iv",
+      "conversationId": "conv_command"
+    },
+    {
+      "senderId": "user_1786795459130_m6hr",
+      "id": "msg_1788515198792_vgamf",
+      "createdAt": 1788515198792,
+      "text": "/vadmin",
+      "read": true,
+      "receiverId": "bot_command",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1788515208402,
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "id": "msg_1788515208402_m2ilt",
+      "text": "/참여",
+      "read": true,
+      "receiverId": "bot_recruit"
+    },
+    {
+      "id": "msg_1788515220701_ylcxm",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "bot_command",
+      "read": true,
+      "text": "/op",
+      "createdAt": 1788515220701,
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_1788515226067_rsygh",
+      "senderId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "/nadmin",
+      "createdAt": 1788515226067,
+      "receiverId": "bot_command"
+    },
+    {
+      "createdAt": 1790422126602,
+      "text": "ㅇ",
+      "read": false,
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "user_1786795496050_tdg6",
+      "id": "msg_1790422126602_5zr6h",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1786795496050_tdg6"
+    },
+    {
+      "createdAt": 1790422135446,
+      "text": "ㅇ",
+      "read": false,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1786795496050_tdg6",
+      "id": "msg_1790422135446_yosqf",
+      "senderId": "user_1786795459130_m6hr",
+      "receiverId": "user_1786795496050_tdg6"
+    },
+    {
+      "receiverId": "user_1787984091537_zvxb",
+      "createdAt": 1790422177229,
+      "id": "msg_1790422177229_m0l1d",
+      "read": true,
+      "text": "ㅇ",
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "senderId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_1790422182901_7hj49",
+      "senderId": "user_1786795459130_m6hr",
+      "read": false,
+      "text": "ㅇ",
+      "createdAt": 1790422182901,
+      "conversationId": "conv_user_1786795459130_m6hr__user_1787984091537_zvxb",
+      "receiverId": "user_1787984091537_zvxb"
+    },
+    {
+      "id": "msg_bot_1787648654407_rtqbr",
+      "createdAt": 1787648654412,
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "text": "❓ 알 수 없는 명령어: `/ban`\n`/help`를 입력하면 사용 가능한 모든 관리자 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1787648659510,
+      "text": "👑 **[JK Message 시스템 관리자 콘솔]** (접속자: @jiukhan0215)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• `/help` 또는 `도움말` : 명령어 도움말 출력\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 공지 전송\n• `/status <online|dnd|offline> [메시지]` : 관리자 상태 및 상태메시지 즉시 변경\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 팁: 아래 빠른 실행 버튼을 누르거나 채팅창에 명령어를 직접 입력하세요.",
+      "read": true,
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787648659505_fck01",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787648667175,
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "✅ 관리자 상태가 **DND** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787648667170_ocewy"
+    },
+    {
+      "createdAt": 1787648677860,
+      "senderId": "bot_command",
+      "text": "✅ 관리자 상태가 **ONLINE** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "read": true,
+      "id": "msg_bot_1787648677855_irfob",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_bot_1787648687603_8sr6b",
+      "read": true,
+      "text": "💾 **[데이터베이스 현황]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 저장 모드: ☁️ Firebase Cloud Firestore (영구 동기화)\n• 저장된 유저 수: 5개\n• 저장된 메시지 수: 13개\n• 저장된 단체방 수: 1개\n• 저장된 친구요청 수: 8개\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n✅ 데이터 무결성 검증 완료. 정상 작동 중입니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1787648687608
+    },
+    {
+      "createdAt": 1787648698740,
+      "senderId": "bot_command",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "👥 **[전체 등록 회원 목록 (총 5명)]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. **지욱이** (@jiukhan0215) - 🟢 온라인\n   └ 가입일: 2026. 8. 15. | 최근: 오전 9:04:03\n2. **지영엄마** (@hongdaeng) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 15. | 최근: 오전 12:57:11\n3. **siwon** (@why_who) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 25. | 최근: 오전 5:17:31\n4. **kangmin** (@kangmin) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 25. | 최근: 오전 5:13:55\n5. **지욱 (Jiuk)** (@jiuk) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 9. | 최근: 오전 9:01:46\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟢 실시간 활성 소켓 접속자: 1명",
+      "id": "msg_bot_1787648698735_73m45",
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "👤 **[사용자 상세 정보: @why_who]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 고유 ID: `user_1787620899712_fybv`\n• 표시 이름: **siwon**\n• 상태 이모지: 🚀\n• 접속 상태: ⚪ 오프라인 (offline)\n• 상태 메시지: ㅎㅇㅎㅇ\n• 가입 일시: 2026. 8. 25. 오전 1:21:39\n• 최근 활동: 2026. 8. 25. 오전 5:17:31\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "id": "msg_bot_1787672719889_r9ts7",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1787672719894
+    },
+    {
+      "read": true,
+      "text": "👥 **[전체 등록 회원 목록 (총 5명)]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. **지욱이** (@jiukhan0215) - 🟢 온라인\n   └ 가입일: 2026. 8. 15. | 최근: 오후 3:43:08\n2. **지영엄마** (@hongdaeng) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 15. | 최근: 오전 12:57:11\n3. **siwon** (@why_who) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 25. | 최근: 오전 5:17:31\n4. **kangmin** (@kangmin) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 25. | 최근: 오전 5:13:55\n5. **지욱 (Jiuk)** (@jiuk) - ⚪ 오프라인\n   └ 가입일: 2026. 8. 9. | 최근: 오후 3:42:06\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟢 실시간 활성 소켓 접속자: 1명",
+      "createdAt": 1787672726392,
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787672726387_bbr1t",
+      "conversationId": "conv_command",
+      "senderId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "📊 **[JK Message 실시간 시스템 통계]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• ⚡ 서버 가동 시간: 0시간 1분 42초\n• 🟢 온라인 연결 유저: 2명\n• 👥 총 등록 회원수: 5명\n• 💬 누적 저장 메시지: 24개\n• 🏢 개설된 단체방: 1개\n• 🤝 친구 요청 기록: 8건\n• 💾 DB 모드: ☁️ Firebase Firestore (영구 동기화)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n✅ 모든 시스템 프로세스가 정상 가동 중입니다.",
+      "createdAt": 1787791032916,
+      "id": "msg_bot_1787791032911_jd37o",
+      "senderId": "bot_command"
+    },
+    {
+      "senderId": "bot_command",
+      "createdAt": 1787791619310,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787791619304_yad53",
+      "read": true,
+      "text": "📢 **[공지 전송 완료]**\n현재 접속 중인 2개의 클라이언트 화면에 공지가 실시간 송출되었습니다.\n내용: \"안녕\""
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1787791728826,
+      "conversationId": "conv_command",
+      "text": "✅ 관리자 상태가 **DND** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "read": true,
+      "id": "msg_bot_1787791728821_kue38"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787878030445,
+      "text": "✅ 관리자 상태가 **ONLINE** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "read": true,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787878030440_a6fgq"
+    },
+    {
+      "read": true,
+      "text": "✅ 관리자 상태가 **DND** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787878032978_n43ds",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1787878032983
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "✅ 관리자 상태가 **ONLINE** (상태메시지: \"반가워요! 메시지 남겨주세요 👋\")로 변경되었습니다.",
+      "createdAt": 1787878035948,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787878035943_itqml"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "🛡️ 현재 차단되거나 제재를 받고 있는 사용자가 없습니다.",
+      "read": true,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1787911164649,
+      "id": "msg_bot_1787911164644_ts50t"
+    },
+    {
+      "text": "👑 **[JK Message 시스템 관리자 콘솔]** (접속자: @jiukhan0215)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 🛠️ 계정 제재 & 보안 명령어 ]\n• `/ban <아이디> [사유]` : 대상 유저 영구 밴 & 즉시 강제 퇴장\n• `/timeban <아이디> <분|시간h|일d> [사유]` : 대상 유저 일정 기간 임시 밴 (예: `/timeban user1 30m 욕설`)\n• `/unban <아이디>` : 제재된 유저 밴 해제 (차단 해제)\n• `/banlist` 또는 `밴목록` : 현재 차단/타임밴 중인 모든 유저 목록\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n\n[ ⚡ 관리자 전용 특수 권한 & 시스템 제어 ]\n• `/maintenance <on|off> [안내메시지]` : 서버 긴급 점검 모드 가동 (일반 유저 로그인/접속 제한)\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 팝업 공지 전송\n• `/wipe <all|groups|direct>` : 시스템 전체 또는 특정 채팅 메시지 대량 일괄 정화\n• `/setname <아이디> <새이름>` : 관리자 권한으로 특정 유저 닉네임 강제 변경\n• `/status <online|dnd|offline> [메시지]` : 관리자 상태 및 상태메시지 즉시 변경\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 실시간 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 팁: 아래 빠른 실행 버튼을 누르거나 채팅창에 명령어를 직접 입력하세요.",
+      "read": true,
+      "id": "msg_bot_1787911333385_xv373",
+      "senderId": "bot_command",
+      "createdAt": 1787911333390,
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787911376329_4xrw0",
+      "createdAt": 1787911376334,
+      "text": "✅ 관리자 상태가 **DND** (상태메시지: \"Welcome to My profile! You can chat in here, and play. Have a good time!\")로 변경되었습니다.",
+      "read": true
+    },
+    {
+      "read": true,
+      "text": "📊 **[JK Message 실시간 시스템 통계]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• ⚡ 서버 가동 시간: 0시간 4분 54초\n• 🟢 온라인 연결 유저: 1명\n• 👥 총 등록 회원수: 5명\n• 💬 누적 저장 메시지: 72개\n• 🏢 개설된 단체방: 1개\n• 🤝 친구 요청 기록: 9건\n• 💾 DB 모드: ☁️ Firebase Firestore (영구 동기화)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n✅ 모든 시스템 프로세스가 정상 가동 중입니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787911415138_wiy58",
+      "createdAt": 1787911415143,
+      "conversationId": "conv_command"
+    },
+    {
+      "read": true,
+      "text": "✨ **[닉네임 강제 변경 완료]**\n@jiukhan0215 님의 표시 이름이 **'JK Message'** ➔ **'jkmessage'**(으)로 변경되었습니다.",
+      "conversationId": "conv_command",
+      "createdAt": 1787911529757,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787911529752_prees",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787911550379_9nb67",
+      "text": "❌ '@jkmessage' 사용자를 찾을 수 없습니다.",
+      "read": true,
+      "createdAt": 1787911550385,
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787911569354,
+      "read": true,
+      "text": "✅ 관리자 상태가 **DND** (상태메시지: \"Welcome to My profile! You can chat in here, and play. Have a good time!\")로 변경되었습니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787911569349_ptmy3"
+    },
+    {
+      "conversationId": "conv_command",
+      "text": "✨ **[닉네임 강제 변경 완료]**\n@jiukhan0215 님의 표시 이름이 **'jkmessage'** ➔ **'JK Message'**(으)로 변경되었습니다.",
+      "read": true,
+      "createdAt": 1787911589206,
+      "id": "msg_bot_1787911589201_gwk77",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command"
+    },
+    {
+      "id": "msg_bot_1787911601640_dscmo",
+      "conversationId": "conv_command",
+      "createdAt": 1787911601645,
+      "senderId": "bot_command",
+      "read": true,
+      "text": "⚡ '@jiukhan0215' 사용자의 활성 소켓(1개) 연결을 강제 종료했습니다.",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "❌ 최고 관리자 계정은 타임밴할 수 없습니다.",
+      "read": true,
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787911697365_d6fdg",
+      "senderId": "bot_command",
+      "createdAt": 1787911697370
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787911872362,
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787911872357_vse18",
+      "read": true,
+      "text": "⚡ '@test1' 사용자의 활성 소켓(1개) 연결을 강제 종료했습니다.",
+      "senderId": "bot_command"
+    },
+    {
+      "id": "msg_bot_1787911903280_1mquk",
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @test1\n사유: \"테스트용\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "conversationId": "conv_command",
+      "createdAt": 1787911903285
+    },
+    {
+      "text": "📢 **[공지 전송 완료]**\n현재 접속 중인 2개의 클라이언트 화면에 공지가 실시간 송출되었습니다.\n내용: \"히히\"",
+      "read": true,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787912206522_6los5",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787912206527,
+      "conversationId": "conv_command"
+    },
+    {
+      "senderId": "bot_command",
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @test1\n사유: \"관리자 권한으로 영구 차단되었습니다.\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "read": true,
+      "createdAt": 1787914685957,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787914685952_fwb8y"
+    },
+    {
+      "createdAt": 1787914695763,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787914695758_2ifw2",
+      "read": true,
+      "text": "✨ **[밴 해제 완료]**\n@test1 님의 차단이 성공적으로 해제되었습니다. 이제 정상적으로 로그인 및 이용이 가능합니다."
+    },
+    {
+      "createdAt": 1787917539578,
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787917539573_r9hs6",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "👑 **[어드민 권한 지급 완료]**\n대상: **test1** (@test1)\n부관리자(어드민) 권한이 성공적으로 지급되었습니다.\n해당 유저는 이제 명령어 터미널을 열어 공지, 강퇴, 닉네임 수정, 유저 조회를 수행할 수 있습니다. (※ 밴/타임밴/점검 등 위험 권한은 자동 제외됩니다.)",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1787917593706,
+      "text": "📢 **[공지 전송 완료]**\n현재 접속 중인 1개의 클라이언트 화면에 공지가 실시간 송출되었습니다.\n내용: \"히히\"",
+      "read": true,
+      "receiverId": "user_1787911840480_5zeg",
+      "id": "msg_bot_1787917593701_2gro8"
+    },
+    {
+      "createdAt": 1787918955764,
+      "senderId": "bot_command",
+      "read": true,
+      "text": "✨ **[어드민 권한 회수 완료]**\n@test1 (test1) 님의 부관리자 권한이 회수되어 일반 유저 등급으로 복구되었습니다.",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787918955759_ksh1g",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "read": true,
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @test1\n사유: \"관리자 권한으로 영구 차단되었습니다.\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787919059108,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787919059103_8k144",
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787919090028,
+      "read": true,
+      "text": "✨ **[밴 해제 완료]**\n@test1 님의 차단이 성공적으로 해제되었습니다. 이제 정상적으로 로그인 및 이용이 가능합니다.",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787919090023_b65nx",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_bot_1787919102022_cemf2",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787919102027,
+      "read": true,
+      "text": "👑 **[JK Message 시스템 관리자 명단]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 최고 관리자 (Super Admin) ]\n  1. 👑 **JK Message** (@jiukhan0215) [최고 관리자]\n\n[ 부관리자 (Sub Admin) ]\n  (현재 임명된 부관리자가 없습니다.)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 부관리자 임명: `/op <아이디>` | 회수: `/deop <아이디>`"
+    },
+    {
+      "senderId": "bot_command",
+      "read": true,
+      "text": "🛡️ 현재 차단되거나 제재를 받고 있는 사용자가 없습니다.",
+      "createdAt": 1787919109295,
+      "id": "msg_bot_1787919109290_zjfgo",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787919121091,
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "⚡ '@test1' 사용자의 활성 소켓(1개) 연결을 강제 종료했습니다.",
+      "read": true,
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787919121086_xu2yn"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787919763685,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "👑 **[JK Message 시스템 총괄 관리자 콘솔]** (접속자: @jiukhan0215 | 최고 관리자)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 👑 어드민 권한 관리 ]\n• `/op <아이디>` (또는 `/어드민지급`) : 대상 유저에게 부관리자(어드민) 권한 지급\n• `/deop <아이디>` (또는 `/어드민회수`) : 대상 유저의 부관리자 권한 회수\n• `/adminlist` 또는 `어드민목록` : 전체 관리자 및 부관리자 명단 조회\n\n[ 🚫 계정 제재 & 보안 (최고 관리자 전용) ]\n• `/ban <아이디> [사유]` : 대상 유저 영구 밴 & 즉시 강제 퇴장\n• `/timeban <아이디> <시간> [사유]` : 일정 기간 임시 밴 (예: `/timeban user1 30m 욕설`, `2h`, `1d`)\n• `/unban <아이디>` : 제재된 유저 밴 해제 (차단 해제)\n• `/banlist` 또는 `밴목록` : 현재 차단/타임밴 중인 모든 유저 목록\n\n[ 🛠️ 시스템 운영 & 제어 ]\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 팝업 공지 전송\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n• `/setname <아이디> <새이름>` : 관리자 권한으로 특정 유저 닉네임 강제 변경\n• `/maintenance <on|off> [메시지]` : 서버 긴급 점검 모드 가동/종료\n• `/wipe <all|groups>` : 시스템 전체 또는 단체방 메시지 대량 일괄 정화\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 실시간 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/status <online|dnd|offline> [메시지]` : 내 관리자 상태 및 상태메시지 즉시 변경\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 팁: 아래 빠른 실행 버튼을 누르거나 채팅창에 명령어를 직접 입력하세요.",
+      "id": "msg_bot_1787919763680_l6y9f"
+    },
+    {
+      "id": "msg_bot_1787920666316_x9sza",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1787920666321,
+      "read": true,
+      "text": "✅ 관리자 상태가 **OFFLINE** (상태메시지: \"Welcome to My profile! You can chat in here, and play. Have a good time!\")로 변경되었습니다.",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "text": "✅ 관리자 상태가 **ONLINE** (상태메시지: \"Welcome to My profile! You can chat in here, and play. Have a good time!\")로 변경되었습니다.",
+      "read": true,
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787920676402_h0wuv",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787920676407
+    },
+    {
+      "id": "msg_bot_1787922142303_zw1z2",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1787922142308,
+      "read": true,
+      "text": "ℹ️ '@test1' 님은 관리자 권한을 가지고 있지 않습니다.",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787922152282,
+      "id": "msg_bot_1787922152277_jz194",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "👑 **[어드민 권한 지급 완료]**\n대상: **지영엄마** (@hongdaeng)\n부관리자(어드민) 권한이 성공적으로 지급되었습니다.\n해당 유저는 이제 명령어 터미널을 열어 공지, 강퇴, 닉네임 수정, 유저 조회를 수행할 수 있습니다. (※ 밴/타임밴/점검 등 위험 권한은 자동 제외됩니다.)",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787922158994_yca07",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787922158999,
+      "read": true,
+      "text": "👑 **[어드민 권한 지급 완료]**\n대상: **이글이글** (@eagles)\n부관리자(어드민) 권한이 성공적으로 지급되었습니다.\n해당 유저는 이제 명령어 터미널을 열어 공지, 강퇴, 닉네임 수정, 유저 조회를 수행할 수 있습니다. (※ 밴/타임밴/점검 등 위험 권한은 자동 제외됩니다.)"
+    },
+    {
+      "read": true,
+      "text": "✨ **[어드민 권한 회수 완료]**\n@eagles (이글이글) 님의 부관리자 권한이 회수되어 일반 유저 등급으로 복구되었습니다.",
+      "id": "msg_bot_1787922246251_zkshn",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1787922246256
+    },
+    {
+      "text": "✨ **[어드민 권한 회수 완료]**\n@hongdaeng (지영엄마) 님의 부관리자 권한이 회수되어 일반 유저 등급으로 복구되었습니다.",
+      "read": true,
+      "createdAt": 1787922251760,
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787922251755_28a75"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1787922773400,
+      "read": true,
+      "text": "👑 **[어드민 권한 지급 완료]**\n대상: **이글이글** (@eagles)\n부관리자(어드민) 권한이 성공적으로 지급되었습니다.\n해당 유저는 이제 명령어 터미널을 열어 공지, 강퇴, 닉네임 수정, 유저 조회를 수행할 수 있습니다. (※ 밴/타임밴/점검 등 위험 권한은 자동 제외됩니다.)",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787922773395_el0ms"
+    },
+    {
+      "senderId": "bot_command",
+      "id": "msg_bot_1787922806417_bngl9",
+      "conversationId": "conv_command",
+      "receiverId": "user_1787840472655_dcnz",
+      "read": true,
+      "text": "📢 **[공지 전송 완료]**\n현재 접속 중인 3개의 클라이언트 화면에 공지가 실시간 송출되었습니다.\n내용: \"히히\"",
+      "createdAt": 1787922806422
+    },
+    {
+      "senderId": "bot_command",
+      "id": "msg_bot_1787922817736_zz6o2",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787922817741,
+      "text": "❓ 알 수 없는 명령어: `ez`\n`/help`를 입력하면 사용 가능한 모든 관리자 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_bot_1787922828791_mfmi5",
+      "read": true,
+      "text": "👑 **[JK Message 시스템 관리자 명단]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 최고 관리자 (Super Admin) ]\n  1. 👑 **JK Message** (@jiukhan0215) [최고 관리자]\n\n[ 부관리자 (Sub Admin) ]\n  1. 🛡️ **이글이글** (@eagles) [부관리자]\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 부관리자 임명: `/op <아이디>` | 회수: `/deop <아이디>`",
+      "senderId": "bot_command",
+      "createdAt": 1787922828796,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1787922833498,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `아라써`\n`/help`를 입력하면 사용 가능한 모든 관리자 명령어 목록을 확인할 수 있습니다.",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "receiverId": "user_1787840472655_dcnz",
+      "id": "msg_bot_1787922833493_30w3j"
+    },
+    {
+      "id": "msg_bot_1787922842084_ke389",
+      "createdAt": 1787922842089,
+      "read": true,
+      "text": "✨ **[어드민 권한 회수 완료]**\n@eagles (이글이글) 님의 부관리자 권한이 회수되어 일반 유저 등급으로 복구되었습니다.",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command"
+    },
+    {
+      "createdAt": 1787924118944,
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787924118939_8g3q1",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **test1** (@test1)\n권한 변경: Level 1 ➔ **Level 2 (Moder (모더레이터))**",
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787924139991_xjumj",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **test1** (@test1)\n권한 변경: Level 2 ➔ **Level 3 (Admin (관리자))**",
+      "senderId": "bot_command",
+      "createdAt": 1787924139996
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787924175419_8p2g4",
+      "createdAt": 1787924175424,
+      "senderId": "bot_command",
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **test1** (@test1)\n권한 변경: Level 3 ➔ **Level 4 (Head Admin (총괄 관리자))**",
+      "read": true
+    },
+    {
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787924190425_ltfiz",
+      "createdAt": 1787924190430,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `/deop test1`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "conversationId": "conv_command"
+    },
+    {
+      "id": "msg_bot_1787924196325_lzvrp",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787924196330,
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **test1** (@test1)\n권한 변경: Level 4 ➔ **Level 1 (Guest/Member (일반 유저))**",
+      "senderId": "bot_command"
+    },
+    {
+      "createdAt": 1787924248916,
+      "text": "📢 **[어드민 모집 공고 발행 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 기한: **2026. 8. 28. 오후 1:38:28 까지 (1m)**\n• 공고 내용: \"Admin (Level 3) 모집공고\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n✨ 모든 접속자에게 공고가 전달되었으며, 사용자들이 지원 버튼을 누르면 이 명령어 터미널로 지원자 알림이 실시간 수신됩니다.\n💡 지원자가 모이면 `/makegroup` 또는 수동 단체방을 만들어 심사 후 `/op <아이디> 3`을 입력하세요.",
+      "read": true,
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "id": "msg_bot_1787924248911_z7zmu"
+    },
+    {
+      "senderId": "bot_command",
+      "read": true,
+      "text": "📢 **[어드민 모집공고 봇 활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🟢 활성화됨 (진행 중)**\n• 신청 접수: 일반 유저가 '📢 어드민 모집공고 봇'과 대화에서 `/참여` 입력\n• 알림 연동: 유저가 `/참여`를 입력하면 이곳 명령어 터미널로 실시간 알림이 도착합니다.\n• 모집 마감: `/nadmin` 입력 시 즉시 모집이 마감(비활성화)됩니다.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "createdAt": 1787979826536,
+      "id": "msg_bot_1787979826531_5l63u",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "senderId": "bot_command",
+      "read": true,
+      "text": "🛑 **[어드민 모집공고 봇 비활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🔴 비활성화 (마감됨)**\n• 총 지원자 수: **1명**\n• 다시 모집을 시작하려면 `/vadmin`을 입력하세요.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "conversationId": "conv_command",
+      "createdAt": 1787979981601,
+      "id": "msg_bot_1787979981596_qntes",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **test1** (@test1)\n권한 변경: Level 1 ➔ **Level 1 (Guest/Member (일반 유저))**",
+      "id": "msg_bot_1787980078145_8xs0a",
+      "createdAt": 1787980078150,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787980085459_fvfya",
+      "conversationId": "conv_command",
+      "createdAt": 1787980085464,
+      "text": "👑 **[JK Message 시스템 관리자 계층 명단]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ Level 5: Owner (최고 소유자) ]\n  1. 👑 **JK Message** (@jiukhan0215)\n[ Level 4: Head Admin (총괄 관리자) ]\n  (없음)\n[ Level 3: Admin (관리자) ]\n  (없음)\n[ Level 2: Moder (모더레이터) ]\n  (없음)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 권한 지정: `/op <아이디> <1-5>` | 공고: `/notice <기간> <내용>`",
+      "read": true
+    },
+    {
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **siwon** (@why_who)\n권한 변경: Level 1 ➔ **Level 4 (Head Admin (총괄 관리자))**",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787980116051_tlhj5",
+      "senderId": "bot_command",
+      "createdAt": 1787980116056,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1787980326203,
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787980326198_kw5m4",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "🛡️ 현재 차단되거나 제재를 받고 있는 사용자가 없습니다."
+    },
+    {
+      "createdAt": 1787980336904,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "❌ **[보안 규칙]** Head Admin (Level 4) 및 Owner (Level 5) 대상은 밴/차단할 수 없습니다.",
+      "read": true,
+      "id": "msg_bot_1787980336899_sz0k1"
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1787980349396,
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **siwon** (@why_who)\n권한 변경: Level 4 ➔ **Level 1 (Guest/Member (일반 유저))**",
+      "id": "msg_bot_1787980349391_xyimh"
+    },
+    {
+      "senderId": "bot_command",
+      "createdAt": 1787980357957,
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @why_who\n사유: \"관리자 권한으로 영구 차단되었습니다.\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "read": true,
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787980357952_fulm1"
+    },
+    {
+      "createdAt": 1787980366873,
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1787980366868_2fllm",
+      "read": true,
+      "text": "🚫 **[현재 제재/밴 사용자 목록 (총 1명)]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. **@why_who** - 영구 차단\n   └ 사유: 관리자 권한으로 영구 차단되었습니다. (제재일시: 2026. 8. 29. 오전 5:12:37)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 밴 해제: `/unban <아이디>`",
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787980374903,
+      "conversationId": "conv_command",
+      "text": "✨ **[밴 해제 완료]**\n@why_who 님의 차단이 성공적으로 해제되었습니다. 이제 정상적으로 로그인 및 이용이 가능합니다.",
+      "read": true,
+      "id": "msg_bot_1787980374898_ew2eg",
+      "senderId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_bot_1787984080124_my6u6",
+      "read": true,
+      "text": "👑 **[JK Message 시스템 최고 소유자(Owner) 콘솔]** (접속자: @jiukhan0215 | Level 5)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 👑 권한 및 공고 관리 ]\n• `/op <아이디> <1-5>` : 대상 유저의 어드민 권한 레벨을 지정 (1:Guest, 2:Moder, 3:Admin, 4:HeadAdmin, 5:Owner)\n• `/vadmin` : 📢 어드민 모집공고 봇 활성화 (유저들이 '/참여'로 지원 가능)\n• `/nadmin` : 🛑 어드민 모집공고 봇 비활성화 (모집 공식 마감)\n• `/adminlist` 또는 `어드민목록` : 1~5레벨 전체 관리자 명단 조회\n\n[ 🚫 계정 제재 & 보안 ]\n• `/ban <아이디> [사유]` : 대상 유저 영구 밴 & 즉시 강제 퇴장\n• `/timeban <아이디> <시간> [사유]` : 일정 기간 임시 밴 (예: `/timeban user1 30m 욕설`, `2h`, `1d`)\n• `/unban <아이디>` : 제재된 유저 밴 해제 (차단 해제)\n• `/banlist` 또는 `밴목록` : 현재 차단/타임밴 중인 모든 유저 목록\n\n[ 🛠️ 시스템 운영 & 제어 ]\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 팝업 공지 전송\n• `/maintenance <on|off> [메시지]` : 서버 긴급 점검 모드 가동/종료\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n• `/setname <아이디> <새이름>` : 관리자 권한으로 특정 유저 닉네임 강제 변경\n• `/wipe <all|groups>` : 시스템 전체 또는 단체방 메시지 대량 일괄 정화\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 실시간 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/status <online|dnd|offline> [메시지]` : 내 관리자 상태 및 상태메시지 즉시 변경\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1787984080129
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787984153248,
+      "conversationId": "conv_command",
+      "text": "📢 **[어드민 모집공고 봇 활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🟢 활성화됨 (진행 중)**\n• 신청 접수: 일반 유저가 '📢 어드민 모집공고 봇'과 대화에서 `/참여` 입력\n• 알림 연동: 유저가 `/참여`를 입력하면 이곳 명령어 터미널로 실시간 알림이 도착합니다.\n• 모집 마감: `/nadmin` 입력 시 즉시 모집이 마감(비활성화)됩니다.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "read": true,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787984153243_y6njt"
+    },
+    {
+      "createdAt": 1787984175810,
+      "senderId": "bot_command",
+      "id": "msg_bot_1787984175805_t487z",
+      "read": true,
+      "text": "🛑 **[어드민 모집공고 봇 비활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🔴 비활성화 (마감됨)**\n• 총 지원자 수: **2명**\n• 다시 모집을 시작하려면 `/vadmin`을 입력하세요.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "id": "msg_bot_1787984201867_6cizx",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1787984201872,
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **엄마** (@hongdaeng1)\n권한 변경: Level 1 ➔ **Level 4 (Head Admin (총괄 관리자))**"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **엄마** (@hongdaeng1)\n권한 변경: Level 4 ➔ **Level 4 (Head Admin (총괄 관리자))**",
+      "senderId": "bot_command",
+      "createdAt": 1787984232556,
+      "id": "msg_bot_1787984232551_d80qo"
+    },
+    {
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "text": "✨ **[닉네임 강제 변경 완료]**\n@eagles 님의 표시 이름이 **'이글이글'** ➔ **'트윈트윈'**(으)로 변경되었습니다.",
+      "read": true,
+      "createdAt": 1787984315329,
+      "id": "msg_bot_1787984315324_sdcw9",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "text": "✨ **[닉네임 강제 변경 완료]**\n@eagles 님의 표시 이름이 **'트윈트윈'** ➔ **'이글이글'**(으)로 변경되었습니다.",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1787984353101,
+      "id": "msg_bot_1787984353096_r7f00"
+    },
+    {
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `**어쩔**`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1788063564088,
+      "id": "msg_bot_1788063564083_7shj2",
+      "conversationId": "conv_command",
+      "senderId": "bot_command"
+    },
+    {
+      "read": true,
+      "text": "👑 **[JK Message 시스템 최고 소유자(Owner) 콘솔]** (접속자: @jiukhan0215 | Level 5)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 👑 권한 및 공고 관리 ]\n• `/op <아이디> <1-5>` : 대상 유저의 어드민 권한 레벨을 지정 (1:Guest, 2:Moder, 3:Admin, 4:HeadAdmin, 5:Owner)\n• `/vadmin` : 📢 어드민 모집공고 봇 활성화 (유저들이 '/참여'로 지원 가능)\n• `/nadmin` : 🛑 어드민 모집공고 봇 비활성화 (모집 공식 마감)\n• `/adminlist` 또는 `어드민목록` : 1~5레벨 전체 관리자 명단 조회\n\n[ 🚫 계정 제재 & 보안 ]\n• `/ban <아이디> [사유]` : 대상 유저 영구 밴 & 즉시 강제 퇴장\n• `/timeban <아이디> <시간> [사유]` : 일정 기간 임시 밴 (예: `/timeban user1 30m 욕설`, `2h`, `1d`)\n• `/unban <아이디>` : 제재된 유저 밴 해제 (차단 해제)\n• `/banlist` 또는 `밴목록` : 현재 차단/타임밴 중인 모든 유저 목록\n\n[ 🛠️ 시스템 운영 & 제어 ]\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 팝업 공지 전송\n• `/maintenance <on|off> [메시지]` : 서버 긴급 점검 모드 가동/종료\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n• `/setname <아이디> <새이름>` : 관리자 권한으로 특정 유저 닉네임 강제 변경\n• `/wipe <all|groups>` : 시스템 전체 또는 단체방 메시지 대량 일괄 정화\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 실시간 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/status <online|dnd|offline> [메시지]` : 내 관리자 상태 및 상태메시지 즉시 변경\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "createdAt": 1788063568599,
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788063568594_vd9ou",
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "read": true,
+      "text": "🚨 **[서버 점검 모드 가동]**\n일반 회원의 신규 로그인 및 접근이 차단되며 공지가 전파되었습니다.\n점검 안내 문구: \"테스트\"\n점검 해제: `/maintenance off`",
+      "id": "msg_bot_1788063609493_95lh6",
+      "conversationId": "conv_command",
+      "createdAt": 1788063609498,
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "text": "✅ **[서버 점검 모드 해제]**\n서버 점검이 종료되었으며 일반 사용자의 정상 접속이 활성화되었습니다.",
+      "read": true,
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "id": "msg_bot_1788063687580_hnd9v",
+      "createdAt": 1788063687585
+    },
+    {
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **siwon** (@why_who)\n권한 변경: Level 1 ➔ **Level 4 (Head Admin (총괄 관리자))**",
+      "createdAt": 1788237608961,
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788237608956_l2q0g"
+    },
+    {
+      "read": true,
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @jk\n사유: \"Message\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "id": "msg_bot_1788237632565_acmap",
+      "senderId": "bot_command",
+      "receiverId": "user_1787620899712_fybv",
+      "conversationId": "conv_command",
+      "createdAt": 1788237632570
+    },
+    {
+      "id": "msg_bot_1788237678847_jr6uy",
+      "createdAt": 1788237678852,
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "receiverId": "user_1787620899712_fybv",
+      "read": true,
+      "text": "❌ **[보안 규칙]** Head Admin (Level 4) 및 Owner (Level 5) 대상은 밴/차단할 수 없습니다."
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788264473498_f8i4l",
+      "senderId": "bot_command",
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **siwon** (@why_who)\n권한 변경: Level 4 ➔ **Level 1 (Guest/Member (일반 유저))**",
+      "read": true,
+      "createdAt": 1788264473503
+    },
+    {
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **kangmin** (@kangmin)\n권한 변경: Level 1 ➔ **Level 5 (Owner (최고 소유자))**",
+      "read": true,
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "createdAt": 1788327119530,
+      "id": "msg_bot_1788327119525_yiv7q"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "text": "👑 **[권한 레벨 설정 완료]**\n대상: **kangmin** (@kangmin)\n권한 변경: Level 5 ➔ **Level 4 (Head Admin (총괄 관리자))**",
+      "read": true,
+      "id": "msg_bot_1788327128892_krz4l",
+      "createdAt": 1788327128897,
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command",
+      "text": "❓ 알 수 없는 명령어: `/bamn why_who`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "id": "msg_bot_1788327133063_ripn4",
+      "conversationId": "conv_command",
+      "createdAt": 1788327133068
+    },
+    {
+      "createdAt": 1788327137754,
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788327137749_b1gbp",
+      "read": true,
+      "text": "🚫 **[영구 밴 조치 완료]**\n대상: @why_who\n사유: \"관리자 권한으로 영구 차단되었습니다.\"\n해당 계정은 즉시 접속이 차단되며 로그인할 수 없습니다.",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "read": true,
+      "text": "✨ **[밴 해제 완료]**\n@why_who 님의 차단이 성공적으로 해제되었습니다. 이제 정상적으로 로그인 및 이용이 가능합니다.",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1788327147700,
+      "id": "msg_bot_1788327147695_ldqwr"
+    },
+    {
+      "createdAt": 1788327152382,
+      "senderId": "bot_command",
+      "text": "❓ 알 수 없는 명령어: `ez`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "id": "msg_bot_1788327152377_8yy04",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327152788_0k14j",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1788327152793,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `ez`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다."
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `ez`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "senderId": "bot_command",
+      "createdAt": 1788327153041,
+      "id": "msg_bot_1788327153036_q057c"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327153318_l0ndh",
+      "conversationId": "conv_command",
+      "text": "❓ 알 수 없는 명령어: `ez`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "senderId": "bot_command",
+      "createdAt": 1788327153323
+    },
+    {
+      "senderId": "bot_command",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `e`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "createdAt": 1788327153565,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788327153560_uszsf"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327153764_nf6o8",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `z`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "createdAt": 1788327153769,
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "createdAt": 1788327153929,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `e`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "id": "msg_bot_1788327153924_rce0w",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_command"
+    },
+    {
+      "createdAt": 1788327154082,
+      "senderId": "bot_command",
+      "id": "msg_bot_1788327154077_z2jlr",
+      "conversationId": "conv_command",
+      "text": "❓ 알 수 없는 명령어: `z`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327154222_b36kv",
+      "conversationId": "conv_command",
+      "createdAt": 1788327154227,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `e`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다."
+    },
+    {
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327154382,
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327154377_14177",
+      "text": "❓ 알 수 없는 명령어: `d`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true
+    },
+    {
+      "id": "msg_bot_1788327154693_8j4ix",
+      "createdAt": 1788327154698,
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `f`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "conversationId": "conv_command",
+      "senderId": "bot_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1788327154808,
+      "id": "msg_bot_1788327154803_ju9yh",
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `xsa`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다."
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327154892_z9fvu",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `df`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "createdAt": 1788327154897
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `ds`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788327154995_nx4ea",
+      "senderId": "bot_command",
+      "createdAt": 1788327155000
+    },
+    {
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "createdAt": 1788327155244,
+      "senderId": "bot_command",
+      "id": "msg_bot_1788327155239_jgu2m",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `gdsfg`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다."
+    },
+    {
+      "id": "msg_bot_1788327155538_jxdmd",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "createdAt": 1788327155543,
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `hrtsf`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다."
+    },
+    {
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788327155656_6ydju",
+      "text": "❓ 알 수 없는 명령어: `rg`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "read": true,
+      "senderId": "bot_command",
+      "createdAt": 1788327155661,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "senderId": "bot_command",
+      "id": "msg_bot_1788327155883_59ff9",
+      "createdAt": 1788327155888,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `df`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command"
+    },
+    {
+      "createdAt": 1788327156103,
+      "conversationId": "conv_command",
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `fd'g`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "senderId": "bot_command",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788327156098_hlw3j"
+    },
+    {
+      "id": "msg_bot_1788327156177_46bww",
+      "createdAt": 1788327156182,
+      "read": true,
+      "text": "❓ 알 수 없는 명령어: `tgjf`\n`/help`를 입력하면 권한에 맞는 명령어 목록을 확인할 수 있습니다.",
+      "senderId": "bot_command",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1788501324422,
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "id": "msg_bot_1788501324417_ccbvr",
+      "read": true,
+      "text": "❌ **[보안 규칙]** Head Admin (Level 4) 및 Owner (Level 5) 대상은 밴/차단할 수 없습니다."
+    },
+    {
+      "createdAt": 1788502588920,
+      "senderId": "bot_command",
+      "id": "msg_bot_1788502588915_41bdc",
+      "conversationId": "conv_command",
+      "text": "👑 **[JK Message 시스템 최고 소유자(Owner) 콘솔]** (접속자: @jiukhan0215 | Level 5)\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n[ 👑 권한 및 공고 관리 ]\n• `/op <아이디> <1-5>` : 대상 유저의 어드민 권한 레벨을 지정 (1:Guest, 2:Moder, 3:Admin, 4:HeadAdmin, 5:Owner)\n• `/vadmin` : 📢 어드민 모집공고 봇 활성화 (유저들이 '/참여'로 지원 가능)\n• `/nadmin` : 🛑 어드민 모집공고 봇 비활성화 (모집 공식 마감)\n• `/adminlist` 또는 `어드민목록` : 1~5레벨 전체 관리자 명단 조회\n\n[ 🚫 계정 제재 & 보안 ]\n• `/ban <아이디> [사유]` : 대상 유저 영구 밴 & 즉시 강제 퇴장\n• `/timeban <아이디> <시간> [사유]` : 일정 기간 임시 밴 (예: `/timeban user1 30m 욕설`, `2h`, `1d`)\n• `/unban <아이디>` : 제재된 유저 밴 해제 (차단 해제)\n• `/banlist` 또는 `밴목록` : 현재 차단/타임밴 중인 모든 유저 목록\n\n[ 🛠️ 시스템 운영 & 제어 ]\n• `/broadcast <공지내용>` : 전체 접속자에게 실시간 긴급 팝업 공지 전송\n• `/maintenance <on|off> [메시지]` : 서버 긴급 점검 모드 가동/종료\n• `/kick <아이디>` : 대상 유저의 실시간 소켓 연결 강제 종료\n• `/setname <아이디> <새이름>` : 관리자 권한으로 특정 유저 닉네임 강제 변경\n• `/wipe <all|groups>` : 시스템 전체 또는 단체방 메시지 대량 일괄 정화\n• `/users` 또는 `유저목록` : 등록된 모든 사용자 목록 및 실시간 상태 조회\n• `/stats` 또는 `서버상태` : 실시간 접속자, 소켓, DB 및 메시지 통계\n• `/info <아이디>` : 특정 유저의 상세 정보 조회\n• `/status <online|dnd|offline> [메시지]` : 내 관리자 상태 및 상태메시지 즉시 변경\n• `/db` : Firestore 클라우드 동기화 상태 점검\n• `/clear` : 관리자 명령어 대화 내역 초기화\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "read": true,
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "conversationId": "conv_command",
+      "id": "msg_bot_1788515198802_rnh5w",
+      "read": true,
+      "text": "📢 **[어드민 모집공고 봇 활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🟢 활성화됨 (진행 중)**\n• 신청 접수: 일반 유저가 '📢 어드민 모집공고 봇'과 대화에서 `/참여` 입력\n• 알림 연동: 유저가 `/참여`를 입력하면 이곳 명령어 터미널로 실시간 알림이 도착합니다.\n• 모집 마감: `/nadmin` 입력 시 즉시 모집이 마감(비활성화)됩니다.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "createdAt": 1788515198807,
+      "senderId": "bot_command"
+    },
+    {
+      "createdAt": 1788515220713,
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_1788515220708_yccfa",
+      "senderId": "bot_command",
+      "read": true,
+      "text": "⚠️ 사용법: `/op <아이디> <레벨(1-5)>`\n• 1: Guest (일반 회원 - /help, /clear)\n• 2: Moder (모더레이터 - /users, /stats, /info, /status)\n• 3: Admin (관리자 - /kick, /setname, /users, /stats, /info 등)\n• 4: Head Admin (총괄 관리자 - 점검 빼고 밴 등 모두 가능)\n• 5: Owner (소유자 - 모든 권한)\n예시: `/op user1 3` (user1에게 Admin 권한 지급)",
+      "conversationId": "conv_command"
+    },
+    {
+      "text": "🛑 **[어드민 모집공고 봇 비활성화 완료]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 모집 상태: **🔴 비활성화 (마감됨)**\n• 총 지원자 수: **2명**\n• 다시 모집을 시작하려면 `/vadmin`을 입력하세요.\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "read": true,
+      "createdAt": 1788515226081,
+      "senderId": "bot_command",
+      "id": "msg_bot_1788515226076_7ie2v",
+      "conversationId": "conv_command",
+      "receiverId": "user_1786795459130_m6hr"
+    },
+    {
+      "createdAt": 1787979781568,
+      "id": "msg_bot_recruit_1787979781568_zgbx8",
+      "conversationId": "conv_recruit_user_1787911840480_5zeg",
+      "senderId": "bot_recruit",
+      "receiverId": "user_1787911840480_5zeg",
+      "read": true,
+      "text": "⚠️ **[현재는 어드민 모집 기간이 아닙니다]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n현재 어드민 모집이 비활성화(마감)되어 있습니다.\n최고관리자(Owner)가 `/vadmin` 명령어로 모집을 활성화한 후 다시 지원해주세요."
+    },
+    {
+      "senderId": "bot_recruit",
+      "text": "⚠️ **[현재는 어드민 모집 기간이 아닙니다]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n현재 어드민 모집이 비활성화(마감)되어 있습니다.\n최고관리자(Owner)가 `/vadmin` 명령어로 모집을 활성화한 후 다시 지원해주세요.",
+      "read": true,
+      "id": "msg_bot_recruit_1787979790671_1koc0",
+      "createdAt": 1787979790671,
+      "receiverId": "user_1787911840480_5zeg",
+      "conversationId": "conv_recruit_user_1787911840480_5zeg"
+    },
+    {
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "createdAt": 1787979837919,
+      "senderId": "bot_recruit",
+      "receiverId": "user_1786795459130_m6hr",
+      "id": "msg_bot_recruit_1787979837919_kihgu",
+      "read": true,
+      "text": "✅ **[어드민 지원서 접수 완료!]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **JK Message** (@jiukhan0215)\n• 접수 시각: 오전 5:03:57\n• 각오/메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n회원님의 어드민 지원서가 최고관리자(Owner)의 **⚡ 명령어 터미널**로 실시간 전송되었습니다.\n관리자 심사 및 승인 시 권한이 부여됩니다. 지원해주셔서 감사합니다!"
+    },
+    {
+      "receiverId": "user_1786795459130_m6hr",
+      "read": true,
+      "text": "⚠️ **[현재는 어드민 모집 기간이 아닙니다]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n현재 어드민 모집이 비활성화(마감)되어 있습니다.\n최고관리자(Owner)가 `/vadmin` 명령어로 모집을 활성화한 후 다시 지원해주세요.",
+      "senderId": "bot_recruit",
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "createdAt": 1787980282458,
+      "id": "msg_bot_recruit_1787980282458_rpe0n"
+    },
+    {
+      "read": true,
+      "text": "✅ **[어드민 지원서 접수 완료!]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **엄마** (@hongdaeng1)\n• 접수 시각: 오전 6:16:10\n• 각오/메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n회원님의 어드민 지원서가 최고관리자(Owner)의 **⚡ 명령어 터미널**로 실시간 전송되었습니다.\n관리자 심사 및 승인 시 권한이 부여됩니다. 지원해주셔서 감사합니다!",
+      "receiverId": "user_1787984091537_zvxb",
+      "id": "msg_bot_recruit_1787984170438_s41w9",
+      "createdAt": 1787984170438,
+      "conversationId": "conv_recruit_user_1787984091537_zvxb",
+      "senderId": "bot_recruit"
+    },
+    {
+      "read": true,
+      "text": "✅ **[어드민 지원서 접수 완료!]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **엄마** (@hongdaeng1)\n• 접수 시각: 오전 6:16:14\n• 각오/메시지: \"열정적으로 활동하겠습니다!\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n회원님의 어드민 지원서가 최고관리자(Owner)의 **⚡ 명령어 터미널**로 실시간 전송되었습니다.\n관리자 심사 및 승인 시 권한이 부여됩니다. 지원해주셔서 감사합니다!",
+      "receiverId": "user_1787984091537_zvxb",
+      "createdAt": 1787984174723,
+      "id": "msg_bot_recruit_1787984174723_u45bz",
+      "conversationId": "conv_recruit_user_1787984091537_zvxb",
+      "senderId": "bot_recruit"
+    },
+    {
+      "conversationId": "conv_recruit_user_1787840472655_dcnz",
+      "text": "⚠️ **[현재는 어드민 모집 기간이 아닙니다]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n현재 어드민 모집이 비활성화(마감)되어 있습니다.\n최고관리자(Owner)가 `/vadmin` 명령어로 모집을 활성화한 후 다시 지원해주세요.",
+      "read": true,
+      "id": "msg_bot_recruit_1787988358912_ekbu6",
+      "receiverId": "user_1787840472655_dcnz",
+      "senderId": "bot_recruit",
+      "createdAt": 1787988358912
+    },
+    {
+      "conversationId": "conv_recruit_user_1787620899712_fybv",
+      "id": "msg_bot_recruit_1788154867059_kmkd2",
+      "receiverId": "user_1787620899712_fybv",
+      "senderId": "bot_recruit",
+      "text": "⚠️ **[현재는 어드민 모집 기간이 아닙니다]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n현재 어드민 모집이 비활성화(마감)되어 있습니다.\n최고관리자(Owner)가 `/vadmin` 명령어로 모집을 활성화한 후 다시 지원해주세요.",
+      "read": true,
+      "createdAt": 1788154867059
+    },
+    {
+      "id": "msg_bot_recruit_1788515208423_eqa3s",
+      "receiverId": "user_1786795459130_m6hr",
+      "senderId": "bot_recruit",
+      "createdAt": 1788515208423,
+      "conversationId": "conv_recruit_user_1786795459130_m6hr",
+      "text": "✅ **[어드민 지원서 접수 완료!]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **JK Message** (@jiukhan0215)\n• 접수 시각: 오전 9:46:48\n• 각오/메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n회원님의 어드민 지원서가 최고관리자(Owner)의 **⚡ 명령어 터미널**로 실시간 전송되었습니다.\n관리자 심사 및 승인 시 권한이 부여됩니다. 지원해주셔서 감사합니다!",
+      "read": true
+    },
+    {
+      "read": false,
+      "text": "🔔 **[새로운 어드민 지원자 접수 알림]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **JK Message** (@jiukhan0215)\n• 아이디: `jiukhan0215` (고유 ID: `user_1786795459130_m6hr`)\n• 현재 권한: **Owner (최고 소유자)** (Level 5)\n• 활동 일수: **13일차** (2026. 8. 15. 가입)\n• 지원 메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 **[원클릭 임명 명령어]**\n• Level 3 (Admin): `/op jiukhan0215 3`\n• Level 2 (Moder): `/op jiukhan0215 2`\n• Level 4 (HeadAdmin): `/op jiukhan0215 4`",
+      "receiverId": "owner",
+      "id": "msg_recruit_alert_1787979837908_yct70",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "createdAt": 1787979837913
+    },
+    {
+      "createdAt": 1787984170432,
+      "text": "🔔 **[새로운 어드민 지원자 접수 알림]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **엄마** (@hongdaeng1)\n• 아이디: `hongdaeng1` (고유 ID: `user_1787984091537_zvxb`)\n• 현재 권한: **Guest/Member (일반 유저)** (Level 1)\n• 활동 일수: **1일차** (2026. 8. 29. 가입)\n• 지원 메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 **[원클릭 임명 명령어]**\n• Level 3 (Admin): `/op hongdaeng1 3`\n• Level 2 (Moder): `/op hongdaeng1 2`\n• Level 4 (HeadAdmin): `/op hongdaeng1 4`",
+      "read": false,
+      "id": "msg_recruit_alert_1787984170427_atkzw",
+      "senderId": "bot_command",
+      "receiverId": "owner",
+      "conversationId": "conv_command"
+    },
+    {
+      "conversationId": "conv_command",
+      "read": false,
+      "text": "🔔 **[새로운 어드민 지원자 접수 알림]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **엄마** (@hongdaeng1)\n• 아이디: `hongdaeng1` (고유 ID: `user_1787984091537_zvxb`)\n• 현재 권한: **Guest/Member (일반 유저)** (Level 1)\n• 활동 일수: **1일차** (2026. 8. 29. 가입)\n• 지원 메시지: \"열정적으로 활동하겠습니다!\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 **[원클릭 임명 명령어]**\n• Level 3 (Admin): `/op hongdaeng1 3`\n• Level 2 (Moder): `/op hongdaeng1 2`\n• Level 4 (HeadAdmin): `/op hongdaeng1 4`",
+      "id": "msg_recruit_alert_1787984174712_ebjwv",
+      "createdAt": 1787984174717,
+      "senderId": "bot_command",
+      "receiverId": "owner"
+    },
+    {
+      "receiverId": "owner",
+      "id": "msg_recruit_alert_1788515208412_scl61",
+      "conversationId": "conv_command",
+      "senderId": "bot_command",
+      "read": false,
+      "text": "🔔 **[새로운 어드민 지원자 접수 알림]**\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n• 지원자: **JK Message** (@jiukhan0215)\n• 아이디: `jiukhan0215` (고유 ID: `user_1786795459130_m6hr`)\n• 현재 권한: **Owner (최고 소유자)** (Level 5)\n• 활동 일수: **19일차** (2026. 8. 15. 가입)\n• 지원 메시지: \"어드민 지원합니다.\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 **[원클릭 임명 명령어]**\n• Level 3 (Admin): `/op jiukhan0215 3`\n• Level 2 (Moder): `/op jiukhan0215 2`\n• Level 4 (HeadAdmin): `/op jiukhan0215 4`",
+      "createdAt": 1788515208417
+    },
+    {
+      "readBy": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr"
+      ],
+      "createdAt": 1787620981584,
+      "conversationId": "group_1787620981584_p8kbe",
+      "receiverId": "group",
+      "text": "📢 siwon님이 'ㅎㅇㅎㅇ' 단체 채팅방을 개설했습니다. (2명 참여)",
+      "read": true,
+      "id": "msg_sys_1787620981584",
+      "senderId": "system"
+    },
+    {
+      "receiverId": "group",
+      "conversationId": "group_1787917786183_lybsp",
+      "createdAt": 1787917786183,
+      "read": true,
+      "text": "📢 test1님이 '히히' 단체 채팅방을 개설했습니다. (2명 참여)",
+      "senderId": "system",
+      "id": "msg_sys_1787917786183",
+      "readBy": [
+        "user_1787911840480_5zeg",
+        "user_1786795459130_m6hr"
+      ]
+    },
+    {
+      "receiverId": "group",
+      "read": true,
+      "text": "📢 JK Message님이 '가족 단톡방' 단체 채팅방을 개설했습니다. (3명 참여)",
+      "id": "msg_sys_1787984429739",
+      "senderId": "system",
+      "readBy": [
+        "user_1786795459130_m6hr",
+        "user_1787840472655_dcnz",
+        "user_1787984091537_zvxb"
+      ],
+      "conversationId": "group_1787984429739_8irta",
+      "createdAt": 1787984429739
+    }
+  ],
+  "groups": [
+    {
+      "id": "group_1787620981584_p8kbe",
+      "createdAt": 1787620981584,
+      "updatedAt": 1788502580611,
+      "avatarEmoji": "🎮",
+      "name": "ㅎㅇㅎㅇ",
+      "participantIds": [
+        "user_1787620899712_fybv",
+        "user_1786795459130_m6hr",
+        "user_1787621193952_qppo"
+      ],
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "creatorId": "user_1787620899712_fybv"
+    },
+    {
+      "id": "group_1787917786183_lybsp",
+      "name": "히히",
+      "avatarEmoji": "💎",
+      "creatorId": "user_1787911840480_5zeg",
+      "createdAt": 1787917786183,
+      "updatedAt": 1787917794997,
+      "participantIds": [
+        "user_1787911840480_5zeg",
+        "user_1786795459130_m6hr"
+      ],
+      "avatarBg": "from-blue-500 to-indigo-600"
+    },
+    {
+      "avatarBg": "from-blue-500 to-indigo-600",
+      "createdAt": 1787984429739,
+      "updatedAt": 1787984442017,
+      "creatorId": "user_1786795459130_m6hr",
+      "name": "가족 단톡방",
+      "participantIds": [
+        "user_1786795459130_m6hr",
+        "user_1787840472655_dcnz",
+        "user_1787984091537_zvxb"
+      ],
+      "id": "group_1787984429739_8irta",
+      "avatarEmoji": "👥"
+    }
+  ],
+  "bans": [],
+  "notices": [],
+  "adminRecruitment": {
+    "active": false,
+    "applicants": []
+  },
+  "serverMaintenance": {
+    "enabled": false,
+    "message": "",
+    "startedAt": 0
+  }
 }

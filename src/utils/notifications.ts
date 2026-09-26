@@ -1,5 +1,6 @@
 // Browser & Mobile ServiceWorker Notification utility for JK Message
 import { sounds } from './audio';
+import { NotificationMode } from '../types';
 
 let swRegistration: ServiceWorkerRegistration | null = null;
 
@@ -64,6 +65,7 @@ export interface NotificationPayloadOptions {
   url?: string;
   conversationId?: string;
   vibrate?: number[];
+  forceMode?: NotificationMode;
   onClick?: () => void;
 }
 
@@ -71,17 +73,15 @@ export async function sendBrowserNotification(
   title: string,
   options: NotificationPayloadOptions
 ): Promise<Notification | null> {
-  // Always trigger sound & haptic vibration
-  sounds.playIncomingMessage();
+  const mode: NotificationMode = options.forceMode || sounds.getNotificationMode();
+
+  // Trigger audio/haptic based strictly on mode:
+  // - sound: plays chime + haptic
+  // - vibrate: only haptic, no sound!
+  // - silent: no sound, no haptic!
+  sounds.playIncomingMessage(mode);
 
   if (typeof window === 'undefined') return null;
-
-  // Check vibration support
-  if ('vibrate' in navigator) {
-    try {
-      navigator.vibrate(options.vibrate || [200, 100, 200, 100, 200]);
-    } catch {}
-  }
 
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
     return null;
@@ -89,9 +89,11 @@ export async function sendBrowserNotification(
 
   const defaultIcon = '/icons/icon-192.svg';
   const defaultBadge = '/icons/icon-192.svg';
+  const isSilentMode = mode === 'silent';
+  const isVibrateOnly = mode === 'vibrate';
+  const vibratePattern = isSilentMode ? [] : (options.vibrate || [200, 100, 200, 100, 200]);
 
   // 1. Mobile Priority: ServiceWorkerRegistration.showNotification()
-  // (Crucial for Android Chrome, Samsung Internet, and mobile PWAs where `new Notification()` throws Illegal Constructor error)
   if ('serviceWorker' in navigator) {
     try {
       let reg = swRegistration;
@@ -103,7 +105,8 @@ export async function sendBrowserNotification(
           body: options.body,
           icon: options.icon || defaultIcon,
           badge: options.badge || defaultBadge,
-          vibrate: options.vibrate || [200, 100, 200, 100, 200],
+          vibrate: vibratePattern,
+          silent: isSilentMode || isVibrateOnly,
           tag: options.tag || `jk-msg-${Date.now()}`,
           renotify: true,
           data: {
@@ -124,7 +127,7 @@ export async function sendBrowserNotification(
       body: options.body,
       icon: options.icon || defaultIcon,
       badge: options.badge || defaultBadge,
-      silent: false,
+      silent: isSilentMode || isVibrateOnly,
     });
 
     notification.onclick = () => {
@@ -135,7 +138,6 @@ export async function sendBrowserNotification(
       notification.close();
     };
 
-    // Auto-close notification after 6 seconds
     setTimeout(() => {
       try {
         notification.close();
@@ -152,12 +154,20 @@ export async function sendBrowserNotification(
 /**
  * Send a quick test notification to verify mobile popups & audio
  */
-export async function sendTestNotification(): Promise<boolean> {
+export async function sendTestNotification(mode?: NotificationMode): Promise<boolean> {
   const perm = await requestNotificationPermission();
-  if (perm !== 'granted') return false;
+  const effectiveMode = mode || sounds.getNotificationMode();
+  
+  const modeText =
+    effectiveMode === 'sound'
+      ? '소리 모드 (띠링~ 소리 + 진동)'
+      : effectiveMode === 'vibrate'
+      ? '진동 모드 (징~ 진동만)'
+      : '무음 모드 (화면 알림만)';
 
   await sendBrowserNotification('🔔 JK Message 알림 테스트', {
-    body: '휴대폰 알림 및 메시지 수신음("띠링~")이 정상 작동합니다!',
+    body: `현재 ${modeText}로 설정되어 있습니다.`,
+    forceMode: effectiveMode,
   });
-  return true;
+  return perm === 'granted';
 }

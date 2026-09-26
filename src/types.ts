@@ -1,6 +1,7 @@
 export type UserStatusMode = 'online' | 'dnd' | 'offline';
 export type AdminLevel = 1 | 2 | 3 | 4 | 5;
 export type UserRole = 'superadmin' | 'admin' | 'user';
+export type NotificationMode = 'sound' | 'vibrate' | 'silent';
 
 export interface AdminNotice {
   id: string;
@@ -37,6 +38,7 @@ export interface User {
   avatarEmoji: string;
   avatarImage?: string | null; // Custom uploaded profile photo URL or base64 data
   chatTheme?: ChatTheme; // Custom background theme (solid or gradient)
+  notificationMode?: NotificationMode; // 'sound' (소리) | 'vibrate' (진동) | 'silent' (무음)
   customStatus?: string;
   status: UserStatusMode;
   role?: UserRole;

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, UserStatusMode } from '../types';
+import { User, UserStatusMode, NotificationMode } from '../types';
 import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { NotificationModeToggle } from './NotificationModeToggle';
 import {
   LogIn,
   UserPlus,
@@ -25,6 +26,8 @@ interface BottomRightProfileProps {
   currentUser: User | null;
   soundEnabled: boolean;
   onToggleSound: () => void;
+  notificationMode?: NotificationMode;
+  onNotificationModeChange?: (mode: NotificationMode) => void;
   onOpenProfileSettings: () => void;
   onOpenStatusPicker: () => void;
   onOpenAdminDashboard?: () => void;
@@ -38,6 +41,8 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
   currentUser,
   soundEnabled,
   onToggleSound,
+  notificationMode,
+  onNotificationModeChange,
   onOpenProfileSettings,
   onOpenStatusPicker,
   onOpenAdminDashboard,
@@ -163,19 +168,28 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
 
           {/* Quick Action Icons */}
           <div className="flex items-center gap-1 border-l border-white/10 pl-2 shrink-0">
-            <button
-              id="bottom-profile-sound-btn"
-              type="button"
-              onClick={onToggleSound}
-              className={`p-1.5 rounded-lg border transition-colors ${
-                soundEnabled
-                  ? 'bg-blue-500/15 border-blue-500/30 text-blue-300 hover:bg-blue-500/25'
-                  : 'bg-white/5 border-white/10 text-white/40 hover:text-white/70 hover:bg-white/10'
-              }`}
-              title={soundEnabled ? '효과음 끄기' : '효과음 켜기'}
-            >
-              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-            </button>
+            {/* Quick 3-Mode Alert Selector (소리 / 진동 / 무음) */}
+            {notificationMode && onNotificationModeChange ? (
+              <NotificationModeToggle
+                currentMode={notificationMode}
+                onModeChange={onNotificationModeChange}
+                compact
+              />
+            ) : (
+              <button
+                id="bottom-profile-sound-btn"
+                type="button"
+                onClick={onToggleSound}
+                className={`p-1.5 rounded-lg border transition-colors ${
+                  soundEnabled
+                    ? 'bg-blue-500/15 border-blue-500/30 text-blue-300 hover:bg-blue-500/25'
+                    : 'bg-white/5 border-white/10 text-white/40 hover:text-white/70 hover:bg-white/10'
+                }`}
+                title={soundEnabled ? '효과음 끄기' : '효과음 켜기'}
+              >
+                {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
+            )}
 
             {/* Admin Dashboard Quick Button for Level 3, 4, 5 */}
             {currentUser && getAdminLevel(currentUser) >= 3 && onOpenAdminDashboard && (
