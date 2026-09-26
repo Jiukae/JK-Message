@@ -14,9 +14,16 @@ import { CreateGroupModal } from './components/CreateGroupModal';
 import { GroupInfoModal } from './components/GroupInfoModal';
 import { NoticeApplyModal } from './components/NoticeApplyModal';
 import { ModerAgreementModal } from './components/ModerAgreementModal';
+import { AdminDashboard } from './components/AdminDashboard';
 import { getAdminLevel } from './utils/roleUtils';
-import { sendBrowserNotification, getNotificationPermission } from './utils/notifications';
+import {
+  sendBrowserNotification,
+  getNotificationPermission,
+  initServiceWorker,
+  requestNotificationPermission,
+} from './utils/notifications';
 import { sounds } from './utils/audio';
+import { UserAvatar } from './components/UserAvatar';
 import {
   MessageSquare,
   ArrowLeft,
@@ -30,6 +37,7 @@ import {
   X,
   Volume2,
   VolumeX,
+  BellRing,
 } from 'lucide-react';
 
 // Helper to extract partner user ID from conversationId
@@ -77,6 +85,13 @@ export default function App() {
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>(() => getNotificationPermission());
   const [pendingFriendRequestsCount, setPendingFriendRequestsCount] = useState<number>(0);
 
+  // Incoming Floating Toast & Mobile Notification Banner
+  const [incomingToast, setIncomingToast] = useState<{ message: Message; sender?: User } | null>(null);
+  const [showMobileNotifBanner, setShowMobileNotifBanner] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && getNotificationPermission() === 'default';
+  });
+  const [profileModalTab, setProfileModalTab] = useState<'profile' | 'background' | 'sound'>('profile');
+
   // Broadcast banner
   const [broadcastAlert, setBroadcastAlert] = useState<string | null>(null);
 
@@ -91,6 +106,7 @@ export default function App() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPartnerDetailModal, setShowPartnerDetailModal] = useState(false);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
   const [showNewChatModal, setShowNewChatModal] = useState(false);
@@ -118,6 +134,36 @@ export default function App() {
 
   const conversationsRef = useRef<Conversation[]>(conversations);
   conversationsRef.current = conversations;
+
+  // Initialize Service Worker & listen for notification click messages
+  useEffect(() => {
+    initServiceWorker();
+
+    const handleSwMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'NAVIGATE_CONVERSATION' && event.data.conversationId) {
+        setActiveConversationId(event.data.conversationId);
+        setMobileView('chat');
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', handleSwMessage);
+    }
+    return () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', handleSwMessage);
+      }
+    };
+  }, []);
+
+  // Auto-dismiss floating message toast after 5s
+  useEffect(() => {
+    if (!incomingToast) return;
+    const timer = setTimeout(() => {
+      setIncomingToast(null);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [incomingToast]);
 
   // Identify active conversation object
   const activeConversation = useMemo(() => {
@@ -533,10 +579,27 @@ export default function App() {
                 if (me.status !== 'dnd') {
                   sounds.playIncomingMessage();
                 }
-                const senderName = allUsers.find((u) => u.id === newMsg.senderId)?.name || '새 메시지';
+
+                // Robust sender resolution from message, user cache, or friends
+                const senderUser =
+                  newMsg.sender ||
+                  allUsersRef.current.find((u) => u.id === newMsg.senderId) ||
+                  friendsRef.current.find((u) => u.id === newMsg.senderId);
+                const senderName = senderUser?.name || '새 메시지';
+
+                // Real mobile Push Notification via ServiceWorker/Notification
                 sendBrowserNotification(senderName, {
-                  body: newMsg.text || '새 메시지가 도착했습니다.',
+                  body: newMsg.text || (newMsg.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지가 도착했습니다.'),
+                  conversationId: newMsg.conversationId,
                 });
+
+                // Show floating native-like toast when outside current chat or in background
+                if (!isCurrentChat || document.hidden) {
+                  setIncomingToast({
+                    message: newMsg,
+                    sender: senderUser,
+                  });
+                }
               }
 
               if (me) fetchConversations(me.id);
@@ -924,6 +987,55 @@ export default function App() {
         <div className="absolute -bottom-20 left-[20%] w-[400px] h-[400px] bg-indigo-700/25 rounded-full blur-[120px]" />
       </div>
 
+      {/* Floating In-App Push Notification Toast */}
+      {incomingToast && (
+        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 max-w-sm sm:max-w-md w-full px-3 animate-in slide-in-from-top-3 duration-200">
+          <div
+            onClick={() => {
+              setActiveConversationId(incomingToast.message.conversationId);
+              setMobileView('chat');
+              setIncomingToast(null);
+            }}
+            className="p-3 bg-[#131625]/95 border border-purple-500/35 rounded-2xl shadow-2xl backdrop-blur-2xl text-white flex items-center justify-between gap-3 cursor-pointer hover:border-purple-400/50 transition-all group"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <UserAvatar user={incomingToast.sender} size="sm" shape="rounded-xl" />
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-xs text-white truncate">
+                    {incomingToast.sender?.name || '새 메시지'}
+                  </span>
+                  {incomingToast.sender?.username && (
+                    <span className="text-[10px] text-blue-400 font-mono">
+                      @{incomingToast.sender.username}
+                    </span>
+                  )}
+                  <span className="text-[9px] text-white/40">방금</span>
+                </div>
+                <p className="text-xs text-white/70 truncate mt-0.5">
+                  {incomingToast.message.text || (incomingToast.message.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지')}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[11px] px-2.5 py-1 rounded-xl bg-blue-600 text-white font-medium group-hover:bg-blue-500 shadow-sm transition-colors">
+                보기
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIncomingToast(null);
+                }}
+                className="p-1 text-white/40 hover:text-white rounded-lg hover:bg-white/10"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Broadcast Alert Toast */}
       {broadcastAlert && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full px-4 animate-in slide-in-from-top-4">
@@ -947,6 +1059,32 @@ export default function App() {
 
       {/* Main Glass App Container with purple aura reflection */}
       <div className="relative z-10 w-full h-full flex flex-col bg-[#0c0d18]/75 backdrop-blur-3xl md:border md:border-purple-500/20 md:rounded-3xl shadow-[0_0_80px_rgba(139,92,246,0.18)] overflow-hidden">
+        
+        {/* Mobile Notification Permission Activation Top Banner */}
+        {showMobileNotifBanner && notificationPermission !== 'granted' && (
+          <div className="shrink-0 bg-gradient-to-r from-blue-600/35 via-indigo-600/35 to-purple-600/35 border-b border-blue-400/25 px-3.5 py-1.5 flex items-center justify-between text-xs text-white backdrop-blur-md">
+            <div
+              onClick={async () => {
+                const perm = await requestNotificationPermission();
+                setNotificationPermission(perm);
+                if (perm === 'granted') setShowMobileNotifBanner(false);
+              }}
+              className="flex items-center gap-2 cursor-pointer hover:underline min-w-0"
+            >
+              <BellRing className="w-3.5 h-3.5 text-blue-400 shrink-0 animate-bounce" />
+              <span className="truncate font-medium text-[11px] sm:text-xs">
+                🔔 터치하여 휴대폰 실시간 알림 및 수신음("띠링~") 켜기
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowMobileNotifBanner(false)}
+              className="p-1 text-white/50 hover:text-white rounded-md"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
         
         {/* Active Admin Notice Banner */}
         {activeNotices.length > 0 && (
@@ -1008,6 +1146,11 @@ export default function App() {
                 onTyping={handleTyping}
                 onOpenPartnerDetails={() => setShowPartnerDetailModal(true)}
                 onOpenGroupInfo={() => setShowGroupInfoModal(true)}
+                onOpenThemeCustomizer={() => {
+                  setProfileModalTab('background');
+                  setShowProfileModal(true);
+                }}
+                onOpenAdminDashboard={() => setShowAdminDashboard(true)}
                 onBack={() => setMobileView('sidebar')}
               />
             </div>
@@ -1100,6 +1243,7 @@ export default function App() {
             onOpenCreateGroupModal={() => setShowCreateGroupModal(true)}
             onOpenNewChatModal={() => setShowNewChatModal(true)}
             onOpenModerAgreement={() => setShowModerAgreeModal(true)}
+            onOpenAdminDashboard={() => setShowAdminDashboard(true)}
             onSelectConversation={handleSelectConversation}
             onStartChatWithUser={handleStartChatWithUser}
             onOpenUserDetail={(u) => setSelectedExploreUser(u)}
@@ -1184,7 +1328,11 @@ export default function App() {
       {showProfileModal && currentUser && (
         <ProfileModal
           user={currentUser}
-          onClose={() => setShowProfileModal(false)}
+          initialTab={profileModalTab}
+          onClose={() => {
+            setShowProfileModal(false);
+            setProfileModalTab('profile');
+          }}
           onUpdate={(updated) => {
             setCurrentUser(updated);
             localStorage.setItem('id_messenger_user', JSON.stringify(updated));
@@ -1249,6 +1397,18 @@ export default function App() {
             setCurrentUser(updatedUser);
             localStorage.setItem('id_messenger_user', JSON.stringify(updatedUser));
             fetchAllUsers(currentUser.id);
+          }}
+        />
+      )}
+
+      {/* Admin Dashboard Component (Strict access: Role 3 Admin, 4 Head Admin, 5 Owner only) */}
+      {showAdminDashboard && currentUser && getAdminLevel(currentUser) >= 3 && (
+        <AdminDashboard
+          currentUser={currentUser}
+          onClose={() => setShowAdminDashboard(false)}
+          onOpenDirectChat={(target) => {
+            setShowAdminDashboard(false);
+            handleStartChatWithUser(target);
           }}
         />
       )}

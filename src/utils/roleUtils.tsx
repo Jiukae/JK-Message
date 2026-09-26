@@ -13,6 +13,22 @@ export function getAdminLevel(user?: User | null): AdminLevel {
   return 1;
 }
 
+export function getAdminRoleName(level: AdminLevel): string {
+  switch (level) {
+    case 5:
+      return 'Level 5 (Owner)';
+    case 4:
+      return 'Level 4 (Head Admin)';
+    case 3:
+      return 'Level 3 (Admin)';
+    case 2:
+      return 'Level 2 (Moder)';
+    case 1:
+    default:
+      return 'Level 1 (Guest)';
+  }
+}
+
 export function getAdminRoleInfo(level: AdminLevel) {
   switch (level) {
     case 5:

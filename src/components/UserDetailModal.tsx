@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User } from '../types';
 import { X, Copy, Check, Calendar, MessageSquare, Clock, Shield } from 'lucide-react';
 import { getAdminLevel, getAdminRoleInfo, RoleBadge } from '../utils/roleUtils';
+import { UserAvatar } from './UserAvatar';
 
 interface UserDetailModalProps {
   user: User;
@@ -56,13 +57,13 @@ export const UserDetailModal: React.FC<UserDetailModalProps> = ({
           
           {/* Avatar floating */}
           <div className="-mt-12 mb-3 relative inline-block">
-            <div className={`w-20 h-20 rounded-2xl bg-gradient-to-tr ${user.avatarBg || 'from-blue-500 to-purple-600'} border border-white/20 flex items-center justify-center text-4xl shadow-xl ring-4 ring-[#121622]`}>
-              {user.avatarEmoji || '💬'}
-            </div>
-            <span
-              className={`absolute bottom-0 right-0 w-5 h-5 rounded-full border-4 border-[#121622] ${
-                isOnline ? 'bg-emerald-400' : 'bg-white/30'
-              }`}
+            <UserAvatar
+              user={user}
+              size="xl"
+              shape="rounded-2xl"
+              showStatus
+              statusMode={isOnline ? 'online' : 'offline'}
+              className="ring-4 ring-[#121622] rounded-2xl"
             />
           </div>
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, UserStatusMode } from '../types';
-import { RoleBadge } from '../utils/roleUtils';
+import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
+import { UserAvatar } from './UserAvatar';
 import {
   LogIn,
   UserPlus,
@@ -26,6 +27,7 @@ interface BottomRightProfileProps {
   onToggleSound: () => void;
   onOpenProfileSettings: () => void;
   onOpenStatusPicker: () => void;
+  onOpenAdminDashboard?: () => void;
   onLogout: () => void;
   onNavigateToRegister: () => void;
   onLoginSuccess: (user: User) => void;
@@ -38,6 +40,7 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
   onToggleSound,
   onOpenProfileSettings,
   onOpenStatusPicker,
+  onOpenAdminDashboard,
   onLogout,
   onNavigateToRegister,
   onLoginSuccess,
@@ -119,26 +122,15 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
           
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Avatar with live status dot */}
-            <button
-              id="bottom-profile-avatar-btn"
-              type="button"
+            <UserAvatar
+              user={currentUser}
+              size="md"
+              shape="rounded-xl"
+              showStatus
+              statusMode={currentUser.status}
               onClick={onOpenProfileSettings}
-              className="relative group shrink-0"
-              title="프로필 설정 열기"
-            >
-              <div
-                className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${
-                  currentUser.avatarBg || 'from-blue-500 to-indigo-600'
-                } border border-white/20 flex items-center justify-center text-lg shadow-md transition-transform group-hover:scale-105`}
-              >
-                {currentUser.avatarEmoji || '💬'}
-              </div>
-              <span
-                className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#121622] ${getStatusColor(
-                  currentUser.status
-                )}`}
-              />
-            </button>
+              className="hover:scale-105 transition-transform"
+            />
 
             {/* User Info & Status Pill */}
             <div className="min-w-0">
@@ -184,6 +176,19 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
             >
               {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             </button>
+
+            {/* Admin Dashboard Quick Button for Level 3, 4, 5 */}
+            {currentUser && getAdminLevel(currentUser) >= 3 && onOpenAdminDashboard && (
+              <button
+                id="bottom-profile-admin-dashboard-btn"
+                type="button"
+                onClick={onOpenAdminDashboard}
+                className="p-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/30 text-purple-300 hover:text-white transition-all shadow-sm"
+                title="어드민 대시보드 열기"
+              >
+                <Shield className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             <button
               id="bottom-profile-settings-btn"

@@ -20,6 +20,14 @@ export interface AdminNotice {
   }[];
 }
 
+export interface ChatTheme {
+  type: 'default' | 'solid' | 'gradient';
+  solidColor?: string; // e.g. '#0b0f19'
+  gradientFrom?: string; // e.g. '#1e1b4b'
+  gradientTo?: string; // e.g. '#0f172a'
+  gradientAngle?: number; // e.g. 135
+}
+
 export interface User {
   id: string;
   username: string; // Unique User ID (e.g., 'jiuk', 'alex123')
@@ -27,6 +35,8 @@ export interface User {
   password?: string;
   avatarBg: string;
   avatarEmoji: string;
+  avatarImage?: string | null; // Custom uploaded profile photo URL or base64 data
+  chatTheme?: ChatTheme; // Custom background theme (solid or gradient)
   customStatus?: string;
   status: UserStatusMode;
   role?: UserRole;

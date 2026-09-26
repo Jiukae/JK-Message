@@ -24,6 +24,14 @@ interface UserRecord {
   password?: string;
   avatarBg: string;
   avatarEmoji: string;
+  avatarImage?: string | null;
+  chatTheme?: {
+    type: 'default' | 'solid' | 'gradient';
+    solidColor?: string;
+    gradientFrom?: string;
+    gradientTo?: string;
+    gradientAngle?: number;
+  };
   customStatus?: string;
   status: UserStatusMode;
   role?: 'superadmin' | 'admin' | 'user';
@@ -455,6 +463,20 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ extended: true, limit: "50mb" }));
   app.use("/uploads", express.static(UPLOADS_DIR));
+  app.use(express.static(path.join(process.cwd(), "public")));
+
+  // Direct Service Worker route with proper Service-Worker-Allowed and caching headers
+  app.get("/sw.js", (_req, res) => {
+    const swPath = path.join(process.cwd(), "public", "sw.js");
+    if (fs.existsSync(swPath)) {
+      res.setHeader("Content-Type", "application/javascript");
+      res.setHeader("Service-Worker-Allowed", "/");
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.sendFile(swPath);
+    } else {
+      res.status(404).send("// Service worker not found");
+    }
+  });
 
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
@@ -1469,7 +1491,7 @@ async function startServer() {
 
   // Register new user
   app.post("/api/auth/register", (req, res) => {
-    const { username, name, password, avatarBg, avatarEmoji, customStatus } = req.body;
+    const { username, name, password, avatarBg, avatarEmoji, avatarImage, customStatus } = req.body;
 
     if (!username || !name || !password) {
       return res.status(400).json({ error: "아이디, 이름, 비밀번호는 필수 입력 항목입니다." });
@@ -1504,6 +1526,7 @@ async function startServer() {
       password,
       avatarBg: avatarBg || "from-blue-500 to-indigo-600",
       avatarEmoji: avatarEmoji || "✨",
+      avatarImage: avatarImage || null,
       customStatus: customStatus?.trim() || "안녕하세요! JK Message에 오신 것을 환영합니다.",
       status: "online",
       dndUntil: null,
@@ -1563,7 +1586,7 @@ async function startServer() {
 
   // Update profile
   const handleProfileUpdate = (req: express.Request, res: express.Response) => {
-    const { userId, name, customStatus, avatarBg, avatarEmoji } = req.body;
+    const { userId, name, customStatus, avatarBg, avatarEmoji, avatarImage, chatTheme } = req.body;
     const user = db.users.find((u) => u.id === userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -1573,6 +1596,8 @@ async function startServer() {
     if (customStatus !== undefined) user.customStatus = customStatus.trim();
     if (avatarBg) user.avatarBg = avatarBg;
     if (avatarEmoji) user.avatarEmoji = avatarEmoji;
+    if (avatarImage !== undefined) user.avatarImage = avatarImage;
+    if (chatTheme !== undefined) user.chatTheme = chatTheme;
 
     saveDB(db, { type: 'user', item: user });
 
@@ -2799,6 +2824,265 @@ async function startServer() {
     }
     const result = executeAdminCommand(command, senderUser);
     return res.json({ success: true, result });
+  });
+
+  // Admin Dashboard - Get All Users & Live Stats (Level 3+ Only)
+  app.get("/api/admin/users", (req, res) => {
+    const adminId = req.query.adminId as string;
+    if (!adminId) {
+      return res.status(401).json({ error: "adminId is required" });
+    }
+    const admin = db.users.find((u) => u.id === adminId);
+    if (!admin || getAdminLevel(admin) < 3) {
+      return res.status(403).json({ error: "접근 권한이 없습니다. (Level 3 Admin 이상 전용)" });
+    }
+
+    if (!db.bans) db.bans = [];
+
+    const usersWithStatus = db.users.map((u) => {
+      const { password: _, ...safeUser } = u;
+      const isOnline = userSockets.has(u.id) && userSockets.get(u.id)!.size > 0;
+      const banInfo = checkUserBan(u.username);
+      const level = getAdminLevel(u);
+      return {
+        ...safeUser,
+        adminLevel: level,
+        isOnline,
+        activeSocketCount: userSockets.get(u.id)?.size || 0,
+        banInfo,
+      };
+    });
+
+    const totalUsers = db.users.length;
+    const onlineUsers = usersWithStatus.filter((u) => u.isOnline).length;
+    const bannedUsers = db.bans.length;
+    const adminUsers = usersWithStatus.filter((u) => (u.adminLevel || 1) >= 2).length;
+
+    return res.json({
+      users: usersWithStatus,
+      bans: db.bans,
+      stats: {
+        totalUsers,
+        onlineUsers,
+        bannedUsers,
+        adminUsers,
+      },
+    });
+  });
+
+  // Admin Dashboard - Perform Management Actions (Kick, Ban, Timeban, Unban, Set Level)
+  app.post("/api/admin/action", (req, res) => {
+    const { adminId, action, targetUserId, targetUsername: targetUsernameParam, reason, duration, newLevel } = req.body;
+    if (!adminId || !action) {
+      return res.status(400).json({ error: "adminId and action are required" });
+    }
+
+    const admin = db.users.find((u) => u.id === adminId);
+    if (!admin) {
+      return res.status(401).json({ error: "Admin account not found" });
+    }
+    const adminLevel = getAdminLevel(admin);
+    if (adminLevel < 3) {
+      return res.status(403).json({ error: "권한이 부족합니다. (Level 3 Admin 이상만 작업 가능)" });
+    }
+
+    // Resolve target
+    let target = db.users.find((u) => u.id === targetUserId);
+    if (!target && targetUsernameParam) {
+      target = db.users.find((u) => u.username.toLowerCase() === targetUsernameParam.toLowerCase());
+    }
+
+    // Target level check
+    const targetLevel = target ? getAdminLevel(target) : 1;
+
+    // Security check: cannot act on self or equal/higher level (except Level 5 Owner)
+    if (target && target.id === admin.id) {
+      return res.status(400).json({ error: "본인 계정에 대해서는 제재 조치를 취할 수 없습니다." });
+    }
+
+    if (target && adminLevel <= targetLevel && adminLevel !== 5) {
+      return res.status(403).json({ error: "자신과 같거나 높은 등급의 관리자에게는 조치를 취할 수 없습니다." });
+    }
+
+    const targetCleanUsername = target ? target.username.toLowerCase() : (targetUsernameParam ? targetUsernameParam.toLowerCase() : '');
+
+    // 1. KICK
+    if (action === 'kick') {
+      if (!target) {
+        return res.status(404).json({ error: "강퇴할 사용자를 찾을 수 없습니다." });
+      }
+
+      const kickReason = reason || "관리자에 의해 강제 퇴장(Kick) 처리되었습니다.";
+      const sockets = userSockets.get(target.id);
+
+      if (sockets && sockets.size > 0) {
+        for (const ws of sockets) {
+          try {
+            ws.send(JSON.stringify({
+              type: "system:kicked",
+              payload: { reason: kickReason },
+            }));
+            ws.close();
+          } catch {}
+        }
+        userSockets.delete(target.id);
+        target.status = 'offline';
+        target.lastSeen = Date.now();
+        saveDB(db);
+        broadcastPresence();
+      }
+
+      return res.json({
+        success: true,
+        message: `@${target.username} (${target.name}) 님을 강제 퇴장(Kick) 처리했습니다.`,
+      });
+    }
+
+    // 2. BAN (Permanent)
+    if (action === 'ban') {
+      if (!targetCleanUsername) {
+        return res.status(400).json({ error: "차단할 사용자의 아이디가 필요합니다." });
+      }
+
+      const banReason = reason || "관리자에 의해 영구 차단되었습니다.";
+      if (!db.bans) db.bans = [];
+
+      const existingIdx = db.bans.findIndex((b) => b.username.toLowerCase() === targetCleanUsername);
+      if (existingIdx !== -1) {
+        db.bans[existingIdx] = { username: targetCleanUsername, reason: banReason, bannedAt: Date.now(), bannedUntil: null };
+      } else {
+        db.bans.push({ username: targetCleanUsername, reason: banReason, bannedAt: Date.now(), bannedUntil: null });
+      }
+
+      // Disconnect active sockets
+      if (target) {
+        const sockets = userSockets.get(target.id);
+        if (sockets && sockets.size > 0) {
+          for (const ws of sockets) {
+            try {
+              ws.send(JSON.stringify({
+                type: "system:kicked",
+                payload: { reason: `[계정 영구 차단] ${banReason}` },
+              }));
+              ws.close();
+            } catch {}
+          }
+          userSockets.delete(target.id);
+          target.status = 'offline';
+          broadcastPresence();
+        }
+      }
+
+      saveDB(db);
+      return res.json({
+        success: true,
+        message: `@${targetCleanUsername} 계정을 영구 차단(Ban) 처리했습니다.`,
+      });
+    }
+
+    // 3. TIMEBAN
+    if (action === 'timeban') {
+      if (!targetCleanUsername) {
+        return res.status(400).json({ error: "차단할 사용자의 아이디가 필요합니다." });
+      }
+
+      const durationStr = duration || '30m';
+      let durationMs = 30 * 60 * 1000;
+      if (durationStr.endsWith('m')) durationMs = parseInt(durationStr, 10) * 60 * 1000;
+      else if (durationStr.endsWith('h')) durationMs = parseInt(durationStr, 10) * 3600 * 1000;
+      else if (durationStr.endsWith('d')) durationMs = parseInt(durationStr, 10) * 86400 * 1000;
+
+      const bannedUntil = Date.now() + durationMs;
+      const untilDateStr = new Date(bannedUntil).toLocaleString('ko-KR');
+      const banReason = reason || "관리자에 의해 임시 차단되었습니다.";
+
+      if (!db.bans) db.bans = [];
+      const existingIdx = db.bans.findIndex((b) => b.username.toLowerCase() === targetCleanUsername);
+      if (existingIdx !== -1) {
+        db.bans[existingIdx] = { username: targetCleanUsername, reason: banReason, bannedAt: Date.now(), bannedUntil };
+      } else {
+        db.bans.push({ username: targetCleanUsername, reason: banReason, bannedAt: Date.now(), bannedUntil });
+      }
+
+      if (target) {
+        const sockets = userSockets.get(target.id);
+        if (sockets && sockets.size > 0) {
+          for (const ws of sockets) {
+            try {
+              ws.send(JSON.stringify({
+                type: "system:kicked",
+                payload: { reason: `[임시 이용 제한] ${untilDateStr}까지 접속이 제한됩니다. 사유: ${banReason}` },
+              }));
+              ws.close();
+            } catch {}
+          }
+          userSockets.delete(target.id);
+          target.status = 'offline';
+          broadcastPresence();
+        }
+      }
+
+      saveDB(db);
+      return res.json({
+        success: true,
+        message: `@${targetCleanUsername} 님을 ${untilDateStr}까지 임시 차단했습니다.`,
+      });
+    }
+
+    // 4. UNBAN
+    if (action === 'unban') {
+      if (!targetCleanUsername) {
+        return res.status(400).json({ error: "해제할 사용자의 아이디가 필요합니다." });
+      }
+
+      if (!db.bans) db.bans = [];
+      db.bans = db.bans.filter((b) => b.username.toLowerCase() !== targetCleanUsername);
+      saveDB(db);
+
+      return res.json({
+        success: true,
+        message: `@${targetCleanUsername} 님의 차단이 성공적으로 해제되었습니다.`,
+      });
+    }
+
+    // 5. SET LEVEL (Role)
+    if (action === 'set_level') {
+      if (adminLevel < 4) {
+        return res.status(403).json({ error: "권한 변경은 Head Admin (Level 4) 이상만 가능합니다." });
+      }
+      if (!target) {
+        return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+      }
+      const lvlNum = Number(newLevel);
+      if (isNaN(lvlNum) || lvlNum < 1 || lvlNum > 5) {
+        return res.status(400).json({ error: "유효한 등급(1~5)을 지정해주세요." });
+      }
+
+      if (adminLevel === 4 && lvlNum >= 4) {
+        return res.status(403).json({ error: "Head Admin은 Level 3(Admin) 이하까지만 임명할 수 있습니다." });
+      }
+
+      target.adminLevel = lvlNum as AdminLevel;
+      target.role = lvlNum === 5 ? 'superadmin' : lvlNum >= 2 ? 'admin' : 'user';
+      saveDB(db, { type: 'user', item: target });
+
+      const { password: _, ...safeUser } = target;
+      for (const client of wss.clients) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({
+            type: "user:profile_updated",
+            payload: { user: safeUser },
+          }));
+        }
+      }
+
+      return res.json({
+        success: true,
+        message: `@${target.username} (${target.name}) 님의 등급을 ${getAdminRoleName(lvlNum as AdminLevel)}(으)로 변경했습니다.`,
+      });
+    }
+
+    return res.status(400).json({ error: `알 수 없는 액션: ${action}` });
   });
 
   // Get active Admin Notices

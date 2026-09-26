@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="innerGlow512" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad512)" />
+  <rect width="512" height="512" rx="120" fill="url(#innerGlow512)" />
+  <!-- Chat Bubble with Lightning -->
+  <path d="M128 160 C128 128, 154 106, 192 106 L320 106 C358 106, 384 128, 384 160 L384 278 C384 310, 358 332, 320 332 L224 332 L150 396 L150 332 C128 322, 128 300, 128 278 Z" fill="#ffffff" />
+  <!-- Lightning bolt inside -->
+  <path d="M266 144 L213 240 L256 240 L245 315 L304 218 L261 218 Z" fill="url(#bgGrad512)" />
+</svg>

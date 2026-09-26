@@ -28,8 +28,10 @@ import {
   Heart,
   ThumbsUp,
   Terminal,
+  Palette,
 } from 'lucide-react';
 import { getAdminLevel, getAdminRoleInfo, RoleBadge } from '../utils/roleUtils';
+import { UserAvatar } from './UserAvatar';
 
 interface ChatAreaProps {
   currentUser: User;
@@ -48,6 +50,8 @@ interface ChatAreaProps {
   onTyping: () => void;
   onOpenPartnerDetails?: () => void;
   onOpenGroupInfo?: () => void;
+  onOpenThemeCustomizer?: () => void;
+  onOpenAdminDashboard?: () => void;
   onBack?: () => void;
 }
 
@@ -77,6 +81,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   onTyping,
   onOpenPartnerDetails,
   onOpenGroupInfo,
+  onOpenThemeCustomizer,
+  onOpenAdminDashboard,
   onBack,
 }) => {
   const [inputText, setInputText] = useState('');
@@ -281,12 +287,34 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
     return <File className="w-5 h-5 text-blue-400" />;
   };
 
+  // Compute custom background style from currentUser's chatTheme
+  const getCustomBackgroundStyle = (): React.CSSProperties | undefined => {
+    const theme = currentUser?.chatTheme;
+    if (!theme || theme.type === 'default') return undefined;
+
+    if (theme.type === 'solid' && theme.solidColor) {
+      return {
+        backgroundColor: theme.solidColor,
+      };
+    }
+
+    if (theme.type === 'gradient' && theme.gradientFrom && theme.gradientTo) {
+      const angle = theme.gradientAngle !== undefined ? theme.gradientAngle : 135;
+      return {
+        background: `linear-gradient(${angle}deg, ${theme.gradientFrom} 0%, ${theme.gradientTo} 100%)`,
+      };
+    }
+
+    return undefined;
+  };
+
   return (
     <main
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`flex-1 h-full flex flex-col bg-transparent min-w-0 relative transition-colors ${
+      style={getCustomBackgroundStyle()}
+      className={`flex-1 h-full flex flex-col bg-transparent min-w-0 relative transition-colors duration-300 ${
         isDragging ? 'bg-indigo-950/20' : ''
       }`}
     >
@@ -426,20 +454,14 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
               onClick={onOpenPartnerDetails}
               className="flex items-center gap-2.5 sm:gap-3 min-w-0 cursor-pointer p-1 rounded-2xl hover:bg-white/5 transition-all group"
             >
-              <div className="relative shrink-0">
-                <div className={`w-9.5 h-9.5 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr ${partner.avatarBg || 'from-blue-500 to-purple-500'} border border-white/15 flex items-center justify-center text-lg shadow-md group-hover:scale-105 transition-transform`}>
-                  {partner.avatarEmoji || '💬'}
-                </div>
-                <span
-                  className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0c0e14] ${
-                    partnerStatusMode === 'dnd'
-                      ? 'bg-rose-500 shadow-sm shadow-rose-500/50 ring-1 ring-rose-400/30'
-                      : isPartnerOnline || partnerStatusMode === 'online'
-                      ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50 ring-1 ring-emerald-400/30'
-                      : 'bg-white/30'
-                  }`}
-                />
-              </div>
+              <UserAvatar
+                user={partner}
+                size="md"
+                shape="rounded-2xl"
+                showStatus
+                statusMode={partnerStatusMode}
+                className="group-hover:scale-105 transition-transform"
+              />
 
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -496,6 +518,30 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
           >
             <Search className="w-4 h-4" />
           </button>
+
+          {getAdminLevel(currentUser) >= 3 && onOpenAdminDashboard && (
+            <button
+              id="chat-admin-dashboard-btn"
+              type="button"
+              onClick={onOpenAdminDashboard}
+              className="p-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/35 border border-purple-400/40 text-purple-300 hover:text-white transition-all shadow-sm flex items-center gap-1"
+              title="관리자 대시보드 열기"
+            >
+              <Shield className="w-4 h-4" />
+            </button>
+          )}
+
+          {onOpenThemeCustomizer && (
+            <button
+              id="chat-theme-palette-btn"
+              type="button"
+              onClick={onOpenThemeCustomizer}
+              className="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:text-white transition-all shadow-sm flex items-center gap-1"
+              title="채팅 배경 커스텀 (단색 & 그라데이션)"
+            >
+              <Palette className="w-4 h-4" />
+            </button>
+          )}
 
           {isGroup ? (
             <button
@@ -597,9 +643,11 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                 {/* Other User Avatar in Group Chat or 1:1 */}
                 {!isMe && (
                   <div className="shrink-0 mb-1">
-                    <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${senderUser?.avatarBg || 'from-indigo-500 to-blue-600'} border border-white/15 flex items-center justify-center text-sm shadow-sm`}>
-                      {senderUser?.avatarEmoji || '👤'}
-                    </div>
+                    <UserAvatar
+                      user={senderUser}
+                      size="sm"
+                      shape="rounded-xl"
+                    />
                   </div>
                 )}
 

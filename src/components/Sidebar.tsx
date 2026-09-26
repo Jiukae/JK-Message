@@ -15,7 +15,8 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import { BottomRightProfile } from './BottomRightProfile';
-import { RoleBadge } from '../utils/roleUtils';
+import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
+import { UserAvatar } from './UserAvatar';
 
 interface SidebarProps {
   currentUser: User | null;
@@ -37,6 +38,7 @@ interface SidebarProps {
   onOpenCreateGroupModal?: () => void;
   onOpenNewChatModal?: () => void;
   onOpenModerAgreement?: () => void;
+  onOpenAdminDashboard?: () => void;
   onSelectConversation: (conversationId: string) => void;
   onStartChatWithUser: (user: User) => void;
   onOpenUserDetail?: (user: User) => void;
@@ -63,6 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenCreateGroupModal,
   onOpenNewChatModal,
   onOpenModerAgreement,
+  onOpenAdminDashboard,
   onSelectConversation,
   onStartChatWithUser,
   onOpenUserDetail,
@@ -246,7 +249,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Quick Action Button Toolbar under JK Message Header */}
       {!isGuest && (
-        <div className="px-3 pt-3 pb-2 border-b border-white/10 bg-white/[0.02]">
+        <div className="px-3 pt-3 pb-2 border-b border-white/10 bg-white/[0.02] space-y-2">
+          {/* Admin Dashboard Button for Role 3, 4, 5 */}
+          {getAdminLevel(currentUser) >= 3 && onOpenAdminDashboard && (
+            <button
+              id="sidebar-admin-dashboard-btn"
+              type="button"
+              onClick={onOpenAdminDashboard}
+              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-purple-600/30 via-indigo-600/25 to-blue-600/30 hover:from-purple-600/45 hover:to-blue-600/45 border border-purple-400/40 text-purple-200 hover:text-white flex items-center justify-between text-xs font-bold transition-all shadow-md shadow-purple-600/20 group"
+            >
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-purple-300 group-hover:scale-110 transition-transform" />
+                <span>관리자 대시보드</span>
+              </div>
+              <span className="text-[10px] bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-md border border-purple-400/40 font-mono">
+                Level {getAdminLevel(currentUser)}
+              </span>
+            </button>
+          )}
+
           <div className="grid grid-cols-3 gap-1.5">
             {/* 새 대화 버튼 */}
             <button
@@ -537,12 +558,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         : 'hover:bg-white/5 border-transparent'
                     }`}
                   >
-                    <div className="relative shrink-0">
-                      <div className={`w-11 h-11 rounded-2xl bg-gradient-to-tr ${other.avatarBg || 'from-blue-500 to-indigo-600'} border border-white/15 flex items-center justify-center text-xl shadow-md`}>
-                        {other.avatarEmoji || '💬'}
-                      </div>
-                      <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0d111a] ${statusInfo.dotClass}`} />
-                    </div>
+                    <UserAvatar
+                      user={other}
+                      size="md"
+                      shape="rounded-2xl"
+                      showStatus
+                      statusMode={other.status}
+                    />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
@@ -602,12 +624,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => onOpenUserDetail && onOpenUserDetail(f)}
                       className="flex items-center gap-3 min-w-0 text-left flex-1"
                     >
-                      <div className="relative shrink-0">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${f.avatarBg || 'from-blue-500 to-indigo-600'} border border-white/15 flex items-center justify-center text-lg`}>
-                          {f.avatarEmoji || '💬'}
-                        </div>
-                        <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0d111a] ${statusInfo.dotClass}`} />
-                      </div>
+                      <UserAvatar
+                        user={f}
+                        size="md"
+                        shape="rounded-xl"
+                        showStatus
+                        statusMode={f.status}
+                      />
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -662,12 +685,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }}
                     className="w-full p-2.5 rounded-2xl bg-white/[0.02] hover:bg-white/5 border border-white/5 flex items-center gap-3 text-left transition-colors group"
                   >
-                    <div className="relative shrink-0">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${u.avatarBg || 'from-blue-500 to-indigo-600'} border border-white/15 flex items-center justify-center text-lg group-hover:scale-105 transition-transform`}>
-                        {u.avatarEmoji || '💬'}
-                      </div>
-                      <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0d111a] ${statusInfo.dotClass}`} />
-                    </div>
+                    <UserAvatar
+                      user={u}
+                      size="md"
+                      shape="rounded-xl"
+                      showStatus
+                      statusMode={u.status}
+                      className="group-hover:scale-105 transition-transform"
+                    />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
