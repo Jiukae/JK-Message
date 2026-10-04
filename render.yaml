@@ -3,7 +3,8 @@ services:
     name: jk-message
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    region: singapore
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
