@@ -15,19 +15,16 @@ import { GroupInfoModal } from './components/GroupInfoModal';
 import { NoticeApplyModal } from './components/NoticeApplyModal';
 import { ModerAgreementModal } from './components/ModerAgreementModal';
 import { AdminDashboard } from './components/AdminDashboard';
+import { ApkDownloadModal } from './components/ApkDownloadModal';
 import { getAdminLevel } from './utils/roleUtils';
 import {
   sendBrowserNotification,
   getNotificationPermission,
   initServiceWorker,
   requestNotificationPermission,
-  syncPushSubscription,
-  removePushSubscription,
-  isPushActive,
-  getPushEndpoint,
-  onPushEndpointChange,
-  isIOS,
-  isStandalonePWA,
+  subscribeUserToPush,
+  isNativeAndroidApp,
+  downloadApkFile,
 } from './utils/notifications';
 import { sounds } from './utils/audio';
 import { UserAvatar } from './components/UserAvatar';
@@ -45,8 +42,11 @@ import {
   Shield,
   X,
   Volume2,
+  Bell,
   VolumeX,
   BellRing,
+  Smartphone,
+  Download,
 } from 'lucide-react';
 
 // Helper to extract partner user ID from conversationId
@@ -85,10 +85,7 @@ export default function App() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  // Opened from a push notification: /?conv=<conversationId>
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(() => {
-    return new URLSearchParams(window.location.search).get('conv');
-  });
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [userStatuses, setUserStatuses] = useState<Record<string, { status: UserStatusMode; dndUntil?: number | null }>>({});
@@ -123,11 +120,10 @@ export default function App() {
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [selectedExploreUser, setSelectedExploreUser] = useState<User | null>(null);
+  const [showApkModal, setShowApkModal] = useState(false);
 
   // Mobile navigation state
-  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>(() =>
-    new URLSearchParams(window.location.search).get('conv') ? 'chat' : 'sidebar'
-  );
+  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>('sidebar');
 
   const wsRef = useRef<WebSocket | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -149,13 +145,12 @@ export default function App() {
   const conversationsRef = useRef<Conversation[]>(conversations);
   conversationsRef.current = conversations;
 
-  // Initialize Service Worker & listen for notification click messages
+  // Initialize Service Worker, listen for notification click messages, and auto-subscribe to push
   useEffect(() => {
     initServiceWorker();
 
-    // Drop ?conv= from the address bar after it was consumed on startup
-    if (window.location.search.includes('conv=')) {
-      window.history.replaceState(null, '', window.location.pathname);
+    if (currentUser?.id && getNotificationPermission() === 'granted') {
+      subscribeUserToPush(currentUser.id).catch(() => {});
     }
 
     const handleSwMessage = (event: MessageEvent) => {
@@ -173,7 +168,7 @@ export default function App() {
         navigator.serviceWorker.removeEventListener('message', handleSwMessage);
       }
     };
-  }, []);
+  }, [currentUser?.id]);
 
   // Identify active conversation object
   const activeConversation = useMemo(() => {
@@ -264,23 +259,14 @@ export default function App() {
     setMobileView('sidebar');
     setAppView('messenger');
 
-    if (isNewRegistration || getNotificationPermission() === 'default' || (isIOS() && !isStandalonePWA())) {
+    if (isNewRegistration || getNotificationPermission() === 'default') {
       setTimeout(() => {
         setShowNotificationPrompt(true);
       }, 400);
     }
   };
 
-  // Register this device for background push (app closed / phone locked) whenever a user is logged in.
-  // Also remembers the user id so a later permission grant (e.g. from the profile settings) subscribes too.
-  useEffect(() => {
-    if (currentUser?.id) {
-      syncPushSubscription(currentUser.id);
-    }
-  }, [currentUser?.id, notificationPermission]);
-
   const handleLogout = () => {
-    removePushSubscription();
     localStorage.removeItem('id_messenger_user');
     localStorage.removeItem('id_messenger_token');
     if (wsRef.current) {
@@ -446,14 +432,7 @@ export default function App() {
             reconnectTimeout = null;
           }
 
-          ws?.send(JSON.stringify({
-            type: 'auth',
-            payload: {
-              userId: currentUserId,
-              visible: document.visibilityState === 'visible',
-              pushEndpoint: getPushEndpoint(),
-            },
-          }));
+          ws?.send(JSON.stringify({ type: 'auth', payload: { userId: currentUserId } }));
 
           if (pingInterval) clearInterval(pingInterval);
           pingInterval = setInterval(() => {
@@ -620,17 +599,17 @@ export default function App() {
                 const senderName = senderUser?.name || '새 메시지';
 
                 // Real mobile Push Notification via ServiceWorker/Notification
-                // (while in background with Web Push active, the server push already shows it)
-                if (!(document.hidden && isPushActive())) {
-                  sendBrowserNotification(senderName, {
-                    body: newMsg.text || (newMsg.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지가 도착했습니다.'),
-                    conversationId: newMsg.conversationId,
-                    forceMode: currentMode,
-                  });
-                }
+                sendBrowserNotification(senderName, {
+                  body: newMsg.text || (newMsg.attachment ? '📎 파일이 전송되었습니다.' : '새 메시지가 도착했습니다.'),
+                  conversationId: newMsg.conversationId,
+                  forceMode: currentMode,
+                });
 
                 // Show top Heads-Up notification banner ("여기에 뜰 수 있게")
-                if (!isCurrentChat || document.hidden) {
+                const isViewingThisChat =
+                  (mobileView === 'chat' || window.innerWidth >= 768) &&
+                  curActiveConvId === newMsg.conversationId;
+                if (!isViewingThisChat || document.hidden) {
                   setHeadsUpNotification({
                     id: `${newMsg.id}-${Date.now()}`,
                     message: newMsg,
@@ -723,40 +702,10 @@ export default function App() {
       }
     };
 
-    // Tell the server whether the app is on screen, so it knows when to send push notifications instead
-    const handleVisibilityChange = () => {
-      const visible = document.visibilityState === 'visible';
-      if (visible && 'clearAppBadge' in navigator) {
-        (navigator as any).clearAppBadge().catch(() => {});
-      }
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'visibility', payload: { visible } }));
-      } else if (visible) {
-        // Phone was unlocked with a dead socket: reconnect right away
-        if (reconnectTimeout) {
-          clearTimeout(reconnectTimeout);
-          reconnectTimeout = null;
-        }
-        retryAttempts = 0;
-        if (!ws || ws.readyState === WebSocket.CLOSED) connect();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Tell the server which push subscription belongs to this socket, so it skips pushing to
-    // a device where the app is open, while other devices (e.g. the phone) still get notified
-    const unsubscribePushEndpoint = onPushEndpointChange((endpoint) => {
-      if (endpoint && ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'push:endpoint', payload: { endpoint } }));
-      }
-    });
-
     connect();
 
     return () => {
       isUnmounted = true;
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      unsubscribePushEndpoint();
       if (pingInterval) clearInterval(pingInterval);
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
@@ -1081,6 +1030,13 @@ export default function App() {
       },
       mode: effectiveMode,
     });
+
+    // Also trigger device/OS push notification if supported
+    sendBrowserNotification('🔔 JK Message 알림', {
+      body: fakeMsg.text,
+      conversationId: fakeMsg.conversationId,
+      forceMode: effectiveMode,
+    });
   };
 
   // 1. Full Page Centered Register View
@@ -1119,6 +1075,52 @@ export default function App() {
           setHeadsUpNotification(null);
         }}
       />
+
+      {/* Mobile Notification Permission Quick Bar */}
+      {currentUser && notificationPermission === 'default' && (
+        <div className="fixed bottom-3.5 left-1/2 -translate-x-1/2 z-40 max-w-sm w-[92%] px-2 animate-in slide-in-from-bottom-3 duration-200">
+          <div className="p-3 bg-[#131625]/95 border border-blue-500/40 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.7)] backdrop-blur-xl text-white flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-blue-600/25 border border-blue-400/30 flex items-center justify-center text-blue-400 shrink-0">
+                <Bell className="w-4 h-4" />
+              </div>
+              <div className="text-xs min-w-0">
+                <p className="font-bold text-white text-[11px] leading-tight">스마트폰 실제 알림 켜기</p>
+                <p className="text-white/50 text-[10px] truncate">앱을 닫아두어도 상단바 알림 및 진동 수신</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={async () => {
+                  const perm = await requestNotificationPermission(currentUser.id);
+                  setNotificationPermission(perm);
+                }}
+                className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl text-[11px] shadow-sm active:scale-95 transition-all flex items-center gap-1"
+              >
+                <span>켜기</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowApkModal(true)}
+                className="px-2.5 py-1.5 bg-gradient-to-r from-indigo-600/40 to-purple-600/40 hover:from-indigo-600/60 hover:to-purple-600/60 text-purple-200 border border-purple-400/30 font-bold rounded-xl text-[11px] shadow-sm active:scale-95 transition-all flex items-center gap-1"
+                title="앱을 닫아도 카톡처럼 100% 알림이 오는 전용 APK 다운로드"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-purple-300" />
+                <span>APK</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setNotificationPermission('denied')}
+                className="p-1.5 text-white/40 hover:text-white/80 rounded-lg hover:bg-white/10"
+                title="닫기"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Broadcast Alert Toast */}
       {broadcastAlert && (
@@ -1211,7 +1213,10 @@ export default function App() {
                   setShowProfileModal(true);
                 }}
                 onOpenAdminDashboard={() => setShowAdminDashboard(true)}
-                onBack={() => setMobileView('sidebar')}
+                onBack={() => {
+                  setMobileView('sidebar');
+                  setActiveConversationId(null);
+                }}
               />
             </div>
           ) : currentUser ? (
@@ -1306,6 +1311,7 @@ export default function App() {
             onOpenNewChatModal={() => setShowNewChatModal(true)}
             onOpenModerAgreement={() => setShowModerAgreeModal(true)}
             onOpenAdminDashboard={() => setShowAdminDashboard(true)}
+            onOpenApkModal={() => setShowApkModal(true)}
             onSelectConversation={handleSelectConversation}
             onStartChatWithUser={handleStartChatWithUser}
             onOpenUserDetail={(u) => setSelectedExploreUser(u)}
@@ -1436,6 +1442,7 @@ export default function App() {
       {/* Notification Prompt Modal */}
       <NotificationPromptModal
         isOpen={showNotificationPrompt}
+        userId={currentUser?.id}
         onClose={() => setShowNotificationPrompt(false)}
         onEnabled={() => {
           setNotificationPermission(getNotificationPermission());
@@ -1479,6 +1486,12 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Android Native APK Download Modal */}
+      <ApkDownloadModal
+        isOpen={showApkModal}
+        onClose={() => setShowApkModal(false)}
+      />
 
     </div>
   );

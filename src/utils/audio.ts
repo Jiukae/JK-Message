@@ -126,13 +126,38 @@ class SoundEffectManager {
         this.ctx.resume().catch(() => {});
       }
 
-      // Pre-warm fallback audio element
+      // Play silent sample to activate hardware pipe on mobile
+      if (this.ctx) {
+        try {
+          const buf = this.ctx.createBuffer(1, 1, 22050);
+          const src = this.ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(this.ctx.destination);
+          src.start(0);
+        } catch {}
+      }
+
+      // Pre-warm fallback audio element and unlock autoplay on iOS/Android
       if (!this.fallbackAudio) {
         if (!this.chimeUri) this.chimeUri = createChimeWavUri();
         this.fallbackAudio = new Audio(this.chimeUri);
         this.fallbackAudio.volume = 0.85;
-        this.fallbackAudio.load();
       }
+
+      // Mobile autoplay unlock via muted play/pause
+      try {
+        this.fallbackAudio.muted = true;
+        const p = this.fallbackAudio.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => {
+            if (this.fallbackAudio) {
+              this.fallbackAudio.pause();
+              this.fallbackAudio.currentTime = 0;
+              this.fallbackAudio.muted = false;
+            }
+          }).catch(() => {});
+        }
+      } catch {}
 
       this.isUnlocked = true;
     } catch (e) {

@@ -13,6 +13,8 @@ import {
   Info,
   LogIn,
   CheckCheck,
+  Smartphone,
+  Download,
 } from 'lucide-react';
 import { BottomRightProfile } from './BottomRightProfile';
 import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
@@ -41,6 +43,7 @@ interface SidebarProps {
   onOpenNewChatModal?: () => void;
   onOpenModerAgreement?: () => void;
   onOpenAdminDashboard?: () => void;
+  onOpenApkModal?: () => void;
   onSelectConversation: (conversationId: string) => void;
   onStartChatWithUser: (user: User) => void;
   onOpenUserDetail?: (user: User) => void;
@@ -70,6 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenNewChatModal,
   onOpenModerAgreement,
   onOpenAdminDashboard,
+  onOpenApkModal,
   onSelectConversation,
   onStartChatWithUser,
   onOpenUserDetail,
@@ -272,7 +276,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           )}
 
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-4 gap-1.5">
             {/* 새 대화 버튼 */}
             <button
               id="sidebar-quick-new-chat-btn"
@@ -310,6 +314,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <Users className="w-4 h-4 text-indigo-300 group-hover:scale-110 transition-transform mb-1" />
               <span className="text-[11px] font-semibold tracking-tight">단체방</span>
+            </button>
+
+            {/* 전용 APK 버튼 */}
+            <button
+              id="sidebar-quick-apk-btn"
+              type="button"
+              onClick={onOpenApkModal}
+              className="relative flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-gradient-to-b from-blue-600/20 via-indigo-600/20 to-purple-600/20 hover:from-blue-600/35 hover:to-purple-600/35 border border-blue-400/35 text-blue-200 hover:text-white transition-all shadow-sm group"
+              title="화면을 닫아도 알림이 오는 안드로이드 전용 APK 다운로드"
+            >
+              <Smartphone className="w-4 h-4 text-blue-300 group-hover:scale-110 transition-transform mb-1" />
+              <div className="flex items-center gap-0.5">
+                <span className="text-[11px] font-bold tracking-tight text-white">APK</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
             </button>
           </div>
         </div>

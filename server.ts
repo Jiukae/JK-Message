@@ -2,6 +2,7 @@ import express from "express";
 import http from "http";
 import path from "path";
 import fs from "fs";
+import webpush from "web-push";
 import { WebSocketServer, WebSocket } from "ws";
 import { createServer as createViteServer } from "vite";
 import {
@@ -13,15 +14,6 @@ import {
   writeBatch,
   sanitizeForFirestore
 } from "./src/serverFirestore";
-import {
-  initPush,
-  getVapidPublicKey,
-  addSubscription,
-  removeSubscription,
-  getSubscriptionUserId,
-  getUserSubscriptionCount,
-  sendPushToUser,
-} from "./src/serverPush";
 
 export type UserStatusMode = 'online' | 'dnd' | 'offline';
 export type AdminLevel = 1 | 2 | 3 | 4 | 5;
@@ -119,6 +111,7 @@ interface MessageRecord {
 const DATA_DIR = path.join(process.cwd(), "data");
 const UPLOADS_DIR = path.join(DATA_DIR, "uploads");
 const DB_FILE = path.join(DATA_DIR, "db.json");
+const VAPID_FILE = path.join(DATA_DIR, "vapid.json");
 
 // Ensure data and uploads directories exist
 if (!fs.existsSync(DATA_DIR)) {
@@ -127,6 +120,26 @@ if (!fs.existsSync(DATA_DIR)) {
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
+
+// Setup VAPID keys for Web Push Notifications (Mobile & Desktop)
+let vapidKeys: { publicKey: string; privateKey: string };
+try {
+  if (fs.existsSync(VAPID_FILE)) {
+    vapidKeys = JSON.parse(fs.readFileSync(VAPID_FILE, "utf-8"));
+  } else {
+    vapidKeys = webpush.generateVAPIDKeys();
+    fs.writeFileSync(VAPID_FILE, JSON.stringify(vapidKeys, null, 2), "utf-8");
+  }
+} catch {
+  vapidKeys = webpush.generateVAPIDKeys();
+  fs.writeFileSync(VAPID_FILE, JSON.stringify(vapidKeys, null, 2), "utf-8");
+}
+
+webpush.setVapidDetails(
+  "mailto:jiukae0215@gmail.com",
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
 
 // Initial seed data - Owner (Level 5) jiukhan0215
 const initialUsers: UserRecord[] = [
@@ -217,6 +230,13 @@ interface BanRecord {
   bannedUntil?: number | null; // null for permanent
 }
 
+export interface PushSubscriptionRecord {
+  userId: string;
+  endpoint: string;
+  subscription: any;
+  updatedAt: number;
+}
+
 interface DBState {
   users: UserRecord[];
   friendRequests: FriendRequestRecord[];
@@ -224,6 +244,7 @@ interface DBState {
   groups: GroupRoomRecord[];
   bans?: BanRecord[];
   notices?: NoticeRecord[];
+  pushSubscriptions?: PushSubscriptionRecord[];
   adminRecruitment?: {
     active: boolean;
     startedAt?: number;
@@ -277,6 +298,7 @@ function loadDB(): DBState {
           groups: Array.isArray(data.groups) ? data.groups : initialGroups,
           bans: Array.isArray(data.bans) ? data.bans : [],
           notices: Array.isArray(data.notices) ? data.notices : initialNotices,
+          pushSubscriptions: Array.isArray(data.pushSubscriptions) ? data.pushSubscriptions : [],
           adminRecruitment: data.adminRecruitment || { active: false, applicants: [] },
           serverMaintenance: data.serverMaintenance || { enabled: false, message: '', startedAt: 0 },
         };
@@ -292,6 +314,7 @@ function loadDB(): DBState {
     groups: [...initialGroups],
     bans: [],
     notices: [...initialNotices],
+    pushSubscriptions: [],
     adminRecruitment: { active: false, applicants: [] },
     serverMaintenance: { enabled: false, message: '', startedAt: 0 },
   };
@@ -466,7 +489,6 @@ function getOtherUserIdFromConv(conversationId: string, currentUserId: string): 
 
 async function startServer() {
   await initFirestoreSync();
-  await initPush();
 
   const app = express();
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -489,72 +511,58 @@ async function startServer() {
     }
   });
 
+  // Android APK Download & Info Routes
+  const getApkFilePath = () => {
+    const primary = path.join(process.cwd(), "public", "download", "JK-Messenger.apk");
+    const fallback = path.join(process.cwd(), "public", "JK-Messenger.apk");
+    if (fs.existsSync(primary)) return primary;
+    if (fs.existsSync(fallback)) return fallback;
+    return null;
+  };
+
+  const serveApkDownload = (_req: express.Request, res: express.Response) => {
+    const targetPath = getApkFilePath();
+    if (targetPath) {
+      res.setHeader("Content-Type", "application/vnd.android.package-archive");
+      res.setHeader("Content-Disposition", 'attachment; filename="JK-Messenger.apk"');
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.sendFile(targetPath);
+    } else {
+      res.status(404).json({ error: "APK 파일을 찾을 수 없습니다. 빌드 스크립트를 실행해주세요." });
+    }
+  };
+
+  app.get("/download/JK-Messenger.apk", serveApkDownload);
+  app.get("/download/app.apk", serveApkDownload);
+  app.get("/api/download/apk", serveApkDownload);
+  app.get("/JK-Messenger.apk", serveApkDownload);
+
+  app.get("/api/apk/info", (_req, res) => {
+    const targetPath = getApkFilePath();
+    if (targetPath) {
+      const stats = fs.statSync(targetPath);
+      res.json({
+        available: true,
+        version: "1.0.0",
+        fileName: "JK-Messenger.apk",
+        sizeBytes: stats.size,
+        sizeMb: (stats.size / (1024 * 1024)).toFixed(2) + " MB",
+        updatedAt: stats.mtimeMs,
+        downloadUrl: "/download/JK-Messenger.apk",
+      });
+    } else {
+      res.json({
+        available: false,
+        error: "APK file not generated",
+      });
+    }
+  });
+
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
 
   // Connected sockets mapped by userId -> Set<WebSocket>
   const userSockets = new Map<string, Set<WebSocket>>();
-
-  // Per-socket foreground state reported by the client (document.visibilityState),
-  // the time of the last frame received (pings arrive every 20s while the page is alive)
-  // and the Web Push endpoint of the device the socket belongs to.
-  const socketActivity = new WeakMap<WebSocket, { visible: boolean; lastActive: number; pushEndpoint?: string }>();
-  const SOCKET_STALE_MS = 45000;
-
-  // Push endpoints of the user's devices that currently have the app open on screen.
-  // Phones freeze backgrounded pages and may keep a dead socket around for minutes,
-  // so a hidden or silent socket does not count as "viewing".
-  function getViewingPushEndpoints(userId: string): Set<string> {
-    const endpoints = new Set<string>();
-    const sockets = userSockets.get(userId);
-    if (!sockets) return endpoints;
-    const now = Date.now();
-    for (const ws of sockets) {
-      const state = socketActivity.get(ws);
-      if (
-        state?.pushEndpoint &&
-        ws.readyState === WebSocket.OPEN &&
-        state.visible &&
-        now - state.lastActive < SOCKET_STALE_MS
-      ) {
-        endpoints.add(state.pushEndpoint);
-      }
-    }
-    return endpoints;
-  }
-
-  // Send a Web Push notification for a new message to every device of the recipient
-  // except the ones where the app is open on screen (those show it in-page).
-  // e.g. the phone still gets notified while the same account is open on a PC.
-  function pushMessageNotification(recipientId: string, message: MessageRecord, sender?: UserRecord, group?: GroupRoomRecord) {
-    if (recipientId === message.senderId) return;
-    const recipient = db.users.find((u) => u.id === recipientId);
-    if (!recipient) return;
-
-    const isDnd = recipient.status === "dnd" && (!recipient.dndUntil || recipient.dndUntil > Date.now());
-    const senderName = sender?.name || "새 메시지";
-    const preview = message.text
-      ? message.text.slice(0, 140)
-      : message.attachment
-      ? "📎 파일이 전송되었습니다."
-      : "새 메시지가 도착했습니다.";
-    const viewing = getViewingPushEndpoints(recipientId);
-
-    sendPushToUser(
-      recipientId,
-      {
-        title: group ? group.name : senderName,
-        body: group ? `${senderName}: ${preview}` : preview,
-        tag: `conv-${message.conversationId}`,
-        mode: isDnd ? "silent" : recipient.notificationMode || "sound",
-        data: {
-          url: `/?conv=${encodeURIComponent(message.conversationId)}`,
-          conversationId: message.conversationId,
-        },
-      },
-      { skipEndpoint: (endpoint) => viewing.has(endpoint) }
-    ).catch((e) => console.warn("Push notification error:", e));
-  }
 
   function broadcastToUser(userId: string, data: any) {
     const sockets = userSockets.get(userId);
@@ -574,6 +582,69 @@ async function startServer() {
       if (sockets.size === 0) {
         userSockets.delete(userId);
       }
+    }
+  }
+
+  // Send real Web Push to a user's mobile or desktop devices
+  // Works even when browser is completely closed, screen is locked, or app is in background
+  async function sendPushToUser(
+    receiverId: string,
+    payload: {
+      title: string;
+      body: string;
+      icon?: string;
+      badge?: string;
+      tag?: string;
+      url?: string;
+      conversationId?: string;
+      silent?: boolean;
+      vibrate?: number[];
+    }
+  ) {
+    if (!db.pushSubscriptions || db.pushSubscriptions.length === 0) return;
+    const userSubs = db.pushSubscriptions.filter((s) => s.userId === receiverId);
+    if (userSubs.length === 0) return;
+
+    const targetUser = db.users.find((u) => u.id === receiverId);
+    const userMode = targetUser?.notificationMode || "sound";
+    const isSilent = userMode === "silent" || payload.silent === true;
+    const isVibrateOnly = userMode === "vibrate";
+
+    const pushPayload = JSON.stringify({
+      title: payload.title,
+      body: payload.body,
+      icon: payload.icon || "/icons/icon-192.png",
+      badge: payload.badge || "/icons/badge-96.png",
+      tag: payload.tag || `jk-msg-${payload.conversationId || Date.now()}`,
+      url: payload.url || (payload.conversationId ? `/?chat=${payload.conversationId}` : "/"),
+      conversationId: payload.conversationId,
+      silent: isSilent,
+      vibrateOnly: isVibrateOnly,
+      vibrate: isSilent ? [] : (isVibrateOnly ? [300, 150, 300] : [250, 100, 250, 100, 250]),
+    });
+
+    const staleEndpoints: string[] = [];
+
+    await Promise.allSettled(
+      userSubs.map(async (subRecord) => {
+        try {
+          await webpush.sendNotification(subRecord.subscription as any, pushPayload);
+        } catch (err: any) {
+          // If subscription has expired or unsubscribed (404, 410)
+          if (err.statusCode === 404 || err.statusCode === 410) {
+            staleEndpoints.push(subRecord.endpoint);
+          } else {
+            console.warn("Push error for user:", receiverId, err?.message || err);
+          }
+        }
+      })
+    );
+
+    if (staleEndpoints.length > 0) {
+      db.pushSubscriptions = db.pushSubscriptions.filter(
+        (s) => !staleEndpoints.includes(s.endpoint)
+      );
+      saveDB(db);
     }
   }
 
@@ -1393,26 +1464,9 @@ async function startServer() {
   wss.on("connection", (ws: WebSocket) => {
     let currentUserId: string | null = null;
 
-    socketActivity.set(ws, { visible: true, lastActive: Date.now() });
-
     ws.on("message", (raw) => {
       try {
         const msg = JSON.parse(raw.toString());
-        const activity = socketActivity.get(ws);
-        if (activity) activity.lastActive = Date.now();
-
-        if (msg.type === "visibility") {
-          if (activity) activity.visible = Boolean(msg.payload?.visible);
-          return;
-        }
-
-        if (msg.type === "push:endpoint") {
-          if (activity && typeof msg.payload?.endpoint === "string") {
-            activity.pushEndpoint = msg.payload.endpoint;
-          }
-          return;
-        }
-
         if (msg.type === "ping") {
           ws.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
           return;
@@ -1420,12 +1474,6 @@ async function startServer() {
 
         if (msg.type === "auth") {
           const newUserId = msg.payload?.userId;
-          if (activity && typeof msg.payload?.visible === "boolean") {
-            activity.visible = msg.payload.visible;
-          }
-          if (activity && typeof msg.payload?.pushEndpoint === "string") {
-            activity.pushEndpoint = msg.payload.pushEndpoint;
-          }
           if (newUserId) {
             for (const [uid, sockets] of userSockets.entries()) {
               sockets.delete(ws);
@@ -1507,117 +1555,84 @@ async function startServer() {
 
   // REST API Routes
 
+  // Web Push API Routes
+  app.get("/api/push/vapid-public-key", (_req, res) => {
+    return res.json({ publicKey: vapidKeys.publicKey });
+  });
+
+  app.post("/api/push/subscribe", (req, res) => {
+    const { userId, subscription } = req.body;
+    if (!userId || !subscription || !subscription.endpoint) {
+      return res.status(400).json({ error: "userId and valid subscription are required" });
+    }
+
+    if (!db.pushSubscriptions) db.pushSubscriptions = [];
+    const existingIdx = db.pushSubscriptions.findIndex((s) => s.endpoint === subscription.endpoint);
+    const subRecord: PushSubscriptionRecord = {
+      userId,
+      endpoint: subscription.endpoint,
+      subscription,
+      updatedAt: Date.now(),
+    };
+
+    if (existingIdx >= 0) {
+      db.pushSubscriptions[existingIdx] = subRecord;
+    } else {
+      db.pushSubscriptions.push(subRecord);
+    }
+    saveDB(db);
+    return res.json({ success: true, count: db.pushSubscriptions.length });
+  });
+
+  app.post("/api/push/unsubscribe", (req, res) => {
+    const { userId, endpoint } = req.body;
+    if (!db.pushSubscriptions) db.pushSubscriptions = [];
+    db.pushSubscriptions = db.pushSubscriptions.filter(
+      (s) => s.endpoint !== endpoint && !(userId && s.userId === userId && !endpoint)
+    );
+    saveDB(db);
+    return res.json({ success: true });
+  });
+
+  // Test real push notification on device (immediate or delayed by N seconds to test with screen locked/closed)
+  app.post("/api/push/test", (req, res) => {
+    const { userId, delaySeconds } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    const sec = typeof delaySeconds === "number" && delaySeconds > 0 ? Math.min(delaySeconds, 60) : 0;
+
+    const doSend = () => {
+      sendPushToUser(userId, {
+        title: "🔔 [JK Message] 실제 기기 알림 수신 성공!",
+        body: "메신저를 닫거나 화면을 꺼두어도 스마트폰 상단바에 알림이 정상 도착했습니다! 🎉",
+        url: "/",
+        tag: `jk-test-${Date.now()}`,
+      }).catch((e) => console.warn("Test push error:", e));
+    };
+
+    if (sec > 0) {
+      setTimeout(doSend, sec * 1000);
+      return res.json({
+        success: true,
+        delayed: true,
+        seconds: sec,
+        message: `${sec}초 후에 실제 기기 알림이 발송됩니다. 지금 홈 화면으로 나가거나 화면을 잠가보세요!`,
+      });
+    } else {
+      doSend();
+      return res.json({
+        success: true,
+        delayed: false,
+        message: "스마트폰 기기로 실제 푸시 알림이 발송되었습니다!",
+      });
+    }
+  });
+
   // Health check
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", time: Date.now() });
-  });
-
-  // Web Push: VAPID public key for PushManager.subscribe()
-  app.get("/api/push/public-key", (_req, res) => {
-    const publicKey = getVapidPublicKey();
-    if (!publicKey) {
-      return res.status(503).json({ error: "푸시 알림 서버가 준비되지 않았습니다." });
-    }
-    return res.json({ publicKey });
-  });
-
-  // Web Push: register this device's subscription for a user
-  function parsePushSubscription(subscription: any): { endpoint: string; keys: { p256dh: string; auth: string } } | null {
-    const endpoint = subscription?.endpoint;
-    const keys = subscription?.keys;
-    if (
-      typeof endpoint !== "string" ||
-      !/^https:\/\//.test(endpoint) ||
-      typeof keys?.p256dh !== "string" ||
-      typeof keys?.auth !== "string"
-    ) {
-      return null;
-    }
-    return { endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth } };
-  }
-
-  app.post("/api/push/subscribe", (req, res) => {
-    const { userId, subscription } = req.body || {};
-    if (!userId || !db.users.some((u) => u.id === userId)) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const parsed = parsePushSubscription(subscription);
-    if (!parsed) {
-      return res.status(400).json({ error: "잘못된 푸시 구독 정보입니다." });
-    }
-    addSubscription(userId, parsed, req.headers["user-agent"]);
-    return res.json({ ok: true });
-  });
-
-  // Web Push: the browser rotated a subscription (sent from the Service Worker)
-  app.post("/api/push/resubscribe", (req, res) => {
-    const { oldEndpoint, subscription } = req.body || {};
-    const userId = typeof oldEndpoint === "string" ? getSubscriptionUserId(oldEndpoint) : undefined;
-    const parsed = parsePushSubscription(subscription);
-    if (!userId || !parsed) {
-      return res.status(400).json({ error: "잘못된 푸시 구독 정보입니다." });
-    }
-    removeSubscription(oldEndpoint);
-    addSubscription(userId, parsed, req.headers["user-agent"]);
-    return res.json({ ok: true });
-  });
-
-  // Web Push: diagnostics — send a test push to this device after a delay,
-  // so the user can close the app / lock the phone and check it arrives.
-  app.post("/api/push/test", (req, res) => {
-    const { userId, endpoint } = req.body || {};
-    const delaySeconds = Math.min(Math.max(Number(req.body?.delaySeconds) || 0, 0), 60);
-    const user = db.users.find((u) => u.id === userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    if (!getVapidPublicKey()) {
-      return res.status(503).json({ error: "서버의 푸시 기능이 초기화되지 않았습니다. (VAPID 키 오류, 서버 로그 확인)" });
-    }
-    if (typeof endpoint !== "string" || getSubscriptionUserId(endpoint) !== user.id) {
-      return res.status(404).json({
-        error: "이 기기가 서버에 푸시 수신 기기로 등록되어 있지 않습니다.",
-        registeredDevices: getUserSubscriptionCount(user.id),
-      });
-    }
-
-    const send = () =>
-      sendPushToUser(
-        user.id,
-        {
-          title: "🔔 JK Message 푸시 테스트",
-          body: "앱을 꺼도 알림이 정상적으로 도착합니다!",
-          tag: `push-test-${Date.now()}`,
-          mode: user.notificationMode || "sound",
-          data: { url: "/" },
-        },
-        { onlyEndpoint: endpoint }
-      );
-
-    if (delaySeconds > 0) {
-      setTimeout(() => {
-        send().then((r) => {
-          if (r.failed) console.warn("Push test failed:", r.errors);
-        });
-      }, delaySeconds * 1000);
-      return res.json({ ok: true, scheduledInSeconds: delaySeconds, registeredDevices: getUserSubscriptionCount(user.id) });
-    }
-
-    send()
-      .then((r) => {
-        if (r.sent > 0) return res.json({ ok: true, ...r });
-        return res.status(502).json({ error: `푸시 서비스 전송 실패: ${r.errors.join(" / ") || "unknown"}`, ...r });
-      })
-      .catch((e) => res.status(500).json({ error: String(e?.message || e) }));
-  });
-
-  // Web Push: forget this device (logout / notifications turned off)
-  app.post("/api/push/unsubscribe", (req, res) => {
-    const endpoint = req.body?.endpoint;
-    if (typeof endpoint === "string") {
-      removeSubscription(endpoint);
-    }
-    return res.json({ ok: true });
   });
 
   // Upload file or image
@@ -2017,6 +2032,14 @@ async function startServer() {
       type: "friend:request",
       payload: { request: populatedReq },
     });
+
+    // Real Push to Target User (Wakes up mobile even if closed)
+    sendPushToUser(targetUser.id, {
+      title: "🤝 새로운 친구 요청",
+      body: `${sender.name} (@${sender.username})님이 친구 요청을 보냈습니다.`,
+      url: "/",
+      tag: "jk-friend-req",
+    }).catch(() => {});
 
     return res.json({ message: `@${targetUser.username} 님에게 친구 요청을 보냈습니다.`, request: populatedReq });
   });
@@ -2966,7 +2989,15 @@ async function startServer() {
       // Broadcast to ALL members in this group
       for (const pid of group.participantIds) {
         broadcastToUser(pid, wsPayload);
-        pushMessageNotification(pid, newMsg, senderUser, group);
+        if (pid !== senderId) {
+          sendPushToUser(pid, {
+            title: `${group.name} - ${senderUser?.name || '멤버'}`,
+            body: (text || '').trim() || (attachment ? `[${attachment.type === 'image' ? '사진' : '파일'} 첨부]` : '새 메시지가 도착했습니다.'),
+            conversationId: group.id,
+            url: `/?chat=${group.id}`,
+            tag: `jk-grp-${group.id}`,
+          }).catch(() => {});
+        }
       }
 
       return res.json({ message: populatedMsg });
@@ -3015,7 +3046,15 @@ async function startServer() {
     // Broadcast to receiver & sender
     broadcastToUser(effectiveReceiverId, wsPayload);
     broadcastToUser(senderId, wsPayload);
-    pushMessageNotification(effectiveReceiverId, newMsg, senderUser);
+
+    // Send real Web Push to receiver (wakes up mobile phone even if closed or locked!)
+    sendPushToUser(effectiveReceiverId, {
+      title: `${senderUser?.name || '새 메시지'}`,
+      body: (text || '').trim() || (attachment ? `[${attachment.type === 'image' ? '사진' : '파일'} 첨부]` : '새 메시지가 도착했습니다.'),
+      conversationId,
+      url: `/?chat=${conversationId}`,
+      tag: `jk-msg-${conversationId}`,
+    }).catch(() => {});
 
     return res.json({ message: populatedMsg });
   });

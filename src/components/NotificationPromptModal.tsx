@@ -6,12 +6,14 @@ interface NotificationPromptModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEnabled?: () => void;
+  userId?: string;
 }
 
 export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = ({
   isOpen,
   onClose,
   onEnabled,
+  userId,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +25,7 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
   const handleEnable = async () => {
     setLoading(true);
     try {
-      const permission = await requestNotificationPermission();
+      const permission = await requestNotificationPermission(userId);
       if (permission === 'granted') {
         if (onEnabled) onEnabled();
       }
@@ -55,11 +57,11 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
           </div>
 
           <h3 className="text-xl font-bold text-white tracking-tight">
-            알림을 설정할까요?
+            스마트폰 알림을 켤까요?
           </h3>
-          <p className="text-xs text-white/60 mt-2 leading-relaxed px-2">
-            다른 사용자가 메시지를 보냈을 때<br />
-            실시간 브라우저 푸시 알림으로 바로 확인하세요!
+          <p className="text-xs text-white/70 mt-2 leading-relaxed px-2">
+            메신저를 닫아두거나 화면을 꺼두어도<br />
+            <strong className="text-blue-300">스마트폰 상단바/진동으로 실제 알림</strong>을 받으실 수 있습니다!
           </p>
         </div>
 
@@ -79,10 +81,10 @@ export const NotificationPromptModal: React.FC<NotificationPromptModalProps> = (
             type="button"
             disabled={loading}
             onClick={handleEnable}
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-semibold rounded-2xl text-sm shadow-lg shadow-blue-600/30 border border-blue-400/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white font-semibold rounded-2xl text-sm shadow-lg shadow-blue-600/30 border border-blue-400/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <Bell className="w-4 h-4" />
-            <span>{loading ? '설정 중...' : '네, 알림 켜기'}</span>
+            <span>{loading ? '기기 연동 중...' : '네, 실제 알림 켜기'}</span>
           </button>
           )}
 

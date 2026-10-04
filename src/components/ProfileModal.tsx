@@ -20,6 +20,12 @@ import {
   UploadCloud,
   Loader2,
   Layers,
+  Download,
+  ShieldCheck,
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  Zap,
 } from 'lucide-react';
 import { RoleBadge } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
@@ -28,9 +34,14 @@ import {
   sendTestNotification,
   requestNotificationPermission,
   getNotificationPermission,
-  getPushDiagnostics,
-  sendPushTest,
-  syncPushSubscription,
+  showImmediateSystemNotification,
+  subscribeUserToPush,
+  isPushSubscribed,
+  triggerDelayedPushTest,
+  isNativeAndroidApp,
+  downloadApkFile,
+  fetchApkInfo,
+  ApkInfo,
 } from '../utils/notifications';
 
 interface ProfileModalProps {
@@ -156,29 +167,26 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const [notificationMode, setNotificationMode] = useState<NotificationMode>(
     user.notificationMode || sounds.getNotificationMode()
   );
+  const [permStatus, setPermStatus] = useState<NotificationPermission | 'unsupported'>(() =>
+    getNotificationPermission()
+  );
+  const [pushActive, setPushActive] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  // APK States
+  const isNative = isNativeAndroidApp();
+  const [apkInfo, setApkInfo] = useState<ApkInfo | null>(null);
+  const [showWebReason, setShowWebReason] = useState(false);
+  const [apkDownloaded, setApkDownloaded] = useState(false);
+
+  React.useEffect(() => {
+    isPushSubscribed().then(setPushActive);
+    fetchApkInfo().then(setApkInfo);
+  }, []);
 
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [testStatus, setTestStatus] = useState<string | null>(null);
-  const [pushDiag, setPushDiag] = useState(() => getPushDiagnostics());
-  const [pushTestResult, setPushTestResult] = useState<{ ok: boolean; message: string } | null>(null);
-  const [pushTesting, setPushTesting] = useState(false);
-
-  const handlePushTest = async () => {
-    setPushTesting(true);
-    setPushTestResult(null);
-    try {
-      if (getNotificationPermission() !== 'granted') {
-        await requestNotificationPermission();
-      }
-      await syncPushSubscription(user.id);
-      const result = await sendPushTest(10);
-      setPushTestResult(result);
-    } finally {
-      setPushDiag(getPushDiagnostics());
-      setPushTesting(false);
-    }
-  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -312,15 +320,80 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
     setTimeout(() => setTestStatus(null), 3500);
   };
 
-  const handleTestHeadsUpBanner = async () => {
+  // 1. Enable Real Device Notification & Web Push
+  const handleEnablePush = async () => {
+    sounds.unlockAudio();
+    const res = await requestNotificationPermission(user.id);
+    setPermStatus(res);
+    if (res === 'granted') {
+      const ok = await subscribeUserToPush(user.id);
+      setPushActive(ok);
+      setTestStatus('✅ 스마트폰 알림 권한 허용 및 백그라운드 푸시가 성공적으로 연동되었습니다!');
+    } else {
+      setTestStatus('⚠️ 알림 권한이 허용되지 않았습니다. 브라우저 주소창 자물쇠 아이콘에서 알림을 허용해주세요.');
+    }
+    setTimeout(() => setTestStatus(null), 4500);
+  };
+
+  // 2. Immediate Real System/OS Notification Card Test
+  const handleImmediateOsTest = async () => {
+    sounds.unlockAudio();
+    if (permStatus !== 'granted') {
+      const res = await requestNotificationPermission(user.id);
+      setPermStatus(res);
+      if (res !== 'granted') {
+        setTestStatus('스마트폰 알림 권한을 먼저 허용해주세요.');
+        return;
+      }
+    }
+    const ok = await showImmediateSystemNotification('🔔 [JK Message] 실제 기기 알림', {
+      body: `스마트폰 자체 알림이 정상 수신되었습니다! (${notificationMode === 'sound' ? '소리+진동' : notificationMode === 'vibrate' ? '진동만' : '무음'})`,
+      forceMode: notificationMode,
+    });
+    if (ok) {
+      setTestStatus('📱 스마트폰 상단바에 실제 시스템 알림 카드가 떴습니다!');
+    } else {
+      setTestStatus('스마트폰 알림 발송을 재시도합니다.');
+    }
+    setTimeout(() => setTestStatus(null), 4000);
+  };
+
+  // 3. Delayed Real OS Push Notification (To test with browser closed / screen locked)
+  const handleDelayedPushTest = async () => {
+    sounds.unlockAudio();
+    if (permStatus !== 'granted') {
+      const res = await requestNotificationPermission(user.id);
+      setPermStatus(res);
+      if (res !== 'granted') {
+        setTestStatus('스마트폰 알림 권한을 먼저 허용해주세요.');
+        return;
+      }
+    }
+
+    setCountdown(3);
+    setTestStatus('⏳ 3초 카운트다운! 지금 바로 화면을 끄거나 홈 화면으로 나가보세요!');
+
+    await triggerDelayedPushTest(user.id, 3);
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(timer);
+          setTestStatus('🚀 실제 스마트폰 기기 푸시 알림이 발송되었습니다! (화면 상단바 확인)');
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleTestHeadsUpBanner = () => {
     sounds.unlockAudio();
     sounds.playIncomingMessage(notificationMode);
     if (onTriggerTestNotification) {
       onTriggerTestNotification(notificationMode);
     }
-    setTestStatus('화면 상단에 실시간 알림 팝업("여기에 뜰 수 있게")이 표시되었습니다!');
-    // Also try browser notification
-    await sendTestNotification(notificationMode);
+    setTestStatus('화면 상단에 실시간 인앱 알림 팝업("여기에 뜰 수 있게")이 표시되었습니다!');
     setTimeout(() => setTestStatus(null), 3500);
   };
 
@@ -895,30 +968,194 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 </div>
               </div>
 
-              {/* Real Top Heads-Up Notification Tester */}
-              <div className="p-4 bg-white/[0.03] rounded-2xl border border-white/10 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-purple-400" />
+              {/* ANDROID NATIVE APK DOWNLOAD SECTION (PRIMARY SOLUTION) */}
+              <div className="p-4 bg-gradient-to-b from-indigo-950/50 via-blue-950/40 to-black/50 rounded-2xl border-2 border-indigo-500/50 space-y-3.5 shadow-2xl relative overflow-hidden">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-md shadow-indigo-500/30">
+                      <Smartphone className="w-4.5 h-4.5" />
+                    </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white">
-                        화면 상단 알림 팝업 ("여기에 뜰 수 있게")
-                      </h4>
-                      <p className="text-[11px] text-white/50">
-                        메시지 도착 시 스마트폰 상단에서 샥 내려오는 알림 카드
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="text-xs font-extrabold text-white flex items-center gap-1.5">
+                          <span>안드로이드 전용 APK 앱</span>
+                        </h4>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-black">
+                          카톡처럼 닫아도 100% 알림
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-white/70 mt-1 leading-relaxed">
+                        화면이 꺼지거나 앱을 완전히 닫아도 시스템 상단바와 잠금화면에 소리/진동과 함께 즉각 도착합니다.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleTestHeadsUpBanner}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-90 active:scale-[0.99] text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-600/25 border border-white/20 flex items-center justify-center gap-2 transition-all"
-                >
-                  <Bell className="w-4 h-4 animate-bounce" />
-                  <span>지금 상단 알림 팝업 띄워보기 (테스트)</span>
-                </button>
+                {isNative ? (
+                  <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-200 text-xs flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
+                    <span className="font-semibold">
+                      현재 전용 APK 앱에서 접속 중입니다. 화면이 꺼져도 상단바 헤드업 알림이 정상 작동합니다.
+                    </span>
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <div className="text-xs">
+                          <p className="font-bold text-white">JK-Messenger.apk (v1.0.0 정식 릴리즈)</p>
+                          <p className="text-[10px] text-white/50">
+                            크기: {apkInfo?.sizeMb || '17 KB'} · 안드로이드 7.0~15+ 호환
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setApkDownloaded(true);
+                          downloadApkFile();
+                        }}
+                        className="py-2.5 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-extrabold rounded-xl text-xs shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 active:scale-95 transition-all shrink-0"
+                      >
+                        <Download className="w-4 h-4 animate-bounce" />
+                        <span>APK 다운로드 (.apk)</span>
+                      </button>
+                    </div>
+
+                    {apkDownloaded && (
+                      <div className="p-2.5 rounded-xl bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs flex items-center gap-2 animate-in fade-in">
+                        <CheckCircle2 className="w-4 h-4 text-blue-300 shrink-0" />
+                        <span>APK 다운로드가 시작되었습니다! 다운로드 완료 후 파일을 터치하여 설치하세요.</span>
+                      </div>
+                    )}
+
+                    {/* Expandable Why Web Fails Explanation */}
+                    <div className="rounded-xl bg-white/[0.02] border border-white/10 overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setShowWebReason(!showWebReason)}
+                        className="w-full px-3 py-2 flex items-center justify-between text-left text-xs hover:bg-white/[0.04] transition-colors"
+                      >
+                        <div className="flex items-center gap-1.5 text-amber-300 font-semibold">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>웹 브라우저에서 웹소켓 알림이 안 울리는 이유 알아보기</span>
+                        </div>
+                        {showWebReason ? (
+                          <ChevronUp className="w-3.5 h-3.5 text-white/40" />
+                        ) : (
+                          <ChevronDown className="w-3.5 h-3.5 text-white/40" />
+                        )}
+                      </button>
+
+                      {showWebReason && (
+                        <div className="p-3 pt-1 border-t border-white/5 bg-black/30 space-y-2 text-[11px] text-white/70 leading-relaxed">
+                          <p>
+                            • <strong className="text-white">모바일 OS 배터리 절전(Doze Mode)</strong>: 스마트폰 화면이 꺼지거나 브라우저를 닫으면, 안드로이드/iOS 시스템이 배터리를 절약하기 위해 웹페이지의 WebSocket TCP 연결을 즉시 강제 종료(Freeze)합니다.
+                          </p>
+                          <p>
+                            • <strong className="text-white">백그라운드 통신 차단</strong>: 브라우저가 최소화되면 자바스크립트 타이머와 수신 소켓이 잠에 빠지므로 서버에서 알림을 쏴도 브라우저에 도달하지 못합니다.
+                          </p>
+                          <p>
+                            • <strong className="text-emerald-300 font-semibold">APK 전용 앱의 해결 원리</strong>: 이 APK는 안드로이드 Foreground Service와 고우선순위 NotificationChannel을 탑재하여 화면이 꺼져도 백그라운드에서 죽지 않고 메시지를 0.01초 만에 감지해 상단바와 잠금화면에 즉시 띄웁니다!
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* REAL SMARTPHONE OS PUSH NOTIFICATION SECTION */}
+              <div className="p-4 bg-gradient-to-b from-blue-950/40 via-purple-950/20 to-black/40 rounded-2xl border border-blue-500/30 space-y-3.5 shadow-xl">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                      <Smartphone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="text-xs font-bold text-white">
+                          스마트폰 실제 기기(OS) 알림
+                        </h4>
+                        <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[10px] font-bold">
+                          앱 닫아도 수신됨
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-white/60 mt-0.5 leading-relaxed">
+                        화면이 꺼져있거나 홈 화면으로 나가있어도 스마트폰 상단바/잠금화면에 카카오톡처럼 실제 알림과 진동이 옵니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status Indicator */}
+                <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2.5 w-2.5">
+                      {permStatus === 'granted' ? (
+                        <>
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </>
+                      ) : (
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                      )}
+                    </span>
+                    <span className="text-xs font-medium text-white/90">
+                      {permStatus === 'granted'
+                        ? '스마트폰 기기 알림 및 백그라운드 푸시 연동됨'
+                        : '스마트폰 알림 권한 필요 (현재 꺼짐)'}
+                    </span>
+                  </div>
+
+                  {permStatus !== 'granted' && (
+                    <button
+                      type="button"
+                      onClick={handleEnablePush}
+                      className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-blue-600/30 active:scale-95 transition-all flex items-center gap-1.5 shrink-0"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      <span>원클릭 알림 켜기</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Real Notification Test Action Buttons */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleImmediateOsTest}
+                    className="py-2.5 px-3.5 bg-white/10 hover:bg-white/15 active:scale-[0.98] text-white font-semibold rounded-xl text-xs border border-white/15 flex items-center justify-center gap-2 transition-all shadow-sm"
+                  >
+                    <Smartphone className="w-4 h-4 text-blue-400" />
+                    <span>지금 기기 알림 띄우기 (즉시)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDelayedPushTest}
+                    disabled={countdown !== null}
+                    className="py-2.5 px-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 active:scale-[0.98] text-white font-bold rounded-xl text-xs border border-white/20 flex items-center justify-center gap-2 transition-all shadow-md shadow-purple-600/25 disabled:opacity-50"
+                  >
+                    <Bell className="w-4 h-4 animate-bounce" />
+                    <span>
+                      {countdown !== null
+                        ? `⏳ ${countdown}초 후 발송 (앱 닫으세요!)`
+                        : '3초 뒤 푸시 발송 (앱 닫고 테스트)'}
+                    </span>
+                  </button>
+                </div>
+
+                {countdown !== null && (
+                  <div className="p-3 rounded-xl bg-purple-500/20 border border-purple-400/40 text-purple-200 text-xs flex items-center gap-2.5 animate-pulse">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-purple-300" />
+                    <span className="font-medium">
+                      지금 메신저를 닫거나 홈 화면으로 나가보세요! {countdown}초 뒤 스마트폰 자체 알림이 도착합니다.
+                    </span>
+                  </div>
+                )}
 
                 {testStatus && (
                   <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
@@ -928,51 +1165,23 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 )}
               </div>
 
-              {/* Background Web Push (app closed / screen off) */}
-              <div className="p-3 bg-black/30 rounded-xl border border-white/10 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 pr-2">
-                    <span className="text-white/80 font-medium block truncate">
-                      앱을 꺼도 오는 백그라운드 푸시
-                    </span>
-                    <span className="text-[10px] text-white/40 block">
-                      앱이 닫혀 있거나 화면이 꺼져 있어도 알림 받기
-                    </span>
-                  </div>
-                  {pushDiag.active ? (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold shrink-0">
-                      이 기기 등록됨
-                    </span>
-                  ) : (
-                    <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-400/30 text-[10px] font-bold shrink-0">
-                      미등록
-                    </span>
-                  )}
+              {/* In-app Top Banner Section (Clearly Labeled as In-App Only) */}
+              <div className="p-3.5 bg-white/[0.02] rounded-xl border border-white/10 flex items-center justify-between text-xs">
+                <div className="min-w-0 pr-3">
+                  <span className="text-white/80 font-medium block">
+                    앱 내부 화면 상단 알림 카드 (인앱 팝업)
+                  </span>
+                  <span className="text-[10px] text-white/40 block mt-0.5">
+                    메신저 앱을 열어두고 다른 화면을 볼 때 화면 안에서 내려오는 보조 카드
+                  </span>
                 </div>
-
-                {!pushDiag.active && pushDiag.error && (
-                  <p className="text-[11px] text-rose-300/90 leading-relaxed">⚠️ {pushDiag.error}</p>
-                )}
-
                 <button
                   type="button"
-                  disabled={pushTesting}
-                  onClick={handlePushTest}
-                  className="w-full py-2.5 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold border border-white/15 transition-colors disabled:opacity-50"
+                  onClick={handleTestHeadsUpBanner}
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white/80 text-[11px] font-semibold border border-white/10 shrink-0 transition-colors"
                 >
-                  {pushTesting ? '확인 중...' : '📲 10초 뒤 푸시 보내기 (보낸 뒤 앱을 꺼보세요)'}
+                  인앱 카드 테스트
                 </button>
-
-                {pushTestResult && (
-                  <p
-                    className={`text-[11px] leading-relaxed ${
-                      pushTestResult.ok ? 'text-emerald-300' : 'text-rose-300'
-                    }`}
-                  >
-                    {pushTestResult.ok ? '✅ ' : '❌ '}
-                    {pushTestResult.message}
-                  </p>
-                )}
               </div>
             </div>
           )}

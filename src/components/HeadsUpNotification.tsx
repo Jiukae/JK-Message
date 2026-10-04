@@ -36,6 +36,13 @@ export const HeadsUpNotification: React.FC<HeadsUpNotificationProps> = ({
     setOffsetY(0);
     setIsDismissing(false);
 
+    // Haptic feedback on appear
+    if (notification.mode !== 'silent' && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(notification.mode === 'sound' ? [120, 50, 150] : [200, 100, 200]);
+      } catch {}
+    }
+
     // Auto-dismiss after 5 seconds
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -87,8 +94,8 @@ export const HeadsUpNotification: React.FC<HeadsUpNotificationProps> = ({
 
   return (
     <div
-      className={`fixed top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-[100] w-[94%] max-w-[420px] transition-all duration-200 select-none ${
-        isDismissing ? '-translate-y-24 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+      className={`fixed top-3 sm:top-5 left-1/2 -translate-x-1/2 z-[9999] w-[94%] max-w-[420px] transition-all duration-200 select-none pt-[env(safe-area-inset-top,0px)] ${
+        isDismissing ? '-translate-y-28 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
       }`}
       style={{
         transform: `translate(-50%, ${offsetY}px)`,
