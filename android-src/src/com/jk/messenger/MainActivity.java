@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
@@ -40,14 +41,10 @@ public class MainActivity extends Activity {
         createNotificationChannel();
         checkAndRequestPermissions();
 
-        // Start background service so notifications arrive even when screen is off
+        // Start background service without persistent status bar notification
         try {
             Intent serviceIntent = new Intent(this, JKNotificationService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent);
-            } else {
-                startService(serviceIntent);
-            }
+            startService(serviceIntent);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,6 +168,22 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public String getVersion() {
             return "1.0.0 (Native Android APK)";
+        }
+
+        @JavascriptInterface
+        public void registerUser(final String userId, final String username) {
+            try {
+                if (userId != null && !userId.trim().isEmpty()) {
+                    SharedPreferences prefs = context.getSharedPreferences(JKNotificationService.PREFS_NAME, Context.MODE_PRIVATE);
+                    prefs.edit().putString(JKNotificationService.KEY_USER_ID, userId.trim()).apply();
+
+                    Intent serviceIntent = new Intent(context, JKNotificationService.class);
+                    serviceIntent.putExtra("userId", userId.trim());
+                    context.startService(serviceIntent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @JavascriptInterface

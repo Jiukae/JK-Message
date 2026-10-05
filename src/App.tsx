@@ -25,6 +25,7 @@ import {
   subscribeUserToPush,
   isNativeAndroidApp,
   downloadApkFile,
+  registerNativeAndroidUser,
 } from './utils/notifications';
 import { sounds } from './utils/audio';
 import { UserAvatar } from './components/UserAvatar';
@@ -151,6 +152,10 @@ export default function App() {
 
     if (currentUser?.id && getNotificationPermission() === 'granted') {
       subscribeUserToPush(currentUser.id).catch(() => {});
+    }
+
+    if (currentUser?.id) {
+      registerNativeAndroidUser(currentUser.id, currentUser.name);
     }
 
     const handleSwMessage = (event: MessageEvent) => {

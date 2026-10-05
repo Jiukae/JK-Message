@@ -498,3 +498,19 @@ export function downloadApkFile(): void {
   }, 100);
 }
 
+/**
+ * Register user with Native Android Service so background listener receives messages when app is closed
+ */
+export function registerNativeAndroidUser(userId: string, username?: string): void {
+  if (typeof window === 'undefined') return;
+  const bridge = (window as any).JKAndroidBridge || (window as any).AndroidBridge;
+  if (bridge && typeof bridge.registerUser === 'function') {
+    try {
+      bridge.registerUser(userId, username || '');
+    } catch (e) {
+      console.warn('Native registerUser error:', e);
+    }
+  }
+}
+
+

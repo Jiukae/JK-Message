@@ -563,8 +563,11 @@ async function startServer() {
 
   // Connected sockets mapped by userId -> Set<WebSocket>
   const userSockets = new Map<string, Set<WebSocket>>();
+  // Connected SSE clients (Android Native background service when app is closed)
+  const userSseClients = new Map<string, Set<express.Response>>();
 
   function broadcastToUser(userId: string, data: any) {
+    // 1. Deliver to active WebSockets (in-app foreground/background)
     const sockets = userSockets.get(userId);
     if (sockets) {
       const payload = JSON.stringify(data);
@@ -581,6 +584,26 @@ async function startServer() {
       }
       if (sockets.size === 0) {
         userSockets.delete(userId);
+      }
+    }
+
+    // 2. Deliver to native Android background SSE clients (when app is completely closed)
+    const sseClients = userSseClients.get(userId);
+    if (sseClients && sseClients.size > 0) {
+      const ssePayload = `data: ${JSON.stringify(data)}\n\n`;
+      const deadSse: express.Response[] = [];
+      for (const res of sseClients) {
+        try {
+          res.write(ssePayload);
+        } catch {
+          deadSse.push(res);
+        }
+      }
+      for (const dead of deadSse) {
+        sseClients.delete(dead);
+      }
+      if (sseClients.size === 0) {
+        userSseClients.delete(userId);
       }
     }
   }
@@ -1554,6 +1577,46 @@ async function startServer() {
   }, 10000);
 
   // REST API Routes
+
+  // Native Android Background Notification Stream (SSE)
+  // Enables receiving notifications when the app is completely closed without a persistent status-bar notification
+  app.get("/api/stream/notifications", (req, res) => {
+    const userId = req.query.userId as string;
+    if (!userId) {
+      return res.status(400).json({ error: "userId query parameter is required" });
+    }
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      "Connection": "keep-alive",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.write("data: {\"type\":\"connected\"}\n\n");
+
+    if (!userSseClients.has(userId)) {
+      userSseClients.set(userId, new Set());
+    }
+    userSseClients.get(userId)!.add(res);
+
+    // Keep-alive ping every 25 seconds
+    const keepAlive = setInterval(() => {
+      try {
+        res.write(":\n\n");
+      } catch {
+        clearInterval(keepAlive);
+      }
+    }, 25000);
+
+    req.on("close", () => {
+      clearInterval(keepAlive);
+      const set = userSseClients.get(userId);
+      if (set) {
+        set.delete(res);
+        if (set.size === 0) userSseClients.delete(userId);
+      }
+    });
+  });
 
   // Web Push API Routes
   app.get("/api/push/vapid-public-key", (_req, res) => {

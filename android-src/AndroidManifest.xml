@@ -43,7 +43,7 @@
             android:name=".JKNotificationService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            android:stopWithTask="false" />
 
     </application>
 

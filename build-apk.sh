@@ -8,7 +8,10 @@ BIN_DIR="$SRC_DIR/bin"
 CLASSES_DIR="$BIN_DIR/classes"
 SDK_JAR="$BASE_DIR/android-sdk/platforms/android-35/android.jar"
 R8_JAR="$BASE_DIR/android-sdk/r8.jar"
-AAPT2="/usr/local/bin/aapt2"
+AAPT2="/app/applet/android-sdk/aapt2"
+if [ -f "/usr/local/bin/aapt2" ]; then
+  AAPT2="/usr/local/bin/aapt2"
+fi
 OUT_DIR="$BASE_DIR/public/download"
 OUT_APK="$OUT_DIR/JK-Messenger.apk"
 
