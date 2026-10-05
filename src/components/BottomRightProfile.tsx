@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, UserStatusMode, NotificationMode } from '../types';
 import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { TitleBadge } from './TitleBadge';
 import { NotificationModeToggle } from './NotificationModeToggle';
 import {
   LogIn,
@@ -20,6 +21,8 @@ import {
   Sparkles,
   Circle,
   X,
+  Share2,
+  Crown,
 } from 'lucide-react';
 
 interface BottomRightProfileProps {
@@ -31,6 +34,7 @@ interface BottomRightProfileProps {
   onOpenProfileSettings: () => void;
   onOpenStatusPicker: () => void;
   onOpenAdminDashboard?: () => void;
+  onOpenShareModal?: () => void;
   onLogout: () => void;
   onNavigateToRegister: () => void;
   onLoginSuccess: (user: User) => void;
@@ -46,6 +50,7 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
   onOpenProfileSettings,
   onOpenStatusPicker,
   onOpenAdminDashboard,
+  onOpenShareModal,
   onLogout,
   onNavigateToRegister,
   onLoginSuccess,
@@ -139,11 +144,14 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
 
             {/* User Info & Status Pill */}
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-xs sm:text-sm text-white truncate max-w-[100px]">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-xs sm:text-sm text-white truncate max-w-[90px]">
                   {currentUser.name}
                 </span>
                 <RoleBadge user={currentUser} size="sm" />
+                {currentUser.selectedTitle && (
+                  <TitleBadge title={currentUser.selectedTitle} size="xs" />
+                )}
               </div>
 
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -168,6 +176,18 @@ export const BottomRightProfile: React.FC<BottomRightProfileProps> = ({
 
           {/* Quick Action Icons */}
           <div className="flex items-center gap-1 border-l border-white/10 pl-2 shrink-0">
+            {/* Share / Invite Button to earn '공유왕' */}
+            {onOpenShareModal && (
+              <button
+                id="bottom-profile-share-btn"
+                type="button"
+                onClick={onOpenShareModal}
+                className="p-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/30 text-amber-300 hover:text-white transition-all shadow-sm"
+                title="친구 초대하고 '공유왕' 칭호 받기"
+              >
+                <Crown className="w-3.5 h-3.5" />
+              </button>
+            )}
             {/* Quick 3-Mode Alert Selector (소리 / 진동 / 무음) */}
             {notificationMode && onNotificationModeChange ? (
               <NotificationModeToggle

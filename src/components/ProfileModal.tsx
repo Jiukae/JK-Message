@@ -26,9 +26,13 @@ import {
   ChevronDown,
   ChevronUp,
   Zap,
+  Crown,
+  Share2,
+  Award,
 } from 'lucide-react';
 import { RoleBadge } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { TitleBadge } from './TitleBadge';
 import { sounds } from '../utils/audio';
 import {
   sendTestNotification,
@@ -46,11 +50,13 @@ import {
 
 interface ProfileModalProps {
   user: User;
+  friendsCount?: number;
   onClose: () => void;
   onUpdate: (updated: User) => void;
   onLogout: () => void;
-  initialTab?: 'profile' | 'background' | 'sound';
+  initialTab?: 'profile' | 'background' | 'sound' | 'titles';
   onTriggerTestNotification?: (mode: NotificationMode) => void;
+  onOpenShareModal?: () => void;
 }
 
 const AVATAR_GRADIENTS = [
@@ -130,13 +136,37 @@ const GRADIENT_PRESETS = [
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
   user,
+  friendsCount = 0,
   onClose,
   onUpdate,
   onLogout,
   initialTab = 'profile',
   onTriggerTestNotification,
+  onOpenShareModal,
 }) => {
-  const [activeTab, setActiveTab] = useState<'profile' | 'background' | 'sound'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'profile' | 'titles' | 'background' | 'sound'>(initialTab);
+  const [selectedTitle, setSelectedTitle] = useState<string | null>(user.selectedTitle || null);
+  const [titleUpdating, setTitleUpdating] = useState(false);
+
+  const handleSelectTitle = async (title: string | null) => {
+    setSelectedTitle(title);
+    setTitleUpdating(true);
+    try {
+      const res = await fetch('/api/user/select-title', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, title }),
+      });
+      const data = await res.json();
+      if (res.ok && data.user) {
+        onUpdate(data.user);
+      }
+    } catch (e) {
+      console.warn('Failed to update title:', e);
+    } finally {
+      setTitleUpdating(false);
+    }
+  };
 
   // Profile Form States
   const [name, setName] = useState(user.name);
@@ -439,6 +469,22 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
           <button
             type="button"
+            onClick={() => setActiveTab('titles')}
+            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-semibold flex items-center gap-1.5 transition-all border-b-2 ${
+              activeTab === 'titles'
+                ? 'bg-white/10 text-white border-amber-400'
+                : 'text-white/50 hover:text-white/80 border-transparent hover:bg-white/5'
+            }`}
+          >
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span>칭호 & 업적</span>
+            {user.titles && user.titles.length > 0 && (
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveTab('background')}
             className={`px-3.5 py-2.5 rounded-t-xl text-xs font-semibold flex items-center gap-1.5 transition-all border-b-2 ${
               activeTab === 'background'
@@ -494,6 +540,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
                     <span className="text-white font-bold text-base truncate">{name || user.name}</span>
                     <RoleBadge user={user} size="sm" />
+                    {selectedTitle && (
+                      <TitleBadge title={selectedTitle} size="sm" />
+                    )}
                   </div>
                   
                   <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
@@ -622,6 +671,172 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/30 text-sm focus:outline-none focus:border-blue-400/50 focus:ring-1 focus:ring-blue-500/30 transition-all backdrop-blur-sm"
                 />
               </div>
+            </div>
+          )}
+
+          {/* ================= TAB: TITLES & ACHIEVEMENTS ================= */}
+          {activeTab === 'titles' && (
+            <div className="space-y-5">
+              
+              {/* Currently Equipped Title Card */}
+              <div className="p-4 bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 border border-white/15 rounded-2xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] text-white/50 block font-medium">현재 착용 중인 칭호</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-base font-bold text-white">{name || user.name}</span>
+                      {selectedTitle ? (
+                        <TitleBadge title={selectedTitle} size="md" />
+                      ) : (
+                        <span className="text-xs text-white/40 italic">(장착된 칭호 없음)</span>
+                      )}
+                    </div>
+                  </div>
+                  {selectedTitle && (
+                    <button
+                      type="button"
+                      disabled={titleUpdating}
+                      onClick={() => handleSelectTitle(null)}
+                      className="px-2.5 py-1 text-xs rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/10 transition-colors"
+                    >
+                      칭호 해제
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Unlocked Titles Selector */}
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">
+                  보유한 칭호 선택 (클릭하여 착용)
+                </label>
+                {(!user.titles || user.titles.length === 0) ? (
+                  <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center text-xs text-white/40">
+                    아직 획득한 칭호가 없습니다. 아래 업적을 달성해보세요!
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {user.titles.map((t) => {
+                      const isEquipped = selectedTitle === t;
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          disabled={titleUpdating}
+                          onClick={() => handleSelectTitle(t)}
+                          className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all ${
+                            isEquipped
+                              ? 'bg-amber-500/15 border-amber-400/50 shadow-md shadow-amber-500/15 ring-1 ring-amber-400/30'
+                              : 'bg-white/5 hover:bg-white/10 border-white/10'
+                          }`}
+                        >
+                          <TitleBadge title={t} size="sm" />
+                          {isEquipped ? (
+                            <span className="text-[10px] text-amber-300 font-bold flex items-center gap-0.5">
+                              <Check className="w-3 h-3" /> 착용 중
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-white/40 hover:text-white/70">
+                              착용하기
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Achievements & Requirements */}
+              <div className="space-y-3">
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider">
+                  칭호 획득 미션
+                </label>
+
+                {/* 1. 공유왕 */}
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                        <Crown className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-bold text-white">공유왕</span>
+                          <TitleBadge title="공유왕" size="xs" />
+                        </div>
+                        <p className="text-[11px] text-white/50">친구에게 초대 링크 공유 시 획득</p>
+                      </div>
+                    </div>
+
+                    {user.titles?.includes('공유왕') ? (
+                      <span className="text-xs text-amber-300 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> 획득 완료!
+                      </span>
+                    ) : (
+                      <span className="text-xs text-white/40">미달성</span>
+                    )}
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between border-t border-white/5">
+                    <span className="text-[11px] text-white/40">
+                      총 공유 횟수: <strong className="text-white">{user.shareCount || 0}회</strong>
+                    </span>
+                    {onOpenShareModal && (
+                      <button
+                        type="button"
+                        onClick={onOpenShareModal}
+                        className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs flex items-center gap-1 shadow-md shadow-amber-500/20 transition-all"
+                      >
+                        <Share2 className="w-3 h-3 text-black" />
+                        <span>친구에게 공유하기</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* 2. 인싸 */}
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-bold text-white">인싸</span>
+                          <TitleBadge title="인싸" size="xs" />
+                        </div>
+                        <p className="text-[11px] text-white/50">친구 10명 이상 추가 시 자동 획득</p>
+                      </div>
+                    </div>
+
+                    {(user.titles?.includes('인싸') || friendsCount >= 10) ? (
+                      <span className="text-xs text-purple-300 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> 획득 완료!
+                      </span>
+                    ) : (
+                      <span className="text-xs text-white/40">{friendsCount} / 10명</span>
+                    )}
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="pt-1 space-y-1">
+                    <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                      <div
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
+                        style={{ width: `${Math.min(100, Math.round((friendsCount / 10) * 100))}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[10px] text-white/40">
+                      <span>진행도 {Math.min(100, Math.round((friendsCount / 10) * 100))}%</span>
+                      <span>{friendsCount >= 10 ? '완료' : `${10 - friendsCount}명 남음`}</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           )}
 

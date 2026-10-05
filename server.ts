@@ -39,6 +39,9 @@ interface UserRecord {
   role?: 'superadmin' | 'admin' | 'user';
   adminLevel?: AdminLevel;
   moderAgreedAt?: number;
+  titles?: string[];
+  selectedTitle?: string;
+  shareCount?: number;
   dndUntil?: number | null; // expiration timestamp or null for indefinite
   lastSeen: number;
   createdAt: number;
@@ -444,6 +447,44 @@ function areFriends(userId1: string, userId2: string): boolean {
       ((fr.senderId === userId1 && fr.receiverId === userId2) ||
         (fr.senderId === userId2 && fr.receiverId === userId1))
   );
+}
+
+// Helper to count accepted friends
+function getFriendCount(userId: string): number {
+  return db.friendRequests.filter(
+    (fr) =>
+      fr.status === "accepted" &&
+      (fr.senderId === userId || fr.receiverId === userId)
+  ).length;
+}
+
+// Check and award titles ('공유왕' on share, '인싸' on 10+ friends)
+function checkAndAwardTitles(user: UserRecord): { updated: boolean; newTitles: string[] } {
+  const currentTitles = new Set<string>(user.titles || []);
+  const initialCount = currentTitles.size;
+  const newAwarded: string[] = [];
+
+  const friendCount = getFriendCount(user.id);
+  if (friendCount >= 10 && !currentTitles.has('인싸')) {
+    currentTitles.add('인싸');
+    newAwarded.push('인싸');
+  }
+
+  if ((user.shareCount || 0) >= 1 && !currentTitles.has('공유왕')) {
+    currentTitles.add('공유왕');
+    newAwarded.push('공유왕');
+  }
+
+  if (currentTitles.size !== initialCount) {
+    user.titles = Array.from(currentTitles);
+    if (!user.selectedTitle && user.titles.length > 0) {
+      user.selectedTitle = user.titles[0];
+    }
+    saveDB(db, { type: 'user', item: user });
+    return { updated: true, newTitles: newAwarded };
+  }
+
+  return { updated: false, newTitles: [] };
 }
 
 // Helper to get normalized conversation ID for two users (sorted)
@@ -1901,10 +1942,78 @@ async function startServer() {
     return res.json({ user: safeUser });
   };
 
+  function broadcastUserUpdate(safeUser: any) {
+    const updatePayload = JSON.stringify({
+      type: "user:profile_updated",
+      payload: { user: safeUser },
+    });
+    for (const client of wss.clients) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(updatePayload);
+      }
+    }
+  }
+
   app.put("/api/auth/profile", handleProfileUpdate);
   app.post("/api/auth/profile", handleProfileUpdate);
   app.put("/api/user/profile", handleProfileUpdate);
   app.post("/api/user/profile", handleProfileUpdate);
+
+  // 1. Share Invite Endpoint - Awards '공유왕' title and increments shareCount
+  app.post("/api/user/share", (req, res) => {
+    const { userId } = req.body;
+    const user = db.users.find((u) => u.id === userId);
+    if (!user) {
+      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+    }
+
+    user.shareCount = (user.shareCount || 0) + 1;
+    const currentTitles = new Set<string>(user.titles || []);
+    const isNewTitle = !currentTitles.has('공유왕');
+    currentTitles.add('공유왕');
+    user.titles = Array.from(currentTitles);
+
+    if (!user.selectedTitle) {
+      user.selectedTitle = '공유왕';
+    }
+
+    // Also check other titles like '인싸'
+    checkAndAwardTitles(user);
+
+    saveDB(db, { type: 'user', item: user });
+
+    const { password: _, ...safeUser } = user;
+    broadcastUserUpdate(safeUser);
+
+    return res.json({
+      success: true,
+      isNewTitle,
+      title: '공유왕',
+      shareCount: user.shareCount,
+      user: safeUser,
+    });
+  });
+
+  // 2. Select / Equip Title
+  app.post("/api/user/select-title", (req, res) => {
+    const { userId, title } = req.body;
+    const user = db.users.find((u) => u.id === userId);
+    if (!user) {
+      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+    }
+
+    if (title && (!user.titles || !user.titles.includes(title))) {
+      return res.status(400).json({ error: "보유하지 않은 칭호입니다." });
+    }
+
+    user.selectedTitle = title || undefined;
+    saveDB(db, { type: 'user', item: user });
+
+    const { password: _, ...safeUser } = user;
+    broadcastUserUpdate(safeUser);
+
+    return res.json({ success: true, user: safeUser });
+  });
 
   // Update status (online, dnd, offline + DND duration)
   const handleStatusUpdate = (req: express.Request, res: express.Response) => {
@@ -1969,6 +2078,16 @@ async function startServer() {
       .map((fr) => (fr.senderId === userId ? fr.receiverId : fr.senderId));
 
     const uniqueFriendIds = Array.from(new Set(friendUserIds));
+
+    // Auto-check and award '인싸' if user has >= 10 friends
+    const requestingUser = db.users.find((u) => u.id === userId);
+    if (requestingUser) {
+      const { updated } = checkAndAwardTitles(requestingUser);
+      if (updated) {
+        const { password: _, ...safeUser } = requestingUser;
+        broadcastUserUpdate(safeUser);
+      }
+    }
 
     const friends = uniqueFriendIds
       .map((fid) => {
@@ -2139,6 +2258,24 @@ async function startServer() {
 
     broadcastToUser(request.senderId, wsPayload);
     broadcastToUser(request.receiverId, wsPayload);
+
+    // Auto-check and award '인싸' if either user reached 10+ friends
+    if (accept) {
+      if (sender) {
+        const { updated } = checkAndAwardTitles(sender);
+        if (updated) {
+          const { password: _, ...safeSender } = sender;
+          broadcastUserUpdate(safeSender);
+        }
+      }
+      if (receiver) {
+        const { updated } = checkAndAwardTitles(receiver);
+        if (updated) {
+          const { password: _, ...safeReceiver } = receiver;
+          broadcastUserUpdate(safeReceiver);
+        }
+      }
+    }
 
     return res.json({ request: populatedReq, accepted: accept });
   });

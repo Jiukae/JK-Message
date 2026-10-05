@@ -44,6 +44,9 @@ export interface User {
   role?: UserRole;
   adminLevel?: AdminLevel; // 1: Guest/Member, 2: Moder, 3: Admin, 4: Head Admin, 5: Owner
   moderAgreedAt?: number; // timestamp when user agreed to terms for Moder
+  titles?: string[]; // Unlocked titles: '공유왕', '인싸' 등
+  selectedTitle?: string; // Currently equipped title displayed next to name
+  shareCount?: number; // Number of invites/shares made
   dndUntil?: number | null; // timestamp when DND expires (null means indefinitely until changed)
   lastSeen: number;
   createdAt: number;

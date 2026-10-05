@@ -16,6 +16,8 @@ import { NoticeApplyModal } from './components/NoticeApplyModal';
 import { ModerAgreementModal } from './components/ModerAgreementModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { ApkDownloadModal } from './components/ApkDownloadModal';
+import { ShareModal } from './components/ShareModal';
+import { TitleBadge } from './components/TitleBadge';
 import { getAdminLevel } from './utils/roleUtils';
 import {
   sendBrowserNotification,
@@ -145,6 +147,7 @@ export default function App() {
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [selectedExploreUser, setSelectedExploreUser] = useState<User | null>(null);
   const [showApkModal, setShowApkModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // URL synchronization helper (pushState / replaceState without page reload)
   const updateBrowserUrl = useCallback((path: string, replace = false) => {
@@ -608,6 +611,23 @@ export default function App() {
                     : c
                 )
               );
+              break;
+            }
+
+            case 'title:awarded': {
+              const titles: string[] = msg.payload?.titles || [];
+              if (titles && titles.length > 0) {
+                sounds.playIncomingMessage('sound');
+                setHeadsUpNotification({
+                  id: `title_${Date.now()}`,
+                  title: '🎉 새로운 칭호 획득!',
+                  body: `축하합니다! [${titles.join(', ')}] 칭호가 잠금 해제되었습니다!`,
+                  senderAvatarEmoji: '👑',
+                  senderAvatarBg: 'from-amber-500 to-yellow-600',
+                  conversationId: '',
+                  receivedAt: Date.now(),
+                });
+              }
               break;
             }
 
@@ -1390,6 +1410,7 @@ export default function App() {
             onOpenModerAgreement={() => setShowModerAgreeModal(true)}
             onOpenAdminDashboard={() => setShowAdminDashboard(true)}
             onOpenApkModal={() => setShowApkModal(true)}
+            onOpenShareModal={() => setShowShareModal(true)}
             onSelectConversation={handleSelectConversation}
             onStartChatWithUser={handleStartChatWithUser}
             onOpenUserDetail={(u) => setSelectedExploreUser(u)}
@@ -1454,6 +1475,7 @@ export default function App() {
           }}
           onAcceptRequest={handleAcceptFriendRequest}
           onRejectRequest={handleRejectFriendRequest}
+          onOpenShareModal={() => setShowShareModal(true)}
         />
       )}
 
@@ -1473,6 +1495,7 @@ export default function App() {
       {showProfileModal && currentUser && (
         <ProfileModal
           user={currentUser}
+          friendsCount={friends.length}
           initialTab={profileModalTab}
           onClose={() => {
             setShowProfileModal(false);
@@ -1489,6 +1512,7 @@ export default function App() {
             fetchFriends(currentUser.id);
           }}
           onTriggerTestNotification={triggerTestNotification}
+          onOpenShareModal={() => setShowShareModal(true)}
           onLogout={handleLogout}
         />
       )}
@@ -1569,6 +1593,22 @@ export default function App() {
         isOpen={showApkModal}
         onClose={() => setShowApkModal(false)}
       />
+
+      {/* Share / Referral Modal */}
+      {showShareModal && currentUser && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          currentUser={currentUser}
+          friendsCount={friends.length}
+          onUserUpdate={(updated) => {
+            setCurrentUser(updated);
+            localStorage.setItem('id_messenger_user', JSON.stringify(updated));
+            fetchAllUsers(currentUser.id);
+            fetchFriends(currentUser.id);
+          }}
+        />
+      )}
 
     </div>
   );

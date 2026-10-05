@@ -12,6 +12,8 @@ import {
   Inbox,
   ArrowRight,
   ShieldCheck,
+  Crown,
+  Share2,
 } from 'lucide-react';
 
 interface AddFriendModalProps {
@@ -20,6 +22,7 @@ interface AddFriendModalProps {
   onRequestSent: () => void;
   onAcceptRequest: (requestId: string) => void;
   onRejectRequest: (requestId: string) => void;
+  onOpenShareModal?: () => void;
 }
 
 export const AddFriendModal: React.FC<AddFriendModalProps> = ({
@@ -28,6 +31,7 @@ export const AddFriendModal: React.FC<AddFriendModalProps> = ({
   onRequestSent,
   onAcceptRequest,
   onRejectRequest,
+  onOpenShareModal,
 }) => {
   const [activeTab, setActiveTab] = useState<'search' | 'requests'>('search');
   const [query, setQuery] = useState('');
@@ -205,6 +209,32 @@ export const AddFriendModal: React.FC<AddFriendModalProps> = ({
           
           {activeTab === 'search' ? (
             <>
+              {/* Invite Referral Card */}
+              {onOpenShareModal && (
+                <div className="p-3 mb-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-500/30 flex items-center justify-between gap-3 shadow-sm">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0">
+                      <Crown className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white flex items-center gap-1">
+                        <span>아직 가입하지 않은 친구인가요?</span>
+                      </div>
+                      <div className="text-[11px] text-amber-200/80 truncate">
+                        초대 링크를 공유하면 <strong className="text-amber-300">👑 '공유왕'</strong> 칭호 즉시 지급!
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onOpenShareModal}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs shrink-0 shadow-md shadow-amber-500/20 transition-all active:scale-95"
+                  >
+                    초대하기
+                  </button>
+                </div>
+              )}
+
               {/* Search Bar with Submit Button */}
               <form onSubmit={handleSearchSubmit} className="flex gap-2 mb-3">
                 <div className="relative flex-1">

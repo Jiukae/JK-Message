@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { User, Message, MessageReply, GroupRoom, MessageAttachment, NotificationMode } from '../types';
+import { TitleBadge } from './TitleBadge';
 import {
   Send,
   Smile,
@@ -469,13 +470,16 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
               />
 
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="font-semibold text-sm text-white group-hover:text-blue-300 transition-colors truncate">
                     {partner.name}
                   </span>
                   <span className="text-[11px] sm:text-xs text-blue-400 font-mono bg-blue-500/10 px-1.5 py-0.5 rounded-md border border-blue-400/20 shrink-0">
                     @{partner.username}
                   </span>
+                  {partner.selectedTitle && (
+                    <TitleBadge title={partner.selectedTitle} size="xs" />
+                  )}
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs">
@@ -668,10 +672,13 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                   
                   {/* Sender Name in Group Chat */}
                   {!isMe && isGroup && (
-                    <div className="flex items-center gap-1.5 mb-1 px-1">
+                    <div className="flex items-center gap-1.5 mb-1 px-1 flex-wrap">
                       <span className="text-xs font-bold text-white/90">
                         {senderUser?.name || msg.sender?.name || '멤버'}
                       </span>
+                      {senderUser?.selectedTitle && (
+                        <TitleBadge title={senderUser.selectedTitle} size="xs" />
+                      )}
                       <span className="text-[10px] text-blue-400 font-mono">
                         @{senderUser?.username || msg.sender?.username}
                       </span>

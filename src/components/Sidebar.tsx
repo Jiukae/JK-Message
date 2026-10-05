@@ -15,10 +15,13 @@ import {
   CheckCheck,
   Smartphone,
   Download,
+  Crown,
+  Share2,
 } from 'lucide-react';
 import { BottomRightProfile } from './BottomRightProfile';
 import { RoleBadge, getAdminLevel } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { TitleBadge } from './TitleBadge';
 
 interface SidebarProps {
   currentUser: User | null;
@@ -44,6 +47,7 @@ interface SidebarProps {
   onOpenModerAgreement?: () => void;
   onOpenAdminDashboard?: () => void;
   onOpenApkModal?: () => void;
+  onOpenShareModal?: () => void;
   onSelectConversation: (conversationId: string) => void;
   onStartChatWithUser: (user: User) => void;
   onOpenUserDetail?: (user: User) => void;
@@ -74,6 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenModerAgreement,
   onOpenAdminDashboard,
   onOpenApkModal,
+  onOpenShareModal,
   onSelectConversation,
   onStartChatWithUser,
   onOpenUserDetail,
@@ -331,6 +336,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </button>
           </div>
+
+          {/* Share / Invite Referral Banner */}
+          {onOpenShareModal && (
+            <button
+              id="sidebar-quick-share-banner-btn"
+              type="button"
+              onClick={onOpenShareModal}
+              className="w-full mt-2 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-purple-500/20 hover:from-amber-500/30 hover:to-purple-500/30 border border-amber-400/35 text-amber-200 hover:text-white flex items-center justify-between text-xs font-semibold transition-all shadow-sm group"
+              title="친구 초대하고 '공유왕' 칭호 받기"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-5 h-5 rounded-lg bg-amber-500/25 flex items-center justify-center text-amber-300 shrink-0 group-hover:scale-110 transition-transform">
+                  <Crown className="w-3.5 h-3.5" />
+                </div>
+                <div className="truncate text-left">
+                  <span className="text-white font-bold">친구 초대하고</span> <span className="text-amber-300 font-bold">공유왕</span> <span>칭호 받기</span>
+                </div>
+              </div>
+              <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-md border border-amber-400/30 font-mono shrink-0 ml-1">
+                10명=인싸
+              </span>
+            </button>
+          )}
         </div>
       )}
 
@@ -656,11 +684,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       />
 
                       <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="font-semibold text-xs sm:text-sm text-white truncate">
                             {f.name}
                           </span>
                           <RoleBadge user={f} size="sm" />
+                          {f.selectedTitle && (
+                            <TitleBadge title={f.selectedTitle} size="xs" />
+                          )}
                         </div>
                         <div className="text-[11px] text-white/50 font-mono truncate">
                           @{f.username}
@@ -718,11 +749,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     />
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-semibold text-xs sm:text-sm text-white truncate group-hover:text-blue-300 transition-colors">
                           {u.name}
                         </span>
                         <RoleBadge user={u} size="sm" />
+                        {u.selectedTitle && (
+                          <TitleBadge title={u.selectedTitle} size="xs" />
+                        )}
                       </div>
                       <div className="text-[11px] text-white/50 font-mono truncate">
                         @{u.username}
@@ -758,6 +792,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         onLogout={onLogout}
         onNavigateToRegister={onNavigateToRegister}
         onLoginSuccess={onLoginSuccess}
+        onOpenShareModal={onOpenShareModal}
         isDocked={true}
       />
 

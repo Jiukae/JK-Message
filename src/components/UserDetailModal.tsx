@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { X, Copy, Check, Calendar, MessageSquare, Clock, Shield } from 'lucide-react';
+import { X, Copy, Check, Calendar, MessageSquare, Clock, Shield, Crown } from 'lucide-react';
 import { getAdminLevel, getAdminRoleInfo, RoleBadge } from '../utils/roleUtils';
 import { UserAvatar } from './UserAvatar';
+import { TitleBadge } from './TitleBadge';
 
 interface UserDetailModalProps {
   user: User;
@@ -71,6 +72,9 @@ export const UserDetailModal: React.FC<UserDetailModalProps> = ({
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-xl font-bold text-white">{user.name}</h3>
               <RoleBadge user={user} size="md" />
+              {user.selectedTitle && (
+                <TitleBadge title={user.selectedTitle} size="sm" />
+              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -88,6 +92,18 @@ export const UserDetailModal: React.FC<UserDetailModalProps> = ({
               </button>
             </div>
           </div>
+
+          {/* Titles Section */}
+          {user.titles && user.titles.length > 0 && (
+            <div className="mt-4 p-3 bg-white/[0.03] rounded-2xl border border-white/10">
+              <span className="text-[11px] text-white/50 block mb-2 font-medium">보유 칭호</span>
+              <div className="flex flex-wrap gap-1.5">
+                {user.titles.map((t) => (
+                  <TitleBadge key={t} title={t} size="sm" />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Status message */}
           {user.customStatus && (
