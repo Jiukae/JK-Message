@@ -74,6 +74,22 @@ function getOtherUserIdFromConvId(convId: string, myId: string): string | undefi
   return parts.find((p) => p !== myId);
 }
 
+// Parse sub-route / path branch from window.location
+function parseRouteFromPath(pathname: string): {
+  view: 'messenger' | 'register';
+  conversationId: string | null;
+} {
+  const clean = pathname.replace(/\/+$/, '') || '/';
+  if (clean === '/signup' || clean === '/register') {
+    return { view: 'register', conversationId: null };
+  }
+  if (clean.startsWith('/chat/')) {
+    const rawId = decodeURIComponent(clean.replace('/chat/', '').trim());
+    return { view: 'messenger', conversationId: rawId || null };
+  }
+  return { view: 'messenger', conversationId: null };
+}
+
 export default function App() {
   // Current user & app view state
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
@@ -81,12 +97,19 @@ export default function App() {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [appView, setAppView] = useState<'messenger' | 'register'>('messenger');
+  // Initial Route based on browser URL (/chat, /chat/:id, /signup)
+  const initialRoute = useMemo(() => {
+    if (typeof window === 'undefined') return { view: 'messenger' as const, conversationId: null };
+    return parseRouteFromPath(window.location.pathname);
+  }, []);
+
+  const [appView, setAppView] = useState<'messenger' | 'register'>(initialRoute.view);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(initialRoute.conversationId);
+  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>(initialRoute.conversationId ? 'chat' : 'sidebar');
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [userStatuses, setUserStatuses] = useState<Record<string, { status: UserStatusMode; dndUntil?: number | null }>>({});
@@ -123,8 +146,62 @@ export default function App() {
   const [selectedExploreUser, setSelectedExploreUser] = useState<User | null>(null);
   const [showApkModal, setShowApkModal] = useState(false);
 
-  // Mobile navigation state
-  const [mobileView, setMobileView] = useState<'sidebar' | 'chat'>('sidebar');
+  // URL synchronization helper (pushState / replaceState without page reload)
+  const updateBrowserUrl = useCallback((path: string, replace = false) => {
+    if (typeof window === 'undefined') return;
+    if (window.location.pathname !== path) {
+      if (replace) {
+        window.history.replaceState(null, '', path);
+      } else {
+        window.history.pushState(null, '', path);
+      }
+    }
+  }, []);
+
+  // Centralized conversation selection with URL branch syncing (/chat/:id)
+  const selectConversation = useCallback((convId: string | null) => {
+    setActiveConversationId(convId);
+    if (convId) {
+      setMobileView('chat');
+      updateBrowserUrl(`/chat/${encodeURIComponent(convId)}`);
+    } else {
+      setMobileView('sidebar');
+      updateBrowserUrl('/chat');
+    }
+  }, [updateBrowserUrl]);
+
+  // Navigate to /signup
+  const navigateToRegister = useCallback(() => {
+    setAppView('register');
+    updateBrowserUrl('/signup');
+  }, [updateBrowserUrl]);
+
+  // Navigate back to messenger /chat
+  const handleBackFromRegister = useCallback(() => {
+    setAppView('messenger');
+    if (activeConversationId) {
+      updateBrowserUrl(`/chat/${encodeURIComponent(activeConversationId)}`);
+    } else {
+      updateBrowserUrl('/chat');
+    }
+  }, [activeConversationId, updateBrowserUrl]);
+
+  // Listen to browser Back / Forward buttons (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = parseRouteFromPath(window.location.pathname);
+      setAppView(route.view);
+      setActiveConversationId(route.conversationId);
+      if (route.conversationId) {
+        setMobileView('chat');
+      } else if (route.view === 'messenger') {
+        setMobileView('sidebar');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const wsRef = useRef<WebSocket | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -160,8 +237,7 @@ export default function App() {
 
     const handleSwMessage = (event: MessageEvent) => {
       if (event.data?.type === 'NAVIGATE_CONVERSATION' && event.data.conversationId) {
-        setActiveConversationId(event.data.conversationId);
-        setMobileView('chat');
+        selectConversation(event.data.conversationId);
       }
     };
 
@@ -260,9 +336,9 @@ export default function App() {
     localStorage.setItem('id_messenger_user', JSON.stringify(user));
     localStorage.setItem('id_messenger_token', token);
     setCurrentUser(user);
-    setActiveConversationId(null);
-    setMobileView('sidebar');
+    selectConversation(null);
     setAppView('messenger');
+    updateBrowserUrl('/chat');
 
     if (isNewRegistration || getNotificationPermission() === 'default') {
       setTimeout(() => {
@@ -279,10 +355,11 @@ export default function App() {
       wsRef.current = null;
     }
     setCurrentUser(null);
-    setActiveConversationId(null);
+    selectConversation(null);
     setConversations([]);
     setFriends([]);
     setCurrentMessages([]);
+    updateBrowserUrl('/chat');
   };
 
   // Fetch friends
@@ -876,8 +953,7 @@ export default function App() {
         return [newConv, ...filtered];
       });
 
-      setActiveConversationId(newConv.id);
-      setMobileView('chat');
+      selectConversation(newConv.id);
       fetchMessages(newConv.id, currentUser.id);
     } catch (e) {
       console.error('Failed to create chat:', e);
@@ -886,8 +962,7 @@ export default function App() {
 
   const handleSelectConversation = (convId: string) => {
     setCurrentMessages([]);
-    setActiveConversationId(convId);
-    setMobileView('chat');
+    selectConversation(convId);
     if (currentUser) {
       fetchMessages(convId, currentUser.id);
     }
@@ -1048,7 +1123,7 @@ export default function App() {
   if (appView === 'register') {
     return (
       <RegisterPage
-        onBack={() => setAppView('messenger')}
+        onBack={handleBackFromRegister}
         onRegisterSuccess={(user) => handleLoginSuccess(user, 'token', true)}
       />
     );
@@ -1075,8 +1150,7 @@ export default function App() {
         notification={headsUpNotification}
         onClose={() => setHeadsUpNotification(null)}
         onClick={(convId) => {
-          setActiveConversationId(convId);
-          setMobileView('chat');
+          selectConversation(convId);
           setHeadsUpNotification(null);
         }}
       />
@@ -1219,8 +1293,7 @@ export default function App() {
                 }}
                 onOpenAdminDashboard={() => setShowAdminDashboard(true)}
                 onBack={() => {
-                  setMobileView('sidebar');
-                  setActiveConversationId(null);
+                  selectConversation(null);
                 }}
               />
             </div>
@@ -1273,7 +1346,7 @@ export default function App() {
                 <button
                   id="guest-main-register-btn"
                   type="button"
-                  onClick={() => setAppView('register')}
+                  onClick={navigateToRegister}
                   className="py-2.5 px-5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold rounded-2xl text-xs shadow-lg shadow-purple-600/30 border border-purple-400/30 transition-all flex items-center gap-2"
                 >
                   <Sparkles className="w-4 h-4" />
@@ -1309,7 +1382,7 @@ export default function App() {
             onOpenProfileSettings={() => setShowProfileModal(true)}
             onOpenStatusPicker={() => setShowStatusPicker(true)}
             onLogout={handleLogout}
-            onNavigateToRegister={() => setAppView('register')}
+            onNavigateToRegister={navigateToRegister}
             onLoginSuccess={(user) => handleLoginSuccess(user, 'token', false)}
             onOpenAddFriendModal={() => setShowAddFriendModal(true)}
             onOpenCreateGroupModal={() => setShowCreateGroupModal(true)}
@@ -1350,8 +1423,7 @@ export default function App() {
           onClose={() => setShowCreateGroupModal(false)}
           onGroupCreated={(newGroup) => {
             fetchConversations(currentUser.id);
-            setActiveConversationId(newGroup.id);
-            setMobileView('chat');
+            selectConversation(newGroup.id);
             fetchMessages(newGroup.id, currentUser.id);
           }}
         />
