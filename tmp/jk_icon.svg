@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="40%" stop-color="#7C3AED" />
+      <stop offset="75%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#C026D3" />
+    </linearGradient>
+
+    <!-- Top Gloss Rim -->
+    <linearGradient id="glossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Chat Bubble Gradient -->
+    <linearGradient id="bubbleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+
+    <!-- Lightning Bolt Gradient -->
+    <linearGradient id="lightningGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF066" />
+      <stop offset="40%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow for Bubble -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#180E38" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Glow for Lightning -->
+    <filter id="boltGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#F59E0B" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background Rounded Base -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- 2. Subtle Top Ambient Highlight -->
+  <rect width="512" height="230" rx="112" fill="url(#glossGrad)" />
+
+  <!-- 3. Ambient Inner Border / Glow Rim -->
+  <rect x="6" y="6" width="500" height="500" rx="106" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-opacity="0.25" />
+
+  <!-- 4. Elevated Chat Bubble with Drop Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Speech Bubble Shape (Rounded rectangle with speech pointer tail at bottom-left) -->
+    <path d="M 120 120
+             C 120 95, 140 75, 165 75
+             L 347 75
+             C 372 75, 392 95, 392 120
+             L 392 295
+             C 392 320, 372 340, 347 340
+             L 210 340
+             L 145 395
+             C 134 404, 120 396, 120 382
+             L 120 340
+             C 120 340, 120 340, 120 340
+             Z"
+          fill="url(#bubbleGrad)" />
+  </g>
+
+  <!-- 5. Chat Bubble Inner Highlight Accent -->
+  <path d="M 140 100
+           L 372 100
+           C 382 100, 388 106, 388 116"
+        fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-opacity="0.8" />
+
+  <!-- 6. Bold Modern "JK" Monogram & Lightning Spark inside Bubble -->
+  <g transform="translate(130, 95)">
+    <!-- Letter 'J' in bold violet -->
+    <path d="M 78 30
+             L 78 125
+             C 78 160, 52 178, 16 172
+             C 2 170, -4 158, 2 147
+             C 8 136, 20 137, 28 140
+             C 42 144, 52 136, 52 120
+             L 52 30
+             C 52 22, 58 16, 65 16
+             L 65 16
+             C 72 16, 78 22, 78 30 Z"
+          fill="#4F46E5" />
+
+    <!-- Letter 'K' in bold violet -->
+    <path d="M 116 26
+             C 116 19, 122 14, 130 14
+             C 138 14, 144 19, 144 26
+             L 144 78
+             L 188 32
+             C 194 26, 204 26, 210 32
+             C 216 38, 216 48, 210 54
+             L 165 99
+             L 216 160
+             C 222 167, 220 178, 213 184
+             C 206 190, 196 188, 190 181
+             L 144 125
+             L 144 182
+             C 144 189, 138 195, 130 195
+             C 122 195, 116 189, 116 182 Z"
+          fill="#4F46E5" />
+
+    <!-- 7. Dynamic Golden Electric Lightning Bolt (Iconic emblem positioned boldly) -->
+    <polygon points="120,4 82,88 124,88 100,165 165,72 125,72"
+             fill="url(#lightningGrad)"
+             filter="url(#boltGlow)"
+             stroke="#FFFFFF"
+             stroke-width="3"
+             stroke-linejoin="round" />
+  </g>
+
+  <!-- 8. Small glossy accent dots/sparkles -->
+  <circle cx="360" cy="110" r="6" fill="#FBBF24" opacity="0.9" />
+  <circle cx="375" cy="125" r="3.5" fill="#FBBF24" opacity="0.7" />
+</svg>
