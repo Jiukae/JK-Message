@@ -29,7 +29,9 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
     public static final String NOTIFICATION_CHANNEL_ID = "jk_messenger_messages";
     private static final int PERMISSION_REQUEST_CODE = 1001;
-    public static final String DEFAULT_URL = "https://ais-pre-6fuiurcjx4ghd7mhistlsr-647895787720.asia-east1.run.app";
+    public static final String DEFAULT_URL = "https://jk-message.onrender.com";
+    public static final String FALLBACK_RENDER_URL = "https://jkmessage1.onrender.com";
+    public static final String CLOUD_RUN_URL = "https://ais-pre-6fuiurcjx4ghd7mhistlsr-647895787720.asia-east1.run.app";
 
     private WebView webView;
 
@@ -81,6 +83,8 @@ public class MainActivity extends Activity {
         });
 
         webView.setWebViewClient(new WebViewClient() {
+            private boolean triedFallback = false;
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http://") || url.startsWith("https://")) {
@@ -92,6 +96,15 @@ public class MainActivity extends Activity {
                     return true;
                 } catch (Exception e) {
                     return false;
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (!triedFallback && failingUrl != null && failingUrl.contains("jk-message.onrender.com")) {
+                    triedFallback = true;
+                    view.loadUrl(FALLBACK_RENDER_URL);
                 }
             }
         });

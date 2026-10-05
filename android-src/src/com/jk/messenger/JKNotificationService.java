@@ -26,7 +26,9 @@ import java.net.URL;
 public class JKNotificationService extends Service {
     public static final String PREFS_NAME = "jk_messenger_prefs";
     public static final String KEY_USER_ID = "user_id";
-    public static final String SERVER_STREAM_URL = "https://ais-pre-6fuiurcjx4ghd7mhistlsr-647895787720.asia-east1.run.app/api/stream/notifications?userId=";
+    public static final String SERVER_STREAM_URL = "https://jk-message.onrender.com/api/stream/notifications?userId=";
+    public static final String FALLBACK_STREAM_URL = "https://jkmessage1.onrender.com/api/stream/notifications?userId=";
+    public static final String CLOUD_RUN_STREAM_URL = "https://ais-pre-6fuiurcjx4ghd7mhistlsr-647895787720.asia-east1.run.app/api/stream/notifications?userId=";
 
     private volatile boolean isRunning = false;
     private Thread workerThread;
@@ -73,37 +75,49 @@ public class JKNotificationService extends Service {
                         continue;
                     }
 
-                    HttpURLConnection conn = null;
-                    BufferedReader reader = null;
-                    try {
-                        URL url = new URL(SERVER_STREAM_URL + userId);
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setRequestProperty("Accept", "text/event-stream");
-                        conn.setConnectTimeout(15000);
-                        conn.setReadTimeout(60000);
+                    String[] endpoints = {
+                        SERVER_STREAM_URL + userId,
+                        FALLBACK_STREAM_URL + userId,
+                        CLOUD_RUN_STREAM_URL + userId
+                    };
 
-                        int responseCode = conn.getResponseCode();
-                        if (responseCode == 200) {
-                            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                            String line;
-                            while (isRunning && (line = reader.readLine()) != null) {
-                                line = line.trim();
-                                if (line.startsWith("data:")) {
-                                    String jsonStr = line.substring(5).trim();
-                                    handleStreamData(jsonStr);
+                    boolean connectedSuccessfully = false;
+                    for (String endpointUrl : endpoints) {
+                        if (!isRunning) break;
+                        HttpURLConnection conn = null;
+                        BufferedReader reader = null;
+                        try {
+                            URL url = new URL(endpointUrl);
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setRequestMethod("GET");
+                            conn.setRequestProperty("Accept", "text/event-stream");
+                            conn.setConnectTimeout(8000);
+                            conn.setReadTimeout(60000);
+
+                            int responseCode = conn.getResponseCode();
+                            if (responseCode == 200) {
+                                connectedSuccessfully = true;
+                                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                String line;
+                                while (isRunning && (line = reader.readLine()) != null) {
+                                    line = line.trim();
+                                    if (line.startsWith("data:")) {
+                                        String jsonStr = line.substring(5).trim();
+                                        handleStreamData(jsonStr);
+                                    }
                                 }
+                                break;
                             }
+                        } catch (Exception e) {
+                            // Try fallback endpoint
+                        } finally {
+                            try {
+                                if (reader != null) reader.close();
+                            } catch (Exception ignored) {}
+                            try {
+                                if (conn != null) conn.disconnect();
+                            } catch (Exception ignored) {}
                         }
-                    } catch (Exception e) {
-                        // Connection dropped or timeout, will reconnect
-                    } finally {
-                        try {
-                            if (reader != null) reader.close();
-                        } catch (Exception ignored) {}
-                        try {
-                            if (conn != null) conn.disconnect();
-                        } catch (Exception ignored) {}
                     }
 
                     if (isRunning) {
